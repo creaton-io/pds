@@ -66,7 +66,7 @@ As of Spring 2024, the AT Protocol network is open to federation!
 
 ## Self-hosting PDS
 
-Self-hosting a Bluesky PDS means running your own Personal Data Server that is capable of federating with the wider Bluesky social network.
+Self-hosting a Bluesky PDS means running your own Personal Data Server that is capable of federating with the wider Bluesky social network. Keep in mind this is modified with crypto features so some packages might be outdated, although compatibility with Bluesky should still be there at the moment.
 
 ### Preparation for self-hosting PDS
 
