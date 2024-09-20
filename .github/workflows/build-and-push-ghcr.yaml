@@ -3,7 +3,8 @@ on:
   push:
     branches:
       - main
-      - pdsv2
+    tags:
+      - v*
 env:
   REGISTRY: ghcr.io
   USERNAME: ${{ github.actor }}
