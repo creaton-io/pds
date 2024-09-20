@@ -6,6 +6,6 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@cproto/pds": "0.5.1"
+    "@cproto/pds": "^0.5.3"
   }
 }
