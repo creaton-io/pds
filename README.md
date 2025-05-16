@@ -1,6 +1,6 @@
 # PDS
 
-Welcome to the repository for the official Bluesky PDS (Personal Data Server). This repository includes container images and documentation designed to assist technical people with hosting a Bluesky PDS.
+Welcome to the repository for the official Bluesky PDS (Personal Data Server), modified for Creaton. This repository includes container images and documentation designed to assist technical people with hosting a Bluesky PDS.
 
 Head over to the [AT Protocol PDS Admins Discord](https://discord.gg/e7hpHxRfBP) to chat with other folks hosting instances and get important updates about the PDS distribution!
 
@@ -67,7 +67,7 @@ As of Spring 2024, the AT Protocol network is open to federation!
 
 ## Self-hosting PDS
 
-Self-hosting a Bluesky PDS means running your own Personal Data Server that is capable of federating with the wider Bluesky social network.
+Self-hosting a Bluesky PDS means running your own Personal Data Server that is capable of federating with the wider Bluesky social network. Keep in mind this is modified with crypto features so some packages might be outdated, although compatibility with Bluesky should still be there at the moment.
 
 ### Preparation for self-hosting PDS
 
