@@ -16,7 +16,7 @@ services:
         target: /etc/caddy
   pds:
     container_name: pds
-    image: ghcr.io/creaton.io/pds:0.5.2
+    image: $ ghcr.io/creaton-io/pds:sha-7fa39dc0bad2da523a2a8316779776a6bdcf5dd9
     network_mode: host
     restart: unless-stopped
     volumes:
