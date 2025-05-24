@@ -369,7 +369,7 @@ export class AppContext {
           // entryway), there is no need to use JWTs as access tokens. Instead,
           // the PDS can use tokenId as access tokens. This allows the PDS to
           // always use up-to-date token data from the token store.
-          accessTokenType: AccessTokenType.id,
+          accessTokenType: 'id',
         })
       : undefined
 
