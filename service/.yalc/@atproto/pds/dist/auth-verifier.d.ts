@@ -23,42 +23,47 @@ export declare enum RoleStatus {
     Invalid = 1,
     Missing = 2
 }
-type NullOutput = {
+export type NullOutput = {
     credentials: null;
 };
-type AdminTokenOutput = {
+export type AdminTokenOutput = {
     credentials: {
         type: 'admin_token';
     };
 };
-type ModServiceOutput = {
+export type ModServiceOutput = {
     credentials: {
         type: 'mod_service';
         aud: string;
         iss: string;
     };
 };
-type AccessOutput = {
+export type AccessOutput = {
     credentials: {
         type: 'access';
         did: string;
         scope: AuthScope;
-        audience: string | undefined;
         isPrivileged: boolean;
     };
-    artifacts: string;
 };
-type RefreshOutput = {
+export type OAuthOutput = {
+    credentials: {
+        type: 'oauth';
+        did: string;
+        scope: AuthScope;
+        isPrivileged: boolean;
+        oauthScopes: Set<string>;
+    };
+};
+export type RefreshOutput = {
     credentials: {
         type: 'refresh';
         did: string;
         scope: AuthScope;
-        audience: string | undefined;
         tokenId: string;
     };
-    artifacts: string;
 };
-type UserServiceAuthOutput = {
+export type UserServiceAuthOutput = {
     credentials: {
         type: 'user_service_auth';
         aud: string;
@@ -94,16 +99,16 @@ export declare class AuthVerifier {
     private _adminPass;
     dids: AuthVerifierOpts['dids'];
     constructor(accountManager: AccountManager, idResolver: IdResolver, oauthVerifier: OAuthVerifier, opts: AuthVerifierOpts);
-    accessStandard: (opts?: Partial<AccessOpts>) => (ctx: ReqCtx) => Promise<AccessOutput>;
-    accessFull: (opts?: Partial<AccessOpts>) => (ctx: ReqCtx) => Promise<AccessOutput>;
-    accessPrivileged: (opts?: Partial<AccessOpts>) => (ctx: ReqCtx) => Promise<AccessOutput>;
+    accessStandard: (opts?: Partial<AccessOpts>) => (ctx: ReqCtx) => Promise<AccessOutput | OAuthOutput>;
+    accessFull: (opts?: Partial<AccessOpts>) => (ctx: ReqCtx) => Promise<AccessOutput | OAuthOutput>;
+    accessPrivileged: (opts?: Partial<AccessOpts>) => (ctx: ReqCtx) => Promise<AccessOutput | OAuthOutput>;
     refresh: (ctx: ReqCtx) => Promise<RefreshOutput>;
     refreshExpired: (ctx: ReqCtx) => Promise<RefreshOutput>;
     adminToken: (ctx: ReqCtx) => Promise<AdminTokenOutput>;
-    optionalAccessOrAdminToken: (opts?: Partial<AccessOpts>) => (ctx: ReqCtx) => Promise<AccessOutput | AdminTokenOutput | NullOutput>;
+    optionalAccessOrAdminToken: (opts?: Partial<AccessOpts>) => (ctx: ReqCtx) => Promise<AccessOutput | OAuthOutput | AdminTokenOutput | NullOutput>;
     userServiceAuth: (ctx: ReqCtx) => Promise<UserServiceAuthOutput>;
     userServiceAuthOptional: (ctx: ReqCtx) => Promise<UserServiceAuthOutput | NullOutput>;
-    accessOrUserServiceAuth: (opts?: Partial<AccessOpts>) => (ctx: ReqCtx) => Promise<UserServiceAuthOutput | AccessOutput>;
+    accessOrUserServiceAuth: (opts?: Partial<AccessOpts>) => (ctx: ReqCtx) => Promise<UserServiceAuthOutput | AccessOutput | OAuthOutput>;
     modService: (ctx: ReqCtx) => Promise<ModServiceOutput>;
     moderator: (ctx: ReqCtx) => Promise<AdminTokenOutput | ModServiceOutput>;
     protected validateAdminToken({ req, }: ReqCtx): Promise<AdminTokenOutput>;
@@ -112,8 +117,8 @@ export declare class AuthVerifier {
     protected validateAccessToken(ctx: ReqCtx, scopes: AuthScope[], { checkTakedown, checkDeactivated, }?: {
         checkTakedown?: boolean;
         checkDeactivated?: boolean;
-    }): Promise<AccessOutput>;
-    protected validateDpopAccessToken(ctx: ReqCtx, scopes: AuthScope[]): Promise<AccessOutput>;
+    }): Promise<AccessOutput | OAuthOutput>;
+    protected validateDpopAccessToken(ctx: ReqCtx, scopes: AuthScope[]): Promise<OAuthOutput>;
     protected validateBearerAccessToken(ctx: ReqCtx, scopes: AuthScope[]): Promise<AccessOutput>;
     protected verifyServiceJwt(ctx: ReqCtx, opts: {
         aud: string | null;
@@ -123,7 +128,7 @@ export declare class AuthVerifier {
         aud: string;
     }>;
     protected null(ctx: ReqCtx): NullOutput;
-    isUserOrAdmin(auth: AccessOutput | AdminTokenOutput | NullOutput, did: string): boolean;
+    isUserOrAdmin(auth: AccessOutput | OAuthOutput | AdminTokenOutput | NullOutput, did: string): boolean;
     protected jwtVerify(token: string, verifyOptions?: jose.JWTVerifyOptions): Promise<jose.JWTVerifyResult<jose.JWTPayload>>;
     protected setAuthHeaders(ctx: ReqCtx): void;
 }

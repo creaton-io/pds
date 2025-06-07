@@ -1,15 +1,19 @@
 export type DateISO = `${string}T${string}Z`;
-export declare const toDateISO: (date: Date) => DateISO;
-export declare const fromDateISO: (date: DateISO) => Date;
-export type Json = string;
-export declare const toJson: (obj: unknown) => Json;
-export declare const fromJson: <T>(json: Json) => T;
-export type JsonArray = `[${string}]`;
-export declare const isJsonArray: (json: string) => json is JsonArray;
-export declare function assertJsonArray(json: string): asserts json is JsonArray;
-export declare const toJsonArray: (obj: readonly unknown[]) => JsonArray;
-export declare const fromJsonArray: <T>(json: JsonArray) => T[];
-export type JsonObject = `{${string}}`;
-export declare const toJsonObject: (obj: Readonly<Record<string, unknown>>) => JsonObject;
-export declare const fromJsonObject: <T extends Record<string, unknown>>(json: JsonObject) => T;
+export declare function toDateISO(date: Date): DateISO;
+export declare function fromDateISO(dateStr: DateISO): Date;
+/**
+ * Allows to ensure that {@link JsonEncoded} is not used with non-JSON
+ * serializable values (e.g. {@link Date} or {@link Function}s).
+ */
+export type Encodable = string | number | boolean | null | readonly Encodable[] | {
+    readonly [_ in string]?: Encodable;
+};
+export type JsonString<T extends Encodable> = T extends readonly unknown[] ? `[${string}]` : T extends object ? `{${string}}` : T extends string ? `"${string}"` : T extends number ? `${number}` : T extends boolean ? `true` | `false` : T extends null ? `null` : never;
+declare const jsonEncodedType: unique symbol;
+export type JsonEncoded<T extends Encodable = Encodable> = JsonString<T> & {
+    [jsonEncodedType]: T;
+};
+export declare function toJson<T extends Encodable>(value: T): JsonEncoded<T>;
+export declare function fromJson<T extends Encodable>(jsonStr: JsonEncoded<T>): T;
+export {};
 //# sourceMappingURL=cast.d.ts.map

@@ -1,6 +1,6 @@
 import { Generated, Selectable } from 'kysely';
-import { Code, DeviceId, OAuthClientId, RefreshToken, Sub, TokenId } from '@atproto/oauth-provider';
-import { DateISO, JsonArray, JsonObject } from '../../../db/cast';
+import { ClientAuth, Code, DeviceId, OAuthAuthorizationDetails, OAuthAuthorizationRequestParameters, OAuthClientId, RefreshToken, Sub, TokenId } from '@atproto/oauth-provider';
+import { DateISO, JsonEncoded } from '../../../db/cast';
 export interface Token {
     id: Generated<number>;
     did: Sub;
@@ -9,10 +9,10 @@ export interface Token {
     updatedAt: DateISO;
     expiresAt: DateISO;
     clientId: OAuthClientId;
-    clientAuth: JsonObject;
+    clientAuth: JsonEncoded<ClientAuth>;
     deviceId: DeviceId | null;
-    parameters: JsonObject;
-    details: JsonArray | null;
+    parameters: JsonEncoded<OAuthAuthorizationRequestParameters>;
+    details: JsonEncoded<OAuthAuthorizationDetails> | null;
     code: Code | null;
     currentRefreshToken: RefreshToken | null;
 }

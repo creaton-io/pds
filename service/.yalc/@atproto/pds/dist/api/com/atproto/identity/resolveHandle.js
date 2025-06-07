@@ -6,20 +6,22 @@ const handle_1 = require("../../../../handle");
 function default_1(server, ctx) {
     server.com.atproto.identity.resolveHandle(async ({ params }) => {
         const handle = (0, handle_1.baseNormalizeAndValidate)(params.handle);
-        let did;
         const user = await ctx.accountManager.getAccount(handle);
         if (user) {
-            did = user.did;
+            return {
+                encoding: 'application/json',
+                body: { did: user.did },
+            };
         }
-        else {
-            const supportedHandle = ctx.cfg.identity.serviceHandleDomains.some((host) => handle.endsWith(host) || handle === host.slice(1));
-            // this should be in our DB & we couldn't find it, so fail
-            if (supportedHandle) {
-                throw new xrpc_server_1.InvalidRequestError('Unable to resolve handle');
-            }
+        const supportedHandle = ctx.cfg.identity.serviceHandleDomains.some((host) => handle.endsWith(host) || handle === host.slice(1));
+        // this should be in our DB & we couldn't find it, so fail
+        if (supportedHandle) {
+            throw new xrpc_server_1.InvalidRequestError('Unable to resolve handle');
         }
-        // this is not someone on our server, but we help with resolving anyway
-        if (!did && ctx.bskyAppView) {
+        // This is not someone on our server, but we help with resolving anyway
+        let did;
+        // Either ask appview to resolve, or perform resolution, but don't do both.
+        if (ctx.bskyAppView) {
             try {
                 const result = await ctx.bskyAppView.agent.com.atproto.identity.resolveHandle({
                     handle,
@@ -30,7 +32,7 @@ function default_1(server, ctx) {
                 // Ignore
             }
         }
-        if (!did) {
+        else {
             did = await ctx.idResolver.handle.resolve(handle);
         }
         if (!did) {

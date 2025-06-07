@@ -70,11 +70,13 @@ import * as ComAtprotoSyncGetBlob from './types/com/atproto/sync/getBlob.js';
 import * as ComAtprotoSyncGetBlocks from './types/com/atproto/sync/getBlocks.js';
 import * as ComAtprotoSyncGetCheckout from './types/com/atproto/sync/getCheckout.js';
 import * as ComAtprotoSyncGetHead from './types/com/atproto/sync/getHead.js';
+import * as ComAtprotoSyncGetHostStatus from './types/com/atproto/sync/getHostStatus.js';
 import * as ComAtprotoSyncGetLatestCommit from './types/com/atproto/sync/getLatestCommit.js';
 import * as ComAtprotoSyncGetRecord from './types/com/atproto/sync/getRecord.js';
 import * as ComAtprotoSyncGetRepo from './types/com/atproto/sync/getRepo.js';
 import * as ComAtprotoSyncGetRepoStatus from './types/com/atproto/sync/getRepoStatus.js';
 import * as ComAtprotoSyncListBlobs from './types/com/atproto/sync/listBlobs.js';
+import * as ComAtprotoSyncListHosts from './types/com/atproto/sync/listHosts.js';
 import * as ComAtprotoSyncListRepos from './types/com/atproto/sync/listRepos.js';
 import * as ComAtprotoSyncListReposByCollection from './types/com/atproto/sync/listReposByCollection.js';
 import * as ComAtprotoSyncNotifyOfUpdate from './types/com/atproto/sync/notifyOfUpdate.js';
@@ -138,10 +140,14 @@ import * as AppBskyNotificationRegisterPush from './types/app/bsky/notification/
 import * as AppBskyNotificationUpdateSeen from './types/app/bsky/notification/updateSeen.js';
 import * as AppBskyUnspeccedGetConfig from './types/app/bsky/unspecced/getConfig.js';
 import * as AppBskyUnspeccedGetPopularFeedGenerators from './types/app/bsky/unspecced/getPopularFeedGenerators.js';
+import * as AppBskyUnspeccedGetPostThreadHiddenV2 from './types/app/bsky/unspecced/getPostThreadHiddenV2.js';
+import * as AppBskyUnspeccedGetPostThreadV2 from './types/app/bsky/unspecced/getPostThreadV2.js';
 import * as AppBskyUnspeccedGetSuggestedFeeds from './types/app/bsky/unspecced/getSuggestedFeeds.js';
 import * as AppBskyUnspeccedGetSuggestedFeedsSkeleton from './types/app/bsky/unspecced/getSuggestedFeedsSkeleton.js';
 import * as AppBskyUnspeccedGetSuggestedStarterPacks from './types/app/bsky/unspecced/getSuggestedStarterPacks.js';
 import * as AppBskyUnspeccedGetSuggestedStarterPacksSkeleton from './types/app/bsky/unspecced/getSuggestedStarterPacksSkeleton.js';
+import * as AppBskyUnspeccedGetSuggestedUsers from './types/app/bsky/unspecced/getSuggestedUsers.js';
+import * as AppBskyUnspeccedGetSuggestedUsersSkeleton from './types/app/bsky/unspecced/getSuggestedUsersSkeleton.js';
 import * as AppBskyUnspeccedGetSuggestionsSkeleton from './types/app/bsky/unspecced/getSuggestionsSkeleton.js';
 import * as AppBskyUnspeccedGetTaggedSuggestions from './types/app/bsky/unspecced/getTaggedSuggestions.js';
 import * as AppBskyUnspeccedGetTrendingTopics from './types/app/bsky/unspecced/getTrendingTopics.js';
@@ -179,6 +185,7 @@ import * as ToolsOzoneCommunicationCreateTemplate from './types/tools/ozone/comm
 import * as ToolsOzoneCommunicationDeleteTemplate from './types/tools/ozone/communication/deleteTemplate.js';
 import * as ToolsOzoneCommunicationListTemplates from './types/tools/ozone/communication/listTemplates.js';
 import * as ToolsOzoneCommunicationUpdateTemplate from './types/tools/ozone/communication/updateTemplate.js';
+import * as ToolsOzoneHostingGetAccountHistory from './types/tools/ozone/hosting/getAccountHistory.js';
 import * as ToolsOzoneModerationEmitEvent from './types/tools/ozone/moderation/emitEvent.js';
 import * as ToolsOzoneModerationGetEvent from './types/tools/ozone/moderation/getEvent.js';
 import * as ToolsOzoneModerationGetRecord from './types/tools/ozone/moderation/getRecord.js';
@@ -207,6 +214,9 @@ import * as ToolsOzoneTeamAddMember from './types/tools/ozone/team/addMember.js'
 import * as ToolsOzoneTeamDeleteMember from './types/tools/ozone/team/deleteMember.js';
 import * as ToolsOzoneTeamListMembers from './types/tools/ozone/team/listMembers.js';
 import * as ToolsOzoneTeamUpdateMember from './types/tools/ozone/team/updateMember.js';
+import * as ToolsOzoneVerificationGrantVerifications from './types/tools/ozone/verification/grantVerifications.js';
+import * as ToolsOzoneVerificationListVerifications from './types/tools/ozone/verification/listVerifications.js';
+import * as ToolsOzoneVerificationRevokeVerifications from './types/tools/ozone/verification/revokeVerifications.js';
 export declare const COM_ATPROTO_MODERATION: {
     DefsReasonSpam: string;
     DefsReasonViolation: string;
@@ -215,6 +225,9 @@ export declare const COM_ATPROTO_MODERATION: {
     DefsReasonRude: string;
     DefsReasonOther: string;
     DefsReasonAppeal: string;
+};
+export declare const APP_BSKY_ACTOR: {
+    StatusLive: string;
 };
 export declare const APP_BSKY_FEED: {
     DefsRequestLess: string;
@@ -247,6 +260,7 @@ export declare const TOOLS_OZONE_TEAM: {
     DefsRoleAdmin: string;
     DefsRoleModerator: string;
     DefsRoleTriage: string;
+    DefsRoleVerifier: string;
 };
 export declare function createServer(options?: XrpcOptions): Server;
 export declare class Server {
@@ -374,11 +388,13 @@ export declare class ComAtprotoSyncNS {
     getBlocks<AV extends AuthVerifier>(cfg: ConfigOf<AV, ComAtprotoSyncGetBlocks.Handler<ExtractAuth<AV>>, ComAtprotoSyncGetBlocks.HandlerReqCtx<ExtractAuth<AV>>>): void;
     getCheckout<AV extends AuthVerifier>(cfg: ConfigOf<AV, ComAtprotoSyncGetCheckout.Handler<ExtractAuth<AV>>, ComAtprotoSyncGetCheckout.HandlerReqCtx<ExtractAuth<AV>>>): void;
     getHead<AV extends AuthVerifier>(cfg: ConfigOf<AV, ComAtprotoSyncGetHead.Handler<ExtractAuth<AV>>, ComAtprotoSyncGetHead.HandlerReqCtx<ExtractAuth<AV>>>): void;
+    getHostStatus<AV extends AuthVerifier>(cfg: ConfigOf<AV, ComAtprotoSyncGetHostStatus.Handler<ExtractAuth<AV>>, ComAtprotoSyncGetHostStatus.HandlerReqCtx<ExtractAuth<AV>>>): void;
     getLatestCommit<AV extends AuthVerifier>(cfg: ConfigOf<AV, ComAtprotoSyncGetLatestCommit.Handler<ExtractAuth<AV>>, ComAtprotoSyncGetLatestCommit.HandlerReqCtx<ExtractAuth<AV>>>): void;
     getRecord<AV extends AuthVerifier>(cfg: ConfigOf<AV, ComAtprotoSyncGetRecord.Handler<ExtractAuth<AV>>, ComAtprotoSyncGetRecord.HandlerReqCtx<ExtractAuth<AV>>>): void;
     getRepo<AV extends AuthVerifier>(cfg: ConfigOf<AV, ComAtprotoSyncGetRepo.Handler<ExtractAuth<AV>>, ComAtprotoSyncGetRepo.HandlerReqCtx<ExtractAuth<AV>>>): void;
     getRepoStatus<AV extends AuthVerifier>(cfg: ConfigOf<AV, ComAtprotoSyncGetRepoStatus.Handler<ExtractAuth<AV>>, ComAtprotoSyncGetRepoStatus.HandlerReqCtx<ExtractAuth<AV>>>): void;
     listBlobs<AV extends AuthVerifier>(cfg: ConfigOf<AV, ComAtprotoSyncListBlobs.Handler<ExtractAuth<AV>>, ComAtprotoSyncListBlobs.HandlerReqCtx<ExtractAuth<AV>>>): void;
+    listHosts<AV extends AuthVerifier>(cfg: ConfigOf<AV, ComAtprotoSyncListHosts.Handler<ExtractAuth<AV>>, ComAtprotoSyncListHosts.HandlerReqCtx<ExtractAuth<AV>>>): void;
     listRepos<AV extends AuthVerifier>(cfg: ConfigOf<AV, ComAtprotoSyncListRepos.Handler<ExtractAuth<AV>>, ComAtprotoSyncListRepos.HandlerReqCtx<ExtractAuth<AV>>>): void;
     listReposByCollection<AV extends AuthVerifier>(cfg: ConfigOf<AV, ComAtprotoSyncListReposByCollection.Handler<ExtractAuth<AV>>, ComAtprotoSyncListReposByCollection.HandlerReqCtx<ExtractAuth<AV>>>): void;
     notifyOfUpdate<AV extends AuthVerifier>(cfg: ConfigOf<AV, ComAtprotoSyncNotifyOfUpdate.Handler<ExtractAuth<AV>>, ComAtprotoSyncNotifyOfUpdate.HandlerReqCtx<ExtractAuth<AV>>>): void;
@@ -496,10 +512,14 @@ export declare class AppBskyUnspeccedNS {
     constructor(server: Server);
     getConfig<AV extends AuthVerifier>(cfg: ConfigOf<AV, AppBskyUnspeccedGetConfig.Handler<ExtractAuth<AV>>, AppBskyUnspeccedGetConfig.HandlerReqCtx<ExtractAuth<AV>>>): void;
     getPopularFeedGenerators<AV extends AuthVerifier>(cfg: ConfigOf<AV, AppBskyUnspeccedGetPopularFeedGenerators.Handler<ExtractAuth<AV>>, AppBskyUnspeccedGetPopularFeedGenerators.HandlerReqCtx<ExtractAuth<AV>>>): void;
+    getPostThreadHiddenV2<AV extends AuthVerifier>(cfg: ConfigOf<AV, AppBskyUnspeccedGetPostThreadHiddenV2.Handler<ExtractAuth<AV>>, AppBskyUnspeccedGetPostThreadHiddenV2.HandlerReqCtx<ExtractAuth<AV>>>): void;
+    getPostThreadV2<AV extends AuthVerifier>(cfg: ConfigOf<AV, AppBskyUnspeccedGetPostThreadV2.Handler<ExtractAuth<AV>>, AppBskyUnspeccedGetPostThreadV2.HandlerReqCtx<ExtractAuth<AV>>>): void;
     getSuggestedFeeds<AV extends AuthVerifier>(cfg: ConfigOf<AV, AppBskyUnspeccedGetSuggestedFeeds.Handler<ExtractAuth<AV>>, AppBskyUnspeccedGetSuggestedFeeds.HandlerReqCtx<ExtractAuth<AV>>>): void;
     getSuggestedFeedsSkeleton<AV extends AuthVerifier>(cfg: ConfigOf<AV, AppBskyUnspeccedGetSuggestedFeedsSkeleton.Handler<ExtractAuth<AV>>, AppBskyUnspeccedGetSuggestedFeedsSkeleton.HandlerReqCtx<ExtractAuth<AV>>>): void;
     getSuggestedStarterPacks<AV extends AuthVerifier>(cfg: ConfigOf<AV, AppBskyUnspeccedGetSuggestedStarterPacks.Handler<ExtractAuth<AV>>, AppBskyUnspeccedGetSuggestedStarterPacks.HandlerReqCtx<ExtractAuth<AV>>>): void;
     getSuggestedStarterPacksSkeleton<AV extends AuthVerifier>(cfg: ConfigOf<AV, AppBskyUnspeccedGetSuggestedStarterPacksSkeleton.Handler<ExtractAuth<AV>>, AppBskyUnspeccedGetSuggestedStarterPacksSkeleton.HandlerReqCtx<ExtractAuth<AV>>>): void;
+    getSuggestedUsers<AV extends AuthVerifier>(cfg: ConfigOf<AV, AppBskyUnspeccedGetSuggestedUsers.Handler<ExtractAuth<AV>>, AppBskyUnspeccedGetSuggestedUsers.HandlerReqCtx<ExtractAuth<AV>>>): void;
+    getSuggestedUsersSkeleton<AV extends AuthVerifier>(cfg: ConfigOf<AV, AppBskyUnspeccedGetSuggestedUsersSkeleton.Handler<ExtractAuth<AV>>, AppBskyUnspeccedGetSuggestedUsersSkeleton.HandlerReqCtx<ExtractAuth<AV>>>): void;
     getSuggestionsSkeleton<AV extends AuthVerifier>(cfg: ConfigOf<AV, AppBskyUnspeccedGetSuggestionsSkeleton.Handler<ExtractAuth<AV>>, AppBskyUnspeccedGetSuggestionsSkeleton.HandlerReqCtx<ExtractAuth<AV>>>): void;
     getTaggedSuggestions<AV extends AuthVerifier>(cfg: ConfigOf<AV, AppBskyUnspeccedGetTaggedSuggestions.Handler<ExtractAuth<AV>>, AppBskyUnspeccedGetTaggedSuggestions.HandlerReqCtx<ExtractAuth<AV>>>): void;
     getTrendingTopics<AV extends AuthVerifier>(cfg: ConfigOf<AV, AppBskyUnspeccedGetTrendingTopics.Handler<ExtractAuth<AV>>, AppBskyUnspeccedGetTrendingTopics.HandlerReqCtx<ExtractAuth<AV>>>): void;
@@ -570,12 +590,14 @@ export declare class ToolsNS {
 export declare class ToolsOzoneNS {
     _server: Server;
     communication: ToolsOzoneCommunicationNS;
+    hosting: ToolsOzoneHostingNS;
     moderation: ToolsOzoneModerationNS;
     server: ToolsOzoneServerNS;
     set: ToolsOzoneSetNS;
     setting: ToolsOzoneSettingNS;
     signature: ToolsOzoneSignatureNS;
     team: ToolsOzoneTeamNS;
+    verification: ToolsOzoneVerificationNS;
     constructor(server: Server);
 }
 export declare class ToolsOzoneCommunicationNS {
@@ -585,6 +607,11 @@ export declare class ToolsOzoneCommunicationNS {
     deleteTemplate<AV extends AuthVerifier>(cfg: ConfigOf<AV, ToolsOzoneCommunicationDeleteTemplate.Handler<ExtractAuth<AV>>, ToolsOzoneCommunicationDeleteTemplate.HandlerReqCtx<ExtractAuth<AV>>>): void;
     listTemplates<AV extends AuthVerifier>(cfg: ConfigOf<AV, ToolsOzoneCommunicationListTemplates.Handler<ExtractAuth<AV>>, ToolsOzoneCommunicationListTemplates.HandlerReqCtx<ExtractAuth<AV>>>): void;
     updateTemplate<AV extends AuthVerifier>(cfg: ConfigOf<AV, ToolsOzoneCommunicationUpdateTemplate.Handler<ExtractAuth<AV>>, ToolsOzoneCommunicationUpdateTemplate.HandlerReqCtx<ExtractAuth<AV>>>): void;
+}
+export declare class ToolsOzoneHostingNS {
+    _server: Server;
+    constructor(server: Server);
+    getAccountHistory<AV extends AuthVerifier>(cfg: ConfigOf<AV, ToolsOzoneHostingGetAccountHistory.Handler<ExtractAuth<AV>>, ToolsOzoneHostingGetAccountHistory.HandlerReqCtx<ExtractAuth<AV>>>): void;
 }
 export declare class ToolsOzoneModerationNS {
     _server: Server;
@@ -637,6 +664,13 @@ export declare class ToolsOzoneTeamNS {
     deleteMember<AV extends AuthVerifier>(cfg: ConfigOf<AV, ToolsOzoneTeamDeleteMember.Handler<ExtractAuth<AV>>, ToolsOzoneTeamDeleteMember.HandlerReqCtx<ExtractAuth<AV>>>): void;
     listMembers<AV extends AuthVerifier>(cfg: ConfigOf<AV, ToolsOzoneTeamListMembers.Handler<ExtractAuth<AV>>, ToolsOzoneTeamListMembers.HandlerReqCtx<ExtractAuth<AV>>>): void;
     updateMember<AV extends AuthVerifier>(cfg: ConfigOf<AV, ToolsOzoneTeamUpdateMember.Handler<ExtractAuth<AV>>, ToolsOzoneTeamUpdateMember.HandlerReqCtx<ExtractAuth<AV>>>): void;
+}
+export declare class ToolsOzoneVerificationNS {
+    _server: Server;
+    constructor(server: Server);
+    grantVerifications<AV extends AuthVerifier>(cfg: ConfigOf<AV, ToolsOzoneVerificationGrantVerifications.Handler<ExtractAuth<AV>>, ToolsOzoneVerificationGrantVerifications.HandlerReqCtx<ExtractAuth<AV>>>): void;
+    listVerifications<AV extends AuthVerifier>(cfg: ConfigOf<AV, ToolsOzoneVerificationListVerifications.Handler<ExtractAuth<AV>>, ToolsOzoneVerificationListVerifications.HandlerReqCtx<ExtractAuth<AV>>>): void;
+    revokeVerifications<AV extends AuthVerifier>(cfg: ConfigOf<AV, ToolsOzoneVerificationRevokeVerifications.Handler<ExtractAuth<AV>>, ToolsOzoneVerificationRevokeVerifications.HandlerReqCtx<ExtractAuth<AV>>>): void;
 }
 type SharedRateLimitOpts<T> = {
     name: string;

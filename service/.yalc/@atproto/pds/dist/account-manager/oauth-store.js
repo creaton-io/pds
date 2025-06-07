@@ -15,26 +15,44 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OAuthStore = void 0;
+const node_assert_1 = __importDefault(require("node:assert"));
 const lib_1 = require("@did-plc/lib");
 const crypto_1 = require("@atproto/crypto");
 const oauth_provider_1 = require("@atproto/oauth-provider");
 const xrpc_server_1 = require("@atproto/xrpc-server");
+const db_1 = require("../db");
+const logger_1 = require("../logger");
 const sequencer_1 = require("../sequencer");
+const accountHelper = __importStar(require("./helpers/account"));
 const account_1 = require("./helpers/account");
-const authRequest = __importStar(require("./helpers/authorization-request"));
-const device = __importStar(require("./helpers/device"));
-const deviceAccount = __importStar(require("./helpers/device-account"));
-const token = __importStar(require("./helpers/token"));
-const usedRefreshToken = __importStar(require("./helpers/used-refresh-token"));
+const accountDeviceHelper = __importStar(require("./helpers/account-device"));
+const authRequestHelper = __importStar(require("./helpers/authorization-request"));
+const authorizedClientHelper = __importStar(require("./helpers/authorized-client"));
+const deviceHelper = __importStar(require("./helpers/device"));
+const tokenHelper = __importStar(require("./helpers/token"));
+const usedRefreshTokenHelper = __importStar(require("./helpers/used-refresh-token"));
 /**
  * This class' purpose is to implement the interface needed by the OAuthProvider
  * to interact with the account database (through the {@link AccountManager}).
@@ -112,23 +130,6 @@ class OAuthStore {
     }
     get serviceDid() {
         return this.accountManager.serviceDid;
-    }
-    async buildAccount(row) {
-        const account = deviceAccount.toAccount(row, this.serviceDid);
-        if (!account.name || !account.picture) {
-            const did = account.sub;
-            const profile = await this.actorStore.read(did, async (store) => {
-                return store.record.getProfileRecord();
-            });
-            if (profile) {
-                const { avatar, displayName } = profile;
-                account.name || (account.name = displayName);
-                account.picture || (account.picture = avatar
-                    ? this.imageUrlBuilder.build('avatar', did, avatar.ref.toString())
-                    : undefined);
-            }
-        }
-        return account;
     }
     async verifyEmailAvailability(email) {
         // @NOTE Email validity & disposability check performed by the OAuthProvider
@@ -241,49 +242,56 @@ class OAuthStore {
             throw err;
         }
     }
-    async addDeviceAccount(deviceId, sub, remember) {
-        const [row] = await this.db.executeWithRetry(deviceAccount.createOrUpdateQB(this.db, deviceId, sub, remember));
-        if (!row)
-            throw new Error('Failed to create device account');
-        return deviceAccount.toDeviceAccountInfo(row);
+    async setAuthorizedClient(sub, clientId, data) {
+        await authorizedClientHelper.upsert(this.db, sub, clientId, data);
     }
-    async addAuthorizedClient(deviceId, sub, clientId) {
-        await this.db.transaction(async (dbTxn) => {
-            const row = await deviceAccount
-                .readQB(dbTxn, deviceId, sub)
-                .executeTakeFirstOrThrow();
-            const { authorizedClients } = deviceAccount.toDeviceAccountInfo(row);
-            if (!authorizedClients.includes(clientId)) {
-                await deviceAccount
-                    .updateQB(dbTxn, deviceId, sub, {
-                    authorizedClients: [...authorizedClients, clientId],
-                })
-                    .execute();
-            }
+    async getAccount(sub) {
+        const accountRow = await accountHelper.getAccount(this.db, sub, {
+            includeDeactivated: true,
         });
+        (0, node_assert_1.default)(accountRow, 'Account not found');
+        const account = await this.buildAccount(accountRow);
+        const authorizedClients = await authorizedClientHelper.getAuthorizedClients(this.db, sub);
+        return { account, authorizedClients };
+    }
+    async upsertDeviceAccount(deviceId, sub) {
+        await this.db.executeWithRetry(accountDeviceHelper.upsertQB(this.db, deviceId, sub));
     }
     async getDeviceAccount(deviceId, sub) {
-        const row = await deviceAccount
-            .getAccountInfoQB(this.db, deviceId, sub)
+        const row = await accountDeviceHelper
+            .selectQB(this.db, { deviceId, sub })
             .executeTakeFirst();
         if (!row)
             return null;
         return {
+            deviceId,
+            deviceData: deviceHelper.rowToDeviceData(row),
             account: await this.buildAccount(row),
-            info: deviceAccount.toDeviceAccountInfo(row),
+            authorizedClients: await authorizedClientHelper.getAuthorizedClients(this.db, sub),
+            createdAt: (0, db_1.fromDateISO)(row.adCreatedAt),
+            updatedAt: (0, db_1.fromDateISO)(row.adUpdatedAt),
         };
     }
-    async listDeviceAccounts(deviceId) {
-        const rows = await deviceAccount
-            .listRememberedQB(this.db, deviceId)
-            .execute();
-        return Promise.all(rows.map(async (row) => ({
-            account: await this.buildAccount(row),
-            info: deviceAccount.toDeviceAccountInfo(row),
-        })));
-    }
     async removeDeviceAccount(deviceId, sub) {
-        await this.db.executeWithRetry(deviceAccount.removeQB(this.db, deviceId, sub));
+        await this.db.executeWithRetry(accountDeviceHelper.removeQB(this.db, deviceId, sub));
+    }
+    async listDeviceAccounts(filter) {
+        const rows = await accountDeviceHelper.selectQB(this.db, filter).execute();
+        const uniqueDids = [...new Set(rows.map((row) => row.did))];
+        // Enrich all distinct account with their profile data
+        const accounts = new Map(await Promise.all(Array.from(uniqueDids, async (did) => {
+            const row = rows.find((r) => r.did === did);
+            return [did, await this.buildAccount(row)];
+        })));
+        const authorizedClientsMap = await authorizedClientHelper.getAuthorizedClientsMulti(this.db, uniqueDids);
+        return rows.map((row) => ({
+            deviceId: row.deviceId,
+            deviceData: deviceHelper.rowToDeviceData(row),
+            account: accounts.get(row.did),
+            authorizedClients: authorizedClientsMap.get(row.did),
+            createdAt: (0, db_1.fromDateISO)(row.adCreatedAt),
+            updatedAt: (0, db_1.fromDateISO)(row.adUpdatedAt),
+        }));
     }
     async resetPasswordRequest({ locale: _locale, email, }) {
         const account = await this.accountManager.getAccountByEmail(email, {
@@ -337,89 +345,97 @@ class OAuthStore {
     }
     // RequestStore
     async createRequest(id, data) {
-        await this.db.executeWithRetry(authRequest.createQB(this.db, id, data));
+        await this.db.executeWithRetry(authRequestHelper.createQB(this.db, id, data));
     }
     async readRequest(id) {
         try {
-            const row = await authRequest.readQB(this.db, id).executeTakeFirst();
+            const row = await authRequestHelper.readQB(this.db, id).executeTakeFirst();
             if (!row)
                 return null;
-            return authRequest.rowToRequestData(row);
+            return authRequestHelper.rowToRequestData(row);
         }
         finally {
             // Take the opportunity to clean up expired requests. Do this after we got
             // the current (potentially expired) request data to allow the provider to
             // handle expired requests.
             this.backgroundQueue.add(async () => {
-                await this.db.executeWithRetry(authRequest.removeOldExpiredQB(this.db));
+                await this.db.executeWithRetry(authRequestHelper.removeOldExpiredQB(this.db));
             });
         }
     }
     async updateRequest(id, data) {
-        await this.db.executeWithRetry(authRequest.updateQB(this.db, id, data));
+        await this.db.executeWithRetry(authRequestHelper.updateQB(this.db, id, data));
     }
     async deleteRequest(id) {
-        await this.db.executeWithRetry(authRequest.removeByIdQB(this.db, id));
+        await this.db.executeWithRetry(authRequestHelper.removeByIdQB(this.db, id));
     }
     async findRequestByCode(code) {
-        const row = await authRequest.findByCodeQB(this.db, code).executeTakeFirst();
-        return row ? authRequest.rowToFoundRequestResult(row) : null;
+        const row = await authRequestHelper
+            .findByCodeQB(this.db, code)
+            .executeTakeFirst();
+        return row ? authRequestHelper.rowToFoundRequestResult(row) : null;
     }
     // DeviceStore
     async createDevice(deviceId, data) {
-        await this.db.executeWithRetry(device.createQB(this.db, deviceId, data));
+        await this.db.executeWithRetry(deviceHelper.createQB(this.db, deviceId, data));
     }
     async readDevice(deviceId) {
-        const row = await device.readQB(this.db, deviceId).executeTakeFirst();
-        return row ? device.rowToDeviceData(row) : null;
+        const row = await deviceHelper.readQB(this.db, deviceId).executeTakeFirst();
+        return row ? deviceHelper.rowToDeviceData(row) : null;
     }
     async updateDevice(deviceId, data) {
-        await this.db.executeWithRetry(device.updateQB(this.db, deviceId, data));
+        await this.db.executeWithRetry(deviceHelper.updateQB(this.db, deviceId, data));
     }
     async deleteDevice(deviceId) {
         // Will cascade to device_account (device_account_device_id_fk)
-        await this.db.executeWithRetry(device.removeQB(this.db, deviceId));
+        await this.db.executeWithRetry(deviceHelper.removeQB(this.db, deviceId));
     }
     // TokenStore
     async createToken(id, data, refreshToken) {
         await this.db.transaction(async (dbTxn) => {
             if (refreshToken) {
-                const { count } = await usedRefreshToken
+                const { count } = await usedRefreshTokenHelper
                     .countQB(dbTxn, refreshToken)
                     .executeTakeFirstOrThrow();
                 if (count > 0) {
                     throw new Error('Refresh token already in use');
                 }
             }
-            return token.createQB(dbTxn, id, data, refreshToken).execute();
+            return tokenHelper.createQB(dbTxn, id, data, refreshToken).execute();
         });
     }
+    async listAccountTokens(sub) {
+        const rows = await tokenHelper.findByQB(this.db, { did: sub }).execute();
+        return Promise.all(rows.map((row) => this.toTokenInfo(row)));
+    }
     async readToken(tokenId) {
-        const row = await token.findByQB(this.db, { tokenId }).executeTakeFirst();
-        return row ? token.toTokenInfo(row, this.serviceDid) : null;
+        const row = await tokenHelper
+            .findByQB(this.db, { tokenId })
+            .executeTakeFirst();
+        return row ? this.toTokenInfo(row) : null;
     }
     async deleteToken(tokenId) {
         // Will cascade to used_refresh_token (used_refresh_token_fk)
-        await this.db.executeWithRetry(token.removeQB(this.db, tokenId));
+        await this.db.executeWithRetry(tokenHelper.removeQB(this.db, tokenId));
     }
     async rotateToken(tokenId, newTokenId, newRefreshToken, newData) {
         const err = await this.db.transaction(async (dbTxn) => {
-            const { id, currentRefreshToken } = await token
+            const { id, currentRefreshToken } = await tokenHelper
                 .forRotateQB(dbTxn, tokenId)
                 .executeTakeFirstOrThrow();
             if (currentRefreshToken) {
-                await usedRefreshToken
+                await usedRefreshTokenHelper
                     .insertQB(dbTxn, id, currentRefreshToken)
                     .execute();
             }
-            const { count } = await usedRefreshToken
+            const { count } = await usedRefreshTokenHelper
                 .countQB(dbTxn, newRefreshToken)
                 .executeTakeFirstOrThrow();
             if (count > 0) {
                 // Do NOT throw (we don't want the transaction to be rolled back)
                 return new Error('New refresh token already in use');
             }
-            await token
+            await tokenHelper
                 .rotateQB(dbTxn, id, newTokenId, newRefreshToken, newData)
                 .execute();
         });
@@ -427,18 +443,54 @@ class OAuthStore {
             throw err;
     }
     async findTokenByRefreshToken(refreshToken) {
-        const used = await usedRefreshToken
+        const used = await usedRefreshTokenHelper
             .findByTokenQB(this.db, refreshToken)
             .executeTakeFirst();
         const search = used
             ? { id: used.tokenId }
             : { currentRefreshToken: refreshToken };
-        const row = await token.findByQB(this.db, search).executeTakeFirst();
-        return row ? token.toTokenInfo(row, this.serviceDid) : null;
+        const row = await tokenHelper.findByQB(this.db, search).executeTakeFirst();
+        return row ? this.toTokenInfo(row) : null;
     }
     async findTokenByCode(code) {
-        const row = await token.findByQB(this.db, { code }).executeTakeFirst();
-        return row ? token.toTokenInfo(row, this.serviceDid) : null;
+        const row = await tokenHelper.findByQB(this.db, { code }).executeTakeFirst();
+        return row ? this.toTokenInfo(row) : null;
+    }
+    async toTokenInfo(row) {
+        return {
+            id: row.tokenId,
+            data: tokenHelper.toTokenData(row),
+            account: await this.buildAccount(row),
+            currentRefreshToken: row.currentRefreshToken,
+        };
+    }
+    async buildAccount(row) {
+        const account = {
+            sub: row.did,
+            aud: this.serviceDid,
+            email: row.email || undefined,
+            email_verified: row.email ? row.emailConfirmedAt != null : undefined,
+            preferred_username: row.handle || undefined,
+        };
+        if (!account.name || !account.picture) {
+            const did = account.sub;
+            const profile = await this.actorStore
+                .read(did, async (store) => {
+                return store.record.getProfileRecord();
+            })
+                .catch((err) => {
+                logger_1.dbLogger.error({ err }, 'Failed to get profile record');
+                return null; // No need to propagate
+            });
+            if (profile) {
+                const { avatar, displayName } = profile;
+                account.name || (account.name = displayName);
+                account.picture || (account.picture = avatar
+                    ? this.imageUrlBuilder.build('avatar', did, avatar.ref.toString())
+                    : undefined);
+            }
+        }
+        return account;
     }
 }
 exports.OAuthStore = OAuthStore;

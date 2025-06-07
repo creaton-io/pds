@@ -24,12 +24,11 @@ const createRouter = ({ oauthProvider, cfg }) => {
         res.status(200).json(oauthProtectedResourceMetadata);
     });
     if (oauthProvider) {
-        const oauthMiddleware = oauthProvider.httpHandler({
+        router.use((0, oauth_provider_1.oauthMiddleware)(oauthProvider, {
             onError: (req, res, err, message) => {
                 logger_1.oauthLogger.error({ err, req }, message);
             },
-        });
-        router.use(oauthMiddleware);
+        }));
     }
     return router;
 };

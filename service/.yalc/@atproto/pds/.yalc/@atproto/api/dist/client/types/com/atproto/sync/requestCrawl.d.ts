@@ -1,7 +1,7 @@
 /**
  * GENERATED CODE - DO NOT MODIFY
  */
-import { HeadersMap } from '@atproto/xrpc';
+import { HeadersMap, XRPCError } from '@atproto/xrpc';
 export interface QueryParams {
 }
 export interface InputSchema {
@@ -17,6 +17,9 @@ export interface CallOptions {
 export interface Response {
     success: boolean;
     headers: HeadersMap;
+}
+export declare class HostBannedError extends XRPCError {
+    constructor(src: XRPCError);
 }
 export declare function toKnownErr(e: any): any;
 //# sourceMappingURL=requestCrawl.d.ts.map

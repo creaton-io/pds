@@ -15,13 +15,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -100,7 +110,7 @@ class AuthVerifier {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: (opts = {}) => (ctx) => {
+            value: (opts = {}) => async (ctx) => {
                 return this.validateAccessToken(ctx, [
                     AuthScope.Access,
                     AuthScope.AppPassPrivileged,
@@ -134,16 +144,14 @@ class AuthVerifier {
             configurable: true,
             writable: true,
             value: async (ctx) => {
-                const { did, scope, token, tokenId, audience } = await this.validateRefreshToken(ctx);
+                const { did, scope, tokenId } = await this.validateRefreshToken(ctx);
                 return {
                     credentials: {
                         type: 'refresh',
                         did,
                         scope,
-                        audience,
                         tokenId,
                     },
-                    artifacts: token,
                 };
             }
         });
@@ -152,16 +160,16 @@ class AuthVerifier {
             configurable: true,
             writable: true,
             value: async (ctx) => {
-                const { did, scope, token, tokenId, audience } = await this.validateRefreshToken(ctx, { clockTolerance: Infinity });
+                const { did, scope, tokenId } = await this.validateRefreshToken(ctx, {
+                    clockTolerance: Infinity,
+                });
                 return {
                     credentials: {
                         type: 'refresh',
                         did,
                         scope,
-                        audience,
                         tokenId,
                     },
-                    artifacts: token,
                 };
             }
         });
@@ -413,11 +421,11 @@ class AuthVerifier {
             if (typeof sub !== 'string' || !sub.startsWith('did:')) {
                 throw new xrpc_server_1.InvalidRequestError('Malformed token', 'InvalidToken');
             }
-            const tokenScopes = new Set(result.claims.scope?.split(' '));
-            if (!tokenScopes.has('transition:generic')) {
+            const oauthScopes = new Set(result.claims.scope?.split(' '));
+            if (!oauthScopes.has('transition:generic')) {
                 throw new xrpc_server_1.AuthRequiredError('Missing required scope: transition:generic', 'InvalidToken');
             }
-            const scopeEquivalent = tokenScopes.has('transition:chat.bsky')
+            const scopeEquivalent = oauthScopes.has('transition:chat.bsky')
                 ? AuthScope.AppPassPrivileged
                 : AuthScope.AppPass;
             if (!scopes.includes(scopeEquivalent)) {
@@ -429,19 +437,14 @@ class AuthVerifier {
                 // scope equivalent.
                 throw new xrpc_server_1.InvalidRequestError('DPoP access token cannot be used for this request', 'InvalidToken');
             }
-            const isPrivileged = [
-                AuthScope.Access,
-                AuthScope.AppPassPrivileged,
-            ].includes(scopeEquivalent);
             return {
                 credentials: {
-                    type: 'access',
+                    type: 'oauth',
                     did: result.claims.sub,
                     scope: scopeEquivalent,
-                    audience: this.dids.pds,
-                    isPrivileged,
+                    oauthScopes,
+                    isPrivileged: scopeEquivalent === AuthScope.AppPassPrivileged,
                 },
-                artifacts: result.token,
             };
         }
         catch (err) {
@@ -458,20 +461,18 @@ class AuthVerifier {
         }
     }
     async validateBearerAccessToken(ctx, scopes) {
-        const { did, scope, token, audience } = await this.validateBearerToken(ctx, scopes, { audience: this.dids.pds, typ: 'at+jwt' });
-        const isPrivileged = [
-            AuthScope.Access,
-            AuthScope.AppPassPrivileged,
-        ].includes(scope);
+        const { did, scope } = await this.validateBearerToken(ctx, scopes, {
+            audience: this.dids.pds,
+            typ: 'at+jwt',
+        });
+        const isPrivileged = scope === AuthScope.Access || scope === AuthScope.AppPassPrivileged;
         return {
             credentials: {
                 type: 'access',
                 did,
                 scope,
-                audience,
                 isPrivileged,
             },
-            artifacts: token,
         };
     }
     async verifyServiceJwt(ctx, opts) {

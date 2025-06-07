@@ -38,7 +38,7 @@ Most API routes are under /xrpc/
             await (0, kysely_1.sql) `select 1`.execute(ctx.accountManager.db.db);
         }
         catch (err) {
-            req.log.error(err, 'failed health check');
+            req.log.error({ err }, 'failed health check');
             res.status(503).send({ version, error: 'Service Unavailable' });
             return;
         }

@@ -10,7 +10,7 @@ import { KmsKeypair, S3BlobStore } from '@atproto/aws'
 import * as crypto from '@atproto/crypto'
 import { IdResolver } from '@atproto/identity'
 import {
-  AccessTokenType,
+  AccessTokenMode,
   JoseKey,
   OAuthProvider,
   OAuthVerifier,
@@ -363,13 +363,17 @@ export class AppContext {
           safeFetch,
           metadata: {
             protected_resources: [new URL(cfg.oauth.issuer).origin],
-            scopes_supported: ['transition:generic', 'transition:chat.bsky'],
+            scopes_supported: [
+              'transition:email',
+              'transition:generic',
+              'transition:chat.bsky',
+            ],
           },
           // If the PDS is both an authorization server & resource server (no
           // entryway), there is no need to use JWTs as access tokens. Instead,
           // the PDS can use tokenId as access tokens. This allows the PDS to
           // always use up-to-date token data from the token store.
-          accessTokenType: 'id',
+          accessTokenMode: AccessTokenMode.light,
         })
       : undefined
 

@@ -12,6 +12,8 @@ export interface OutputSchema {
     blobDivert?: ServiceConfig;
     chat?: ServiceConfig;
     viewer?: ViewerConfig;
+    /** The did of the verifier used for verification. */
+    verifierDid?: string;
 }
 export interface CallOptions {
     signal?: AbortSignal;
@@ -31,7 +33,7 @@ export declare function isServiceConfig<V>(v: V): v is import("../../../../util"
 export declare function validateServiceConfig<V>(v: V): ValidationResult<ServiceConfig & V>;
 export interface ViewerConfig {
     $type?: 'tools.ozone.server.getConfig#viewerConfig';
-    role?: 'tools.ozone.team.defs#roleAdmin' | 'tools.ozone.team.defs#roleModerator' | 'tools.ozone.team.defs#roleTriage' | (string & {});
+    role?: 'tools.ozone.team.defs#roleAdmin' | 'tools.ozone.team.defs#roleModerator' | 'tools.ozone.team.defs#roleTriage' | 'tools.ozone.team.defs#roleVerifier' | (string & {});
 }
 export declare function isViewerConfig<V>(v: V): v is import("../../../../util").$TypedObject<V, "tools.ozone.server.getConfig", "viewerConfig">;
 export declare function validateViewerConfig<V>(v: V): ValidationResult<ViewerConfig & V>;

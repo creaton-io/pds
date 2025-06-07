@@ -4,8 +4,8 @@ exports.findByCodeQB = exports.removeByIdQB = exports.removeOldExpiredQB = expor
 const db_1 = require("../../db");
 const rowToRequestData = (row) => ({
     clientId: row.clientId,
-    clientAuth: (0, db_1.fromJsonObject)(row.clientAuth),
-    parameters: (0, db_1.fromJsonObject)(row.parameters),
+    clientAuth: (0, db_1.fromJson)(row.clientAuth),
+    parameters: (0, db_1.fromJson)(row.parameters),
     expiresAt: (0, db_1.fromDateISO)(row.expiresAt),
     deviceId: row.deviceId,
     sub: row.did,
@@ -22,8 +22,8 @@ const requestDataToRow = (id, data) => ({
     did: data.sub,
     deviceId: data.deviceId,
     clientId: data.clientId,
-    clientAuth: (0, db_1.toJsonObject)(data.clientAuth),
-    parameters: (0, db_1.toJsonObject)(data.parameters),
+    clientAuth: (0, db_1.toJson)(data.clientAuth),
+    parameters: (0, db_1.toJson)(data.parameters),
     expiresAt: (0, db_1.toDateISO)(data.expiresAt),
     code: data.code,
 });

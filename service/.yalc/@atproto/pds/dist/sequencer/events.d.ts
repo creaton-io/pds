@@ -10,8 +10,8 @@ export declare const formatSeqAccountEvt: (did: string, status: AccountStatus) =
 export declare const commitEvtOp: z.ZodObject<{
     action: z.ZodUnion<[z.ZodLiteral<"create">, z.ZodLiteral<"update">, z.ZodLiteral<"delete">]>;
     path: z.ZodString;
-    cid: z.ZodNullable<z.ZodEffects<z.ZodEffects<z.ZodAny, any, any>, import("multiformats/cid").CID, any>>;
-    prev: z.ZodOptional<z.ZodEffects<z.ZodEffects<z.ZodAny, any, any>, import("multiformats/cid").CID, any>>;
+    cid: z.ZodNullable<z.ZodEffects<z.ZodUnknown, import("multiformats/cid").CID, unknown>>;
+    prev: z.ZodOptional<z.ZodEffects<z.ZodUnknown, import("multiformats/cid").CID, unknown>>;
 }, "strip", z.ZodTypeAny, {
     path: string;
     cid: import("multiformats/cid").CID | null;
@@ -20,23 +20,23 @@ export declare const commitEvtOp: z.ZodObject<{
 }, {
     path: string;
     action: "create" | "delete" | "update";
-    cid?: any;
-    prev?: any;
+    cid?: unknown;
+    prev?: unknown;
 }>;
 export type CommitEvtOp = z.infer<typeof commitEvtOp>;
 export declare const commitEvt: z.ZodObject<{
     rebase: z.ZodBoolean;
     tooBig: z.ZodBoolean;
     repo: z.ZodString;
-    commit: z.ZodEffects<z.ZodEffects<z.ZodAny, any, any>, import("multiformats/cid").CID, any>;
+    commit: z.ZodEffects<z.ZodUnknown, import("multiformats/cid").CID, unknown>;
     rev: z.ZodString;
     since: z.ZodNullable<z.ZodString>;
-    blocks: z.ZodType<Uint8Array, z.ZodTypeDef, Uint8Array>;
+    blocks: z.ZodType<Uint8Array<ArrayBuffer>, z.ZodTypeDef, Uint8Array<ArrayBuffer>>;
     ops: z.ZodArray<z.ZodObject<{
         action: z.ZodUnion<[z.ZodLiteral<"create">, z.ZodLiteral<"update">, z.ZodLiteral<"delete">]>;
         path: z.ZodString;
-        cid: z.ZodNullable<z.ZodEffects<z.ZodEffects<z.ZodAny, any, any>, import("multiformats/cid").CID, any>>;
-        prev: z.ZodOptional<z.ZodEffects<z.ZodEffects<z.ZodAny, any, any>, import("multiformats/cid").CID, any>>;
+        cid: z.ZodNullable<z.ZodEffects<z.ZodUnknown, import("multiformats/cid").CID, unknown>>;
+        prev: z.ZodOptional<z.ZodEffects<z.ZodUnknown, import("multiformats/cid").CID, unknown>>;
     }, "strip", z.ZodTypeAny, {
         path: string;
         cid: import("multiformats/cid").CID | null;
@@ -45,11 +45,11 @@ export declare const commitEvt: z.ZodObject<{
     }, {
         path: string;
         action: "create" | "delete" | "update";
-        cid?: any;
-        prev?: any;
+        cid?: unknown;
+        prev?: unknown;
     }>, "many">;
-    blobs: z.ZodArray<z.ZodEffects<z.ZodEffects<z.ZodAny, any, any>, import("multiformats/cid").CID, any>, "many">;
-    prevData: z.ZodOptional<z.ZodEffects<z.ZodEffects<z.ZodAny, any, any>, import("multiformats/cid").CID, any>>;
+    blobs: z.ZodArray<z.ZodEffects<z.ZodUnknown, import("multiformats/cid").CID, unknown>, "many">;
+    prevData: z.ZodOptional<z.ZodEffects<z.ZodUnknown, import("multiformats/cid").CID, unknown>>;
 }, "strip", z.ZodTypeAny, {
     repo: string;
     commit: import("multiformats/cid").CID;
@@ -58,7 +58,7 @@ export declare const commitEvt: z.ZodObject<{
     since: string | null;
     rebase: boolean;
     tooBig: boolean;
-    blocks: Uint8Array;
+    blocks: Uint8Array<ArrayBuffer>;
     ops: {
         path: string;
         cid: import("multiformats/cid").CID | null;
@@ -69,33 +69,33 @@ export declare const commitEvt: z.ZodObject<{
 }, {
     repo: string;
     rev: string;
-    blobs: any[];
+    blobs: unknown[];
     since: string | null;
     rebase: boolean;
     tooBig: boolean;
-    blocks: Uint8Array;
+    blocks: Uint8Array<ArrayBuffer>;
     ops: {
         path: string;
         action: "create" | "delete" | "update";
-        cid?: any;
-        prev?: any;
+        cid?: unknown;
+        prev?: unknown;
     }[];
-    commit?: any;
-    prevData?: any;
+    commit?: unknown;
+    prevData?: unknown;
 }>;
 export type CommitEvt = z.infer<typeof commitEvt>;
 export declare const syncEvt: z.ZodObject<{
     did: z.ZodString;
-    blocks: z.ZodType<Uint8Array, z.ZodTypeDef, Uint8Array>;
+    blocks: z.ZodType<Uint8Array<ArrayBuffer>, z.ZodTypeDef, Uint8Array<ArrayBuffer>>;
     rev: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     did: string;
     rev: string;
-    blocks: Uint8Array;
+    blocks: Uint8Array<ArrayBuffer>;
 }, {
     did: string;
     rev: string;
-    blocks: Uint8Array;
+    blocks: Uint8Array<ArrayBuffer>;
 }>;
 export type SyncEvt = z.infer<typeof syncEvt>;
 export declare const identityEvt: z.ZodObject<{

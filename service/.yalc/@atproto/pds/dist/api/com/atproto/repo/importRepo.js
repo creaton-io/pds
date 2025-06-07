@@ -32,6 +32,7 @@ const importRepo = async (actorStore, incomingCar) => {
     const did = actorStore.repo.did;
     const { roots, blocks } = await (0, repo_1.readCarStream)(incomingCar);
     if (roots.length !== 1) {
+        await blocks.dump();
         throw new xrpc_server_1.InvalidRequestError('expected one root');
     }
     const blockMap = new repo_1.BlockMap();

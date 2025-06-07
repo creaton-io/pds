@@ -1,6 +1,6 @@
 import { Client } from '@did-plc/lib';
 import { Keypair } from '@atproto/crypto';
-import { Account, AccountInfo, AccountStore, AuthenticateAccountData, Code, DeviceAccountInfo, DeviceData, DeviceId, DeviceStore, FoundRequestResult, NewTokenData, RefreshToken, RequestData, RequestId, RequestStore, ResetPasswordConfirmData, ResetPasswordRequestData, SignUpData, TokenData, TokenId, TokenInfo, TokenStore, UpdateRequestData } from '@atproto/oauth-provider';
+import { Account, AccountStore, AuthenticateAccountData, AuthorizedClientData, AuthorizedClients, ClientId, Code, DeviceAccount, DeviceData, DeviceId, DeviceStore, FoundRequestResult, NewTokenData, RefreshToken, RequestData, RequestId, RequestStore, ResetPasswordConfirmData, ResetPasswordRequestData, SignUpData, Sub, TokenData, TokenId, TokenInfo, TokenStore, UpdateRequestData } from '@atproto/oauth-provider';
 import { ActorStore } from '../actor-store/actor-store';
 import { BackgroundQueue } from '../background';
 import { ImageUrlBuilder } from '../image/image-url-builder';
@@ -27,16 +27,23 @@ export declare class OAuthStore implements AccountStore, RequestStore, DeviceSto
     constructor(accountManager: AccountManager, actorStore: ActorStore, imageUrlBuilder: ImageUrlBuilder, backgroundQueue: BackgroundQueue, mailer: ServerMailer, sequencer: Sequencer, plcClient: Client, plcRotationKey: Keypair, publicUrl: string, recoveryDidKey: string | null);
     private get db();
     private get serviceDid();
-    private buildAccount;
     private verifyEmailAvailability;
     private verifyInviteCode;
     createAccount({ locale: _locale, inviteCode, handle, email, password, }: SignUpData): Promise<Account>;
     authenticateAccount({ locale: _locale, username: identifier, siweSignature, password, emailOtp, }: AuthenticateAccountData): Promise<Account>;
-    addDeviceAccount(deviceId: DeviceId, sub: string, remember: boolean): Promise<DeviceAccountInfo>;
-    addAuthorizedClient(deviceId: DeviceId, sub: string, clientId: string): Promise<void>;
-    getDeviceAccount(deviceId: DeviceId, sub: string): Promise<AccountInfo | null>;
-    listDeviceAccounts(deviceId: DeviceId): Promise<AccountInfo[]>;
-    removeDeviceAccount(deviceId: DeviceId, sub: string): Promise<void>;
+    setAuthorizedClient(sub: Sub, clientId: ClientId, data: AuthorizedClientData): Promise<void>;
+    getAccount(sub: Sub): Promise<{
+        account: Account;
+        authorizedClients: AuthorizedClients;
+    }>;
+    upsertDeviceAccount(deviceId: DeviceId, sub: string): Promise<void>;
+    getDeviceAccount(deviceId: DeviceId, sub: string): Promise<DeviceAccount | null>;
+    removeDeviceAccount(deviceId: DeviceId, sub: Sub): Promise<void>;
+    listDeviceAccounts(filter: {
+        sub: Sub;
+    } | {
+        deviceId: DeviceId;
+    }): Promise<DeviceAccount[]>;
     resetPasswordRequest({ locale: _locale, email, }: ResetPasswordRequestData): Promise<void>;
     resetPasswordConfirm(data: ResetPasswordConfirmData): Promise<void>;
     verifyHandleAvailability(handle: string): Promise<void>;
@@ -50,10 +57,13 @@ export declare class OAuthStore implements AccountStore, RequestStore, DeviceSto
     updateDevice(deviceId: DeviceId, data: Partial<DeviceData>): Promise<void>;
     deleteDevice(deviceId: DeviceId): Promise<void>;
     createToken(id: TokenId, data: TokenData, refreshToken?: RefreshToken): Promise<void>;
+    listAccountTokens(sub: Sub): Promise<TokenInfo[]>;
     readToken(tokenId: TokenId): Promise<TokenInfo | null>;
     deleteToken(tokenId: TokenId): Promise<void>;
     rotateToken(tokenId: TokenId, newTokenId: TokenId, newRefreshToken: RefreshToken, newData: NewTokenData): Promise<void>;
     findTokenByRefreshToken(refreshToken: RefreshToken): Promise<TokenInfo | null>;
     findTokenByCode(code: Code): Promise<TokenInfo | null>;
+    private toTokenInfo;
+    private buildAccount;
 }
 //# sourceMappingURL=oauth-store.d.ts.map

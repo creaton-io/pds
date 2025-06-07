@@ -7,6 +7,7 @@ export interface Record {
     $type: 'app.bsky.feed.repost';
     subject: ComAtprotoRepoStrongRef.Main;
     createdAt: string;
+    via?: ComAtprotoRepoStrongRef.Main;
     [k: string]: unknown;
 }
 export declare function isRecord<V>(v: V): v is import("../../../../util").$TypedObject<V, "app.bsky.feed.repost", "main">;

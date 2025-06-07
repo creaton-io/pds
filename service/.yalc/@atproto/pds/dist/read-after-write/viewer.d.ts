@@ -32,10 +32,10 @@ export declare class LocalViewer {
     getProfileBasic(): Promise<ProfileViewBasic | null>;
     formatAndInsertPostsInFeed(feed: FeedViewPost[], posts: RecordDescript<PostRecord>[]): Promise<FeedViewPost[]>;
     getPost(descript: RecordDescript<PostRecord>): Promise<PostView | null>;
-    formatPostEmbed(did: string, post: PostRecord): Promise<$Typed<EmbedImagesView> | $Typed<EmbedExternalView> | $Typed<EmbedRecordView> | {
+    formatPostEmbed(did: string, post: PostRecord): Promise<$Typed<EmbedExternalView> | $Typed<EmbedImagesView> | $Typed<EmbedRecordView> | {
         $type: string;
         record: $Typed<EmbedRecordView>;
-        media: Promise<$Typed<EmbedImagesView> | $Typed<EmbedExternalView>>;
+        media: Promise<$Typed<EmbedExternalView> | $Typed<EmbedImagesView>>;
     } | null>;
     formatSimpleEmbed(embed: $Typed<EmbedImages> | $Typed<EmbedExternal>): Promise<$Typed<EmbedImagesView> | $Typed<EmbedExternalView>>;
     formatRecordEmbed(embed: EmbedRecord): Promise<$Typed<EmbedRecordView>>;
@@ -43,7 +43,7 @@ export declare class LocalViewer {
     formatRecordWithMediaEmbed(did: string, embed: EmbedRecordWithMedia): Promise<{
         $type: string;
         record: $Typed<EmbedRecordView>;
-        media: Promise<$Typed<EmbedImagesView> | $Typed<EmbedExternalView>>;
+        media: Promise<$Typed<EmbedExternalView> | $Typed<EmbedImagesView>>;
     } | null>;
     updateProfileViewBasic<T extends ProfileViewDetailed | ProfileViewBasic | ProfileView>(view: T, record: ProfileRecord): T;
     updateProfileView<T extends ProfileViewDetailed | ProfileViewBasic | ProfileView>(view: T, record: ProfileRecord): T;

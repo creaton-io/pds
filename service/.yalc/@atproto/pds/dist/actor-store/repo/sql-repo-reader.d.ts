@@ -16,7 +16,7 @@ export declare class SqlRepoReader extends ReadableBlockstore {
         blocks: BlockMap;
         missing: CID[];
     }>;
-    getCarStream(since?: string): Promise<AsyncIterable<Uint8Array>>;
+    getCarStream(since?: string): Promise<AsyncIterable<Uint8Array<ArrayBufferLike>>>;
     iterateCarBlocks(since?: string): AsyncIterable<CarBlock>;
     getBlockRange(since?: string, cursor?: RevCursor): Promise<import("kysely").Selection<import("kysely/dist/cjs/parser/table-parser").From<import("../db").DatabaseSchema, "repo_block">, "repo_block", "content" | "cid" | "repoRev">[]>;
     countBlocks(): Promise<number>;

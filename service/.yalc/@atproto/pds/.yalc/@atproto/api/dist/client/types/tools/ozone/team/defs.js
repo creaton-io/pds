@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ROLETRIAGE = exports.ROLEMODERATOR = exports.ROLEADMIN = void 0;
+exports.ROLEVERIFIER = exports.ROLETRIAGE = exports.ROLEMODERATOR = exports.ROLEADMIN = void 0;
 exports.isMember = isMember;
 exports.validateMember = validateMember;
 const lexicons_1 = require("../../../../lexicons");
@@ -20,4 +20,6 @@ exports.ROLEADMIN = `${id}#roleAdmin`;
 exports.ROLEMODERATOR = `${id}#roleModerator`;
 /** Triage role. Mostly intended for monitoring and escalating issues. */
 exports.ROLETRIAGE = `${id}#roleTriage`;
+/** Verifier role. Only allowed to issue verifications. */
+exports.ROLEVERIFIER = `${id}#roleVerifier`;
 //# sourceMappingURL=defs.js.map

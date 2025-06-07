@@ -1,13 +1,13 @@
 import { Selectable } from 'kysely';
-import { Code, DeviceId, OAuthClientId, RequestId } from '@atproto/oauth-provider';
-import { DateISO, JsonObject } from '../../../db';
+import { ClientAuth, Code, DeviceId, OAuthAuthorizationRequestParameters, OAuthClientId, RequestId } from '@atproto/oauth-provider';
+import { DateISO, JsonEncoded } from '../../../db';
 export interface AuthorizationRequest {
     id: RequestId;
     did: string | null;
     deviceId: DeviceId | null;
     clientId: OAuthClientId;
-    clientAuth: JsonObject;
-    parameters: JsonObject;
+    clientAuth: JsonEncoded<ClientAuth>;
+    parameters: JsonEncoded<OAuthAuthorizationRequestParameters>;
     expiresAt: DateISO;
     code: Code | null;
 }

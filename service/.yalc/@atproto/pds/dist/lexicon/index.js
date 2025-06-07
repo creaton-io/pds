@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ToolsOzoneTeamNS = exports.ToolsOzoneSignatureNS = exports.ToolsOzoneSettingNS = exports.ToolsOzoneSetNS = exports.ToolsOzoneServerNS = exports.ToolsOzoneModerationNS = exports.ToolsOzoneCommunicationNS = exports.ToolsOzoneNS = exports.ToolsNS = exports.ChatBskyModerationNS = exports.ChatBskyConvoNS = exports.ChatBskyActorNS = exports.ChatBskyNS = exports.ChatNS = exports.AppBskyVideoNS = exports.AppBskyUnspeccedNS = exports.AppBskyRichtextNS = exports.AppBskyNotificationNS = exports.AppBskyLabelerNS = exports.AppBskyGraphNS = exports.AppBskyFeedNS = exports.AppBskyEmbedNS = exports.AppBskyActorNS = exports.AppBskyNS = exports.AppNS = exports.ComAtprotoTempNS = exports.ComAtprotoSyncNS = exports.ComAtprotoServerNS = exports.ComAtprotoRepoNS = exports.ComAtprotoModerationNS = exports.ComAtprotoLexiconNS = exports.ComAtprotoLabelNS = exports.ComAtprotoIdentityNS = exports.ComAtprotoAdminNS = exports.ComAtprotoNS = exports.ComNS = exports.Server = exports.TOOLS_OZONE_TEAM = exports.TOOLS_OZONE_MODERATION = exports.APP_BSKY_GRAPH = exports.APP_BSKY_FEED = exports.COM_ATPROTO_MODERATION = void 0;
+exports.ToolsOzoneVerificationNS = exports.ToolsOzoneTeamNS = exports.ToolsOzoneSignatureNS = exports.ToolsOzoneSettingNS = exports.ToolsOzoneSetNS = exports.ToolsOzoneServerNS = exports.ToolsOzoneModerationNS = exports.ToolsOzoneHostingNS = exports.ToolsOzoneCommunicationNS = exports.ToolsOzoneNS = exports.ToolsNS = exports.ChatBskyModerationNS = exports.ChatBskyConvoNS = exports.ChatBskyActorNS = exports.ChatBskyNS = exports.ChatNS = exports.AppBskyVideoNS = exports.AppBskyUnspeccedNS = exports.AppBskyRichtextNS = exports.AppBskyNotificationNS = exports.AppBskyLabelerNS = exports.AppBskyGraphNS = exports.AppBskyFeedNS = exports.AppBskyEmbedNS = exports.AppBskyActorNS = exports.AppBskyNS = exports.AppNS = exports.ComAtprotoTempNS = exports.ComAtprotoSyncNS = exports.ComAtprotoServerNS = exports.ComAtprotoRepoNS = exports.ComAtprotoModerationNS = exports.ComAtprotoLexiconNS = exports.ComAtprotoLabelNS = exports.ComAtprotoIdentityNS = exports.ComAtprotoAdminNS = exports.ComAtprotoNS = exports.ComNS = exports.Server = exports.TOOLS_OZONE_TEAM = exports.TOOLS_OZONE_MODERATION = exports.APP_BSKY_GRAPH = exports.APP_BSKY_FEED = exports.APP_BSKY_ACTOR = exports.COM_ATPROTO_MODERATION = void 0;
 exports.createServer = createServer;
 /**
  * GENERATED CODE - DO NOT MODIFY
@@ -15,6 +15,9 @@ exports.COM_ATPROTO_MODERATION = {
     DefsReasonRude: 'com.atproto.moderation.defs#reasonRude',
     DefsReasonOther: 'com.atproto.moderation.defs#reasonOther',
     DefsReasonAppeal: 'com.atproto.moderation.defs#reasonAppeal',
+};
+exports.APP_BSKY_ACTOR = {
+    StatusLive: 'app.bsky.actor.status#live',
 };
 exports.APP_BSKY_FEED = {
     DefsRequestLess: 'app.bsky.feed.defs#requestLess',
@@ -47,6 +50,7 @@ exports.TOOLS_OZONE_TEAM = {
     DefsRoleAdmin: 'tools.ozone.team.defs#roleAdmin',
     DefsRoleModerator: 'tools.ozone.team.defs#roleModerator',
     DefsRoleTriage: 'tools.ozone.team.defs#roleTriage',
+    DefsRoleVerifier: 'tools.ozone.team.defs#roleVerifier',
 };
 function createServer(options) {
     return new Server(options);
@@ -551,6 +555,10 @@ class ComAtprotoSyncNS {
         const nsid = 'com.atproto.sync.getHead'; // @ts-ignore
         return this._server.xrpc.method(nsid, cfg);
     }
+    getHostStatus(cfg) {
+        const nsid = 'com.atproto.sync.getHostStatus'; // @ts-ignore
+        return this._server.xrpc.method(nsid, cfg);
+    }
     getLatestCommit(cfg) {
         const nsid = 'com.atproto.sync.getLatestCommit'; // @ts-ignore
         return this._server.xrpc.method(nsid, cfg);
@@ -569,6 +577,10 @@ class ComAtprotoSyncNS {
     }
     listBlobs(cfg) {
         const nsid = 'com.atproto.sync.listBlobs'; // @ts-ignore
+        return this._server.xrpc.method(nsid, cfg);
+    }
+    listHosts(cfg) {
+        const nsid = 'com.atproto.sync.listHosts'; // @ts-ignore
         return this._server.xrpc.method(nsid, cfg);
     }
     listRepos(cfg) {
@@ -1025,6 +1037,14 @@ class AppBskyUnspeccedNS {
         const nsid = 'app.bsky.unspecced.getPopularFeedGenerators'; // @ts-ignore
         return this._server.xrpc.method(nsid, cfg);
     }
+    getPostThreadHiddenV2(cfg) {
+        const nsid = 'app.bsky.unspecced.getPostThreadHiddenV2'; // @ts-ignore
+        return this._server.xrpc.method(nsid, cfg);
+    }
+    getPostThreadV2(cfg) {
+        const nsid = 'app.bsky.unspecced.getPostThreadV2'; // @ts-ignore
+        return this._server.xrpc.method(nsid, cfg);
+    }
     getSuggestedFeeds(cfg) {
         const nsid = 'app.bsky.unspecced.getSuggestedFeeds'; // @ts-ignore
         return this._server.xrpc.method(nsid, cfg);
@@ -1039,6 +1059,14 @@ class AppBskyUnspeccedNS {
     }
     getSuggestedStarterPacksSkeleton(cfg) {
         const nsid = 'app.bsky.unspecced.getSuggestedStarterPacksSkeleton'; // @ts-ignore
+        return this._server.xrpc.method(nsid, cfg);
+    }
+    getSuggestedUsers(cfg) {
+        const nsid = 'app.bsky.unspecced.getSuggestedUsers'; // @ts-ignore
+        return this._server.xrpc.method(nsid, cfg);
+    }
+    getSuggestedUsersSkeleton(cfg) {
+        const nsid = 'app.bsky.unspecced.getSuggestedUsersSkeleton'; // @ts-ignore
         return this._server.xrpc.method(nsid, cfg);
     }
     getSuggestionsSkeleton(cfg) {
@@ -1308,6 +1336,12 @@ class ToolsOzoneNS {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "hosting", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         Object.defineProperty(this, "moderation", {
             enumerable: true,
             configurable: true,
@@ -1344,14 +1378,22 @@ class ToolsOzoneNS {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "verification", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         this._server = server;
         this.communication = new ToolsOzoneCommunicationNS(server);
+        this.hosting = new ToolsOzoneHostingNS(server);
         this.moderation = new ToolsOzoneModerationNS(server);
         this.server = new ToolsOzoneServerNS(server);
         this.set = new ToolsOzoneSetNS(server);
         this.setting = new ToolsOzoneSettingNS(server);
         this.signature = new ToolsOzoneSignatureNS(server);
         this.team = new ToolsOzoneTeamNS(server);
+        this.verification = new ToolsOzoneVerificationNS(server);
     }
 }
 exports.ToolsOzoneNS = ToolsOzoneNS;
@@ -1383,6 +1425,22 @@ class ToolsOzoneCommunicationNS {
     }
 }
 exports.ToolsOzoneCommunicationNS = ToolsOzoneCommunicationNS;
+class ToolsOzoneHostingNS {
+    constructor(server) {
+        Object.defineProperty(this, "_server", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        this._server = server;
+    }
+    getAccountHistory(cfg) {
+        const nsid = 'tools.ozone.hosting.getAccountHistory'; // @ts-ignore
+        return this._server.xrpc.method(nsid, cfg);
+    }
+}
+exports.ToolsOzoneHostingNS = ToolsOzoneHostingNS;
 class ToolsOzoneModerationNS {
     constructor(server) {
         Object.defineProperty(this, "_server", {
@@ -1567,4 +1625,28 @@ class ToolsOzoneTeamNS {
     }
 }
 exports.ToolsOzoneTeamNS = ToolsOzoneTeamNS;
+class ToolsOzoneVerificationNS {
+    constructor(server) {
+        Object.defineProperty(this, "_server", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        this._server = server;
+    }
+    grantVerifications(cfg) {
+        const nsid = 'tools.ozone.verification.grantVerifications'; // @ts-ignore
+        return this._server.xrpc.method(nsid, cfg);
+    }
+    listVerifications(cfg) {
+        const nsid = 'tools.ozone.verification.listVerifications'; // @ts-ignore
+        return this._server.xrpc.method(nsid, cfg);
+    }
+    revokeVerifications(cfg) {
+        const nsid = 'tools.ozone.verification.revokeVerifications'; // @ts-ignore
+        return this._server.xrpc.method(nsid, cfg);
+    }
+}
+exports.ToolsOzoneVerificationNS = ToolsOzoneVerificationNS;
 //# sourceMappingURL=index.js.map

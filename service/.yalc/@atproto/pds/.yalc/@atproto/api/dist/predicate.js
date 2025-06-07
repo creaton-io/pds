@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isValidThreadViewPref = exports.isValidSavedFeedsPrefV2 = exports.isValidSavedFeedsPref = exports.isValidPostInteractionSettingsPref = exports.isValidPersonalDetailsPref = exports.isValidMutedWordsPref = exports.isValidLabelersPref = exports.isValidInterestsPref = exports.isValidHiddenPostsPref = exports.isValidFeedViewPref = exports.isValidContentLabelPref = exports.isValidBskyAppStatePref = exports.isValidAdultContentPref = exports.isValidProfile = void 0;
+exports.isValidVerificationPrefs = exports.isValidThreadViewPref = exports.isValidSavedFeedsPrefV2 = exports.isValidSavedFeedsPref = exports.isValidPostInteractionSettingsPref = exports.isValidPersonalDetailsPref = exports.isValidMutedWordsPref = exports.isValidLabelersPref = exports.isValidInterestsPref = exports.isValidHiddenPostsPref = exports.isValidFeedViewPref = exports.isValidContentLabelPref = exports.isValidBskyAppStatePref = exports.isValidAdultContentPref = exports.isValidProfile = void 0;
 const index_1 = require("./client/index");
 const util_1 = require("./client/util");
 exports.isValidProfile = (0, util_1.asPredicate)(index_1.AppBskyActorProfile.validateRecord);
@@ -17,4 +17,5 @@ exports.isValidPostInteractionSettingsPref = (0, util_1.asPredicate)(index_1.App
 exports.isValidSavedFeedsPref = (0, util_1.asPredicate)(index_1.AppBskyActorDefs.validateSavedFeedsPref);
 exports.isValidSavedFeedsPrefV2 = (0, util_1.asPredicate)(index_1.AppBskyActorDefs.validateSavedFeedsPrefV2);
 exports.isValidThreadViewPref = (0, util_1.asPredicate)(index_1.AppBskyActorDefs.validateThreadViewPref);
+exports.isValidVerificationPrefs = (0, util_1.asPredicate)(index_1.AppBskyActorDefs.validateVerificationPrefs);
 //# sourceMappingURL=predicate.js.map

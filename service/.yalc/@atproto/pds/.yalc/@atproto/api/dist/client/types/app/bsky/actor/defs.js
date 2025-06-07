@@ -14,6 +14,10 @@ exports.isViewerState = isViewerState;
 exports.validateViewerState = validateViewerState;
 exports.isKnownFollowers = isKnownFollowers;
 exports.validateKnownFollowers = validateKnownFollowers;
+exports.isVerificationState = isVerificationState;
+exports.validateVerificationState = validateVerificationState;
+exports.isVerificationView = isVerificationView;
+exports.validateVerificationView = validateVerificationView;
 exports.isAdultContentPref = isAdultContentPref;
 exports.validateAdultContentPref = validateAdultContentPref;
 exports.isContentLabelPref = isContentLabelPref;
@@ -48,8 +52,12 @@ exports.isBskyAppProgressGuide = isBskyAppProgressGuide;
 exports.validateBskyAppProgressGuide = validateBskyAppProgressGuide;
 exports.isNux = isNux;
 exports.validateNux = validateNux;
+exports.isVerificationPrefs = isVerificationPrefs;
+exports.validateVerificationPrefs = validateVerificationPrefs;
 exports.isPostInteractionSettingsPref = isPostInteractionSettingsPref;
 exports.validatePostInteractionSettingsPref = validatePostInteractionSettingsPref;
+exports.isStatusView = isStatusView;
+exports.validateStatusView = validateStatusView;
 const lexicons_1 = require("../../../../lexicons");
 const util_1 = require("../../../../util");
 const is$typed = util_1.is$typed, validate = lexicons_1.validate;
@@ -102,6 +110,20 @@ function isKnownFollowers(v) {
 }
 function validateKnownFollowers(v) {
     return validate(v, id, hashKnownFollowers);
+}
+const hashVerificationState = 'verificationState';
+function isVerificationState(v) {
+    return is$typed(v, id, hashVerificationState);
+}
+function validateVerificationState(v) {
+    return validate(v, id, hashVerificationState);
+}
+const hashVerificationView = 'verificationView';
+function isVerificationView(v) {
+    return is$typed(v, id, hashVerificationView);
+}
+function validateVerificationView(v) {
+    return validate(v, id, hashVerificationView);
 }
 const hashAdultContentPref = 'adultContentPref';
 function isAdultContentPref(v) {
@@ -222,11 +244,25 @@ function isNux(v) {
 function validateNux(v) {
     return validate(v, id, hashNux);
 }
+const hashVerificationPrefs = 'verificationPrefs';
+function isVerificationPrefs(v) {
+    return is$typed(v, id, hashVerificationPrefs);
+}
+function validateVerificationPrefs(v) {
+    return validate(v, id, hashVerificationPrefs);
+}
 const hashPostInteractionSettingsPref = 'postInteractionSettingsPref';
 function isPostInteractionSettingsPref(v) {
     return is$typed(v, id, hashPostInteractionSettingsPref);
 }
 function validatePostInteractionSettingsPref(v) {
     return validate(v, id, hashPostInteractionSettingsPref);
+}
+const hashStatusView = 'statusView';
+function isStatusView(v) {
+    return is$typed(v, id, hashStatusView);
+}
+function validateStatusView(v) {
+    return validate(v, id, hashStatusView);
 }
 //# sourceMappingURL=defs.js.map

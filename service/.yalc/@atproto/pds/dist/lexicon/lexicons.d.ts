@@ -3187,6 +3187,16 @@ export declare const schemaDict: {
             };
         };
     };
+    readonly ComAtprotoSyncDefs: {
+        readonly lexicon: 1;
+        readonly id: "com.atproto.sync.defs";
+        readonly defs: {
+            readonly hostStatus: {
+                readonly type: "string";
+                readonly knownValues: ["active", "idle", "offline", "throttled", "banned"];
+            };
+        };
+    };
     readonly ComAtprotoSyncGetBlob: {
         readonly lexicon: 1;
         readonly id: "com.atproto.sync.getBlob";
@@ -3326,6 +3336,53 @@ export declare const schemaDict: {
                 };
                 readonly errors: [{
                     readonly name: "HeadNotFound";
+                }];
+            };
+        };
+    };
+    readonly ComAtprotoSyncGetHostStatus: {
+        readonly lexicon: 1;
+        readonly id: "com.atproto.sync.getHostStatus";
+        readonly defs: {
+            readonly main: {
+                readonly type: "query";
+                readonly description: "Returns information about a specified upstream host, as consumed by the server. Implemented by relays.";
+                readonly parameters: {
+                    readonly type: "params";
+                    readonly required: ["hostname"];
+                    readonly properties: {
+                        readonly hostname: {
+                            readonly type: "string";
+                            readonly description: "Hostname of the host (eg, PDS or relay) being queried.";
+                        };
+                    };
+                };
+                readonly output: {
+                    readonly encoding: "application/json";
+                    readonly schema: {
+                        readonly type: "object";
+                        readonly required: ["hostname"];
+                        readonly properties: {
+                            readonly hostname: {
+                                readonly type: "string";
+                            };
+                            readonly seq: {
+                                readonly type: "integer";
+                                readonly description: "Recent repo stream event sequence number. May be delayed from actual stream processing (eg, persisted cursor not in-memory cursor).";
+                            };
+                            readonly accountCount: {
+                                readonly type: "integer";
+                                readonly description: "Number of accounts on the server which are associated with the upstream host. Note that the upstream may actually have more accounts.";
+                            };
+                            readonly status: {
+                                readonly type: "ref";
+                                readonly ref: "lex:com.atproto.sync.defs#hostStatus";
+                            };
+                        };
+                    };
+                };
+                readonly errors: [{
+                    readonly name: "HostNotFound";
                 }];
             };
         };
@@ -3572,6 +3629,71 @@ export declare const schemaDict: {
             };
         };
     };
+    readonly ComAtprotoSyncListHosts: {
+        readonly lexicon: 1;
+        readonly id: "com.atproto.sync.listHosts";
+        readonly defs: {
+            readonly main: {
+                readonly type: "query";
+                readonly description: "Enumerates upstream hosts (eg, PDS or relay instances) that this service consumes from. Implemented by relays.";
+                readonly parameters: {
+                    readonly type: "params";
+                    readonly properties: {
+                        readonly limit: {
+                            readonly type: "integer";
+                            readonly minimum: 1;
+                            readonly maximum: 1000;
+                            readonly default: 200;
+                        };
+                        readonly cursor: {
+                            readonly type: "string";
+                        };
+                    };
+                };
+                readonly output: {
+                    readonly encoding: "application/json";
+                    readonly schema: {
+                        readonly type: "object";
+                        readonly required: ["hosts"];
+                        readonly properties: {
+                            readonly cursor: {
+                                readonly type: "string";
+                            };
+                            readonly hosts: {
+                                readonly type: "array";
+                                readonly items: {
+                                    readonly type: "ref";
+                                    readonly ref: "lex:com.atproto.sync.listHosts#host";
+                                };
+                                readonly description: "Sort order is not formally specified. Recommended order is by time host was first seen by the server, with oldest first.";
+                            };
+                        };
+                    };
+                };
+            };
+            readonly host: {
+                readonly type: "object";
+                readonly required: ["hostname"];
+                readonly properties: {
+                    readonly hostname: {
+                        readonly type: "string";
+                        readonly description: "hostname of server; not a URL (no scheme)";
+                    };
+                    readonly seq: {
+                        readonly type: "integer";
+                        readonly description: "Recent repo stream event sequence number. May be delayed from actual stream processing (eg, persisted cursor not in-memory cursor).";
+                    };
+                    readonly accountCount: {
+                        readonly type: "integer";
+                    };
+                    readonly status: {
+                        readonly type: "ref";
+                        readonly ref: "lex:com.atproto.sync.defs#hostStatus";
+                    };
+                };
+            };
+        };
+    };
     readonly ComAtprotoSyncListRepos: {
         readonly lexicon: 1;
         readonly id: "com.atproto.sync.listRepos";
@@ -3744,6 +3866,9 @@ export declare const schemaDict: {
                         };
                     };
                 };
+                readonly errors: [{
+                    readonly name: "HostBanned";
+                }];
             };
         };
     };
@@ -4126,6 +4251,14 @@ export declare const schemaDict: {
                         readonly type: "string";
                         readonly format: "datetime";
                     };
+                    readonly verification: {
+                        readonly type: "ref";
+                        readonly ref: "lex:app.bsky.actor.defs#verificationState";
+                    };
+                    readonly status: {
+                        readonly type: "ref";
+                        readonly ref: "lex:app.bsky.actor.defs#statusView";
+                    };
                 };
             };
             readonly profileView: {
@@ -4176,6 +4309,14 @@ export declare const schemaDict: {
                             readonly type: "ref";
                             readonly ref: "lex:com.atproto.label.defs#label";
                         };
+                    };
+                    readonly verification: {
+                        readonly type: "ref";
+                        readonly ref: "lex:app.bsky.actor.defs#verificationState";
+                    };
+                    readonly status: {
+                        readonly type: "ref";
+                        readonly ref: "lex:app.bsky.actor.defs#statusView";
                     };
                 };
             };
@@ -4248,6 +4389,14 @@ export declare const schemaDict: {
                     readonly pinnedPost: {
                         readonly type: "ref";
                         readonly ref: "lex:com.atproto.repo.strongRef";
+                    };
+                    readonly verification: {
+                        readonly type: "ref";
+                        readonly ref: "lex:app.bsky.actor.defs#verificationState";
+                    };
+                    readonly status: {
+                        readonly type: "ref";
+                        readonly ref: "lex:app.bsky.actor.defs#statusView";
                     };
                 };
             };
@@ -4337,11 +4486,62 @@ export declare const schemaDict: {
                     };
                 };
             };
+            readonly verificationState: {
+                readonly type: "object";
+                readonly description: "Represents the verification information about the user this object is attached to.";
+                readonly required: ["verifications", "verifiedStatus", "trustedVerifierStatus"];
+                readonly properties: {
+                    readonly verifications: {
+                        readonly type: "array";
+                        readonly description: "All verifications issued by trusted verifiers on behalf of this user. Verifications by untrusted verifiers are not included.";
+                        readonly items: {
+                            readonly type: "ref";
+                            readonly ref: "lex:app.bsky.actor.defs#verificationView";
+                        };
+                    };
+                    readonly verifiedStatus: {
+                        readonly type: "string";
+                        readonly description: "The user's status as a verified account.";
+                        readonly knownValues: ["valid", "invalid", "none"];
+                    };
+                    readonly trustedVerifierStatus: {
+                        readonly type: "string";
+                        readonly description: "The user's status as a trusted verifier.";
+                        readonly knownValues: ["valid", "invalid", "none"];
+                    };
+                };
+            };
+            readonly verificationView: {
+                readonly type: "object";
+                readonly description: "An individual verification for an associated subject.";
+                readonly required: ["issuer", "uri", "isValid", "createdAt"];
+                readonly properties: {
+                    readonly issuer: {
+                        readonly type: "string";
+                        readonly description: "The user who issued this verification.";
+                        readonly format: "did";
+                    };
+                    readonly uri: {
+                        readonly type: "string";
+                        readonly description: "The AT-URI of the verification record.";
+                        readonly format: "at-uri";
+                    };
+                    readonly isValid: {
+                        readonly type: "boolean";
+                        readonly description: "True if the verification passes validation, otherwise false.";
+                    };
+                    readonly createdAt: {
+                        readonly type: "string";
+                        readonly description: "Timestamp when the verification was created.";
+                        readonly format: "datetime";
+                    };
+                };
+            };
             readonly preferences: {
                 readonly type: "array";
                 readonly items: {
                     readonly type: "union";
-                    readonly refs: ["lex:app.bsky.actor.defs#adultContentPref", "lex:app.bsky.actor.defs#contentLabelPref", "lex:app.bsky.actor.defs#savedFeedsPref", "lex:app.bsky.actor.defs#savedFeedsPrefV2", "lex:app.bsky.actor.defs#personalDetailsPref", "lex:app.bsky.actor.defs#feedViewPref", "lex:app.bsky.actor.defs#threadViewPref", "lex:app.bsky.actor.defs#interestsPref", "lex:app.bsky.actor.defs#mutedWordsPref", "lex:app.bsky.actor.defs#hiddenPostsPref", "lex:app.bsky.actor.defs#bskyAppStatePref", "lex:app.bsky.actor.defs#labelersPref", "lex:app.bsky.actor.defs#postInteractionSettingsPref"];
+                    readonly refs: ["lex:app.bsky.actor.defs#adultContentPref", "lex:app.bsky.actor.defs#contentLabelPref", "lex:app.bsky.actor.defs#savedFeedsPref", "lex:app.bsky.actor.defs#savedFeedsPrefV2", "lex:app.bsky.actor.defs#personalDetailsPref", "lex:app.bsky.actor.defs#feedViewPref", "lex:app.bsky.actor.defs#threadViewPref", "lex:app.bsky.actor.defs#interestsPref", "lex:app.bsky.actor.defs#mutedWordsPref", "lex:app.bsky.actor.defs#hiddenPostsPref", "lex:app.bsky.actor.defs#bskyAppStatePref", "lex:app.bsky.actor.defs#labelersPref", "lex:app.bsky.actor.defs#postInteractionSettingsPref", "lex:app.bsky.actor.defs#verificationPrefs"];
                 };
             };
             readonly adultContentPref: {
@@ -4655,6 +4855,18 @@ export declare const schemaDict: {
                     };
                 };
             };
+            readonly verificationPrefs: {
+                readonly type: "object";
+                readonly description: "Preferences for how verified accounts appear in the app.";
+                readonly required: [];
+                readonly properties: {
+                    readonly hideBadges: {
+                        readonly description: "Hide the blue check badges for verified accounts and trusted verifiers.";
+                        readonly type: "boolean";
+                        readonly default: false;
+                    };
+                };
+            };
             readonly postInteractionSettingsPref: {
                 readonly type: "object";
                 readonly description: "Default post interaction settings for the account. These values should be applied as default values when creating new posts. These refs should mirror the threadgate and postgate records exactly.";
@@ -4677,6 +4889,34 @@ export declare const schemaDict: {
                             readonly type: "union";
                             readonly refs: ["lex:app.bsky.feed.postgate#disableRule"];
                         };
+                    };
+                };
+            };
+            readonly statusView: {
+                readonly type: "object";
+                readonly required: ["status", "record"];
+                readonly properties: {
+                    readonly status: {
+                        readonly type: "string";
+                        readonly description: "The status for the account.";
+                        readonly knownValues: ["app.bsky.actor.status#live"];
+                    };
+                    readonly record: {
+                        readonly type: "unknown";
+                    };
+                    readonly embed: {
+                        readonly type: "union";
+                        readonly description: "An optional embed associated with the status.";
+                        readonly refs: ["lex:app.bsky.embed.external#view"];
+                    };
+                    readonly expiresAt: {
+                        readonly type: "string";
+                        readonly description: "The date when this status will expire. The application might choose to no longer return the status after expiration.";
+                        readonly format: "datetime";
+                    };
+                    readonly isActive: {
+                        readonly type: "boolean";
+                        readonly description: "True if the status is not expired, false if it is expired. Only present if expiration was set.";
                     };
                 };
             };
@@ -4996,6 +5236,46 @@ export declare const schemaDict: {
                         };
                     };
                 };
+            };
+        };
+    };
+    readonly AppBskyActorStatus: {
+        readonly lexicon: 1;
+        readonly id: "app.bsky.actor.status";
+        readonly defs: {
+            readonly main: {
+                readonly type: "record";
+                readonly description: "A declaration of a Bluesky account status.";
+                readonly key: "literal:self";
+                readonly record: {
+                    readonly type: "object";
+                    readonly required: ["status", "createdAt"];
+                    readonly properties: {
+                        readonly status: {
+                            readonly type: "string";
+                            readonly description: "The status for the account.";
+                            readonly knownValues: ["app.bsky.actor.status#live"];
+                        };
+                        readonly embed: {
+                            readonly type: "union";
+                            readonly description: "An optional embed associated with the status.";
+                            readonly refs: ["lex:app.bsky.embed.external"];
+                        };
+                        readonly durationMinutes: {
+                            readonly type: "integer";
+                            readonly description: "The duration of the status in minutes. Applications can choose to impose minimum and maximum limits.";
+                            readonly minimum: 1;
+                        };
+                        readonly createdAt: {
+                            readonly type: "string";
+                            readonly format: "datetime";
+                        };
+                    };
+                };
+            };
+            readonly live: {
+                readonly type: "token";
+                readonly description: "Advertises an account as currently offering live content.";
             };
         };
     };
@@ -5522,6 +5802,11 @@ export declare const schemaDict: {
                         readonly description: "Context provided by feed generator that may be passed back alongside interactions.";
                         readonly maxLength: 2000;
                     };
+                    readonly reqId: {
+                        readonly type: "string";
+                        readonly description: "Unique identifier per request that may be passed back alongside interactions.";
+                        readonly maxLength: 100;
+                    };
                 };
             };
             readonly replyRef: {
@@ -5550,6 +5835,14 @@ export declare const schemaDict: {
                     readonly by: {
                         readonly type: "ref";
                         readonly ref: "lex:app.bsky.actor.defs#profileViewBasic";
+                    };
+                    readonly uri: {
+                        readonly type: "string";
+                        readonly format: "at-uri";
+                    };
+                    readonly cid: {
+                        readonly type: "string";
+                        readonly format: "cid";
                     };
                     readonly indexedAt: {
                         readonly type: "string";
@@ -5779,6 +6072,11 @@ export declare const schemaDict: {
                         readonly type: "string";
                         readonly description: "Context on a feed item that was originally supplied by the feed generator on getFeedSkeleton.";
                         readonly maxLength: 2000;
+                    };
+                    readonly reqId: {
+                        readonly type: "string";
+                        readonly description: "Unique identifier per request that may be passed back alongside interactions.";
+                        readonly maxLength: 100;
                     };
                 };
             };
@@ -6294,6 +6592,11 @@ export declare const schemaDict: {
                                     readonly ref: "lex:app.bsky.feed.defs#skeletonFeedPost";
                                 };
                             };
+                            readonly reqId: {
+                                readonly type: "string";
+                                readonly description: "Unique identifier per request that may be passed back alongside interactions.";
+                                readonly maxLength: 100;
+                            };
                         };
                     };
                 };
@@ -6765,6 +7068,10 @@ export declare const schemaDict: {
                             readonly type: "string";
                             readonly format: "datetime";
                         };
+                        readonly via: {
+                            readonly type: "ref";
+                            readonly ref: "lex:com.atproto.repo.strongRef";
+                        };
                     };
                 };
             };
@@ -6962,6 +7269,10 @@ export declare const schemaDict: {
                             readonly type: "string";
                             readonly format: "datetime";
                         };
+                        readonly via: {
+                            readonly type: "ref";
+                            readonly ref: "lex:com.atproto.repo.strongRef";
+                        };
                     };
                 };
             };
@@ -6973,7 +7284,7 @@ export declare const schemaDict: {
         readonly defs: {
             readonly main: {
                 readonly type: "query";
-                readonly description: "Find posts matching search criteria, returning views of those posts.";
+                readonly description: "Find posts matching search criteria, returning views of those posts. Note that this API endpoint may require authentication (eg, not public) for some service providers and implementations.";
                 readonly parameters: {
                     readonly type: "params";
                     readonly required: ["q"];
@@ -8530,6 +8841,42 @@ export declare const schemaDict: {
             };
         };
     };
+    readonly AppBskyGraphVerification: {
+        readonly lexicon: 1;
+        readonly id: "app.bsky.graph.verification";
+        readonly defs: {
+            readonly main: {
+                readonly type: "record";
+                readonly description: "Record declaring a verification relationship between two accounts. Verifications are only considered valid by an app if issued by an account the app considers trusted.";
+                readonly key: "tid";
+                readonly record: {
+                    readonly type: "object";
+                    readonly required: ["subject", "handle", "displayName", "createdAt"];
+                    readonly properties: {
+                        readonly subject: {
+                            readonly description: "DID of the subject the verification applies to.";
+                            readonly type: "string";
+                            readonly format: "did";
+                        };
+                        readonly handle: {
+                            readonly description: "Handle of the subject the verification applies to at the moment of verifying, which might not be the same at the time of viewing. The verification is only valid if the current handle matches the one at the time of verifying.";
+                            readonly type: "string";
+                            readonly format: "handle";
+                        };
+                        readonly displayName: {
+                            readonly description: "Display name of the subject the verification applies to at the moment of verifying, which might not be the same at the time of viewing. The verification is only valid if the current displayName matches the one at the time of verifying.";
+                            readonly type: "string";
+                        };
+                        readonly createdAt: {
+                            readonly description: "Date of when the verification was created.";
+                            readonly type: "string";
+                            readonly format: "datetime";
+                        };
+                    };
+                };
+            };
+        };
+    };
     readonly AppBskyLabelerDefs: {
         readonly lexicon: 1;
         readonly id: "app.bsky.labeler.defs";
@@ -8765,6 +9112,16 @@ export declare const schemaDict: {
             };
         };
     };
+    readonly AppBskyNotificationDefs: {
+        readonly lexicon: 1;
+        readonly id: "app.bsky.notification.defs";
+        readonly defs: {
+            readonly recordDeleted: {
+                readonly type: "object";
+                readonly properties: {};
+            };
+        };
+    };
     readonly AppBskyNotificationGetUnreadCount: {
         readonly lexicon: 1;
         readonly id: "app.bsky.notification.getUnreadCount";
@@ -8880,8 +9237,8 @@ export declare const schemaDict: {
                     };
                     readonly reason: {
                         readonly type: "string";
-                        readonly description: "Expected values are 'like', 'repost', 'follow', 'mention', 'reply', 'quote', and 'starterpack-joined'.";
-                        readonly knownValues: ["like", "repost", "follow", "mention", "reply", "quote", "starterpack-joined"];
+                        readonly description: "The reason why this notification was delivered - e.g. your post was liked, or you received a new follower.";
+                        readonly knownValues: ["like", "repost", "follow", "mention", "reply", "quote", "starterpack-joined", "verified", "unverified", "like-via-repost", "repost-via-repost"];
                     };
                     readonly reasonSubject: {
                         readonly type: "string";
@@ -9201,6 +9558,29 @@ export declare const schemaDict: {
                             readonly checkEmailConfirmed: {
                                 readonly type: "boolean";
                             };
+                            readonly liveNow: {
+                                readonly type: "array";
+                                readonly items: {
+                                    readonly type: "ref";
+                                    readonly ref: "lex:app.bsky.unspecced.getConfig#liveNowConfig";
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+            readonly liveNowConfig: {
+                readonly type: "object";
+                readonly required: ["did", "domains"];
+                readonly properties: {
+                    readonly did: {
+                        readonly type: "string";
+                        readonly format: "did";
+                    };
+                    readonly domains: {
+                        readonly type: "array";
+                        readonly items: {
+                            readonly type: "string";
                         };
                     };
                 };
@@ -9248,6 +9628,214 @@ export declare const schemaDict: {
                                 };
                             };
                         };
+                    };
+                };
+            };
+        };
+    };
+    readonly AppBskyUnspeccedGetPostThreadHiddenV2: {
+        readonly lexicon: 1;
+        readonly id: "app.bsky.unspecced.getPostThreadHiddenV2";
+        readonly defs: {
+            readonly main: {
+                readonly type: "query";
+                readonly description: "(NOTE: this endpoint is under development and WILL change without notice. Don't use it until it is moved out of `unspecced` or your application WILL break) Get the hidden posts in a thread. It is based in an anchor post at any depth of the tree, and returns hidden replies (recursive replies, with branching to their replies) below the anchor. It does not include ancestors nor the anchor. This should be called after exhausting `app.bsky.unspecced.getPostThreadV2`. Does not require auth, but additional metadata and filtering will be applied for authed requests.";
+                readonly parameters: {
+                    readonly type: "params";
+                    readonly required: ["anchor"];
+                    readonly properties: {
+                        readonly anchor: {
+                            readonly type: "string";
+                            readonly format: "at-uri";
+                            readonly description: "Reference (AT-URI) to post record. This is the anchor post.";
+                        };
+                    };
+                };
+                readonly output: {
+                    readonly encoding: "application/json";
+                    readonly schema: {
+                        readonly type: "object";
+                        readonly required: ["thread"];
+                        readonly properties: {
+                            readonly thread: {
+                                readonly type: "array";
+                                readonly description: "A flat list of thread hidden items. The depth of each item is indicated by the depth property inside the item.";
+                                readonly items: {
+                                    readonly type: "ref";
+                                    readonly ref: "lex:app.bsky.unspecced.getPostThreadHiddenV2#threadHiddenItem";
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+            readonly threadHiddenItem: {
+                readonly type: "object";
+                readonly required: ["uri", "depth", "value"];
+                readonly properties: {
+                    readonly uri: {
+                        readonly type: "string";
+                        readonly format: "at-uri";
+                    };
+                    readonly depth: {
+                        readonly type: "integer";
+                        readonly description: "The nesting level of this item in the thread. Depth 0 means the anchor item. Items above have negative depths, items below have positive depths.";
+                    };
+                    readonly value: {
+                        readonly type: "union";
+                        readonly refs: ["lex:app.bsky.unspecced.getPostThreadHiddenV2#threadHiddenItemPost"];
+                    };
+                };
+            };
+            readonly threadHiddenItemPost: {
+                readonly type: "object";
+                readonly required: ["post", "hiddenByThreadgate", "mutedByViewer"];
+                readonly properties: {
+                    readonly post: {
+                        readonly type: "ref";
+                        readonly ref: "lex:app.bsky.feed.defs#postView";
+                    };
+                    readonly hiddenByThreadgate: {
+                        readonly type: "boolean";
+                        readonly description: "The threadgate created by the author indicates this post as a reply to be hidden for everyone consuming the thread.";
+                    };
+                    readonly mutedByViewer: {
+                        readonly type: "boolean";
+                        readonly description: "This is by an account muted by the viewer requesting it.";
+                    };
+                };
+            };
+        };
+    };
+    readonly AppBskyUnspeccedGetPostThreadV2: {
+        readonly lexicon: 1;
+        readonly id: "app.bsky.unspecced.getPostThreadV2";
+        readonly defs: {
+            readonly main: {
+                readonly type: "query";
+                readonly description: "(NOTE: this endpoint is under development and WILL change without notice. Don't use it until it is moved out of `unspecced` or your application WILL break) Get posts in a thread. It is based in an anchor post at any depth of the tree, and returns posts above it (recursively resolving the parent, without further branching to their replies) and below it (recursive replies, with branching to their replies). Does not require auth, but additional metadata and filtering will be applied for authed requests.";
+                readonly parameters: {
+                    readonly type: "params";
+                    readonly required: ["anchor"];
+                    readonly properties: {
+                        readonly anchor: {
+                            readonly type: "string";
+                            readonly format: "at-uri";
+                            readonly description: "Reference (AT-URI) to post record. This is the anchor post, and the thread will be built around it. It can be any post in the tree, not necessarily a root post.";
+                        };
+                        readonly above: {
+                            readonly type: "boolean";
+                            readonly description: "Whether to include parents above the anchor.";
+                            readonly default: true;
+                        };
+                        readonly below: {
+                            readonly type: "integer";
+                            readonly description: "How many levels of replies to include below the anchor.";
+                            readonly default: 6;
+                            readonly minimum: 0;
+                            readonly maximum: 20;
+                        };
+                        readonly branchingFactor: {
+                            readonly type: "integer";
+                            readonly description: "Maximum of replies to include at each level of the thread, except for the direct replies to the anchor, which are (NOTE: currently, during unspecced phase) all returned (NOTE: later they might be paginated).";
+                            readonly default: 10;
+                            readonly minimum: 0;
+                            readonly maximum: 100;
+                        };
+                        readonly prioritizeFollowedUsers: {
+                            readonly type: "boolean";
+                            readonly description: "Whether to prioritize posts from followed users. It only has effect when the user is authenticated.";
+                            readonly default: false;
+                        };
+                        readonly sort: {
+                            readonly type: "string";
+                            readonly description: "Sorting for the thread replies.";
+                            readonly knownValues: ["newest", "oldest", "top"];
+                            readonly default: "oldest";
+                        };
+                    };
+                };
+                readonly output: {
+                    readonly encoding: "application/json";
+                    readonly schema: {
+                        readonly type: "object";
+                        readonly required: ["thread", "hasHiddenReplies"];
+                        readonly properties: {
+                            readonly thread: {
+                                readonly type: "array";
+                                readonly description: "A flat list of thread items. The depth of each item is indicated by the depth property inside the item.";
+                                readonly items: {
+                                    readonly type: "ref";
+                                    readonly ref: "lex:app.bsky.unspecced.getPostThreadV2#threadItem";
+                                };
+                            };
+                            readonly threadgate: {
+                                readonly type: "ref";
+                                readonly ref: "lex:app.bsky.feed.defs#threadgateView";
+                            };
+                            readonly hasHiddenReplies: {
+                                readonly type: "boolean";
+                                readonly description: "Whether this thread has hidden replies. If true, a call can be made to the `getPostThreadHiddenV2` endpoint to retrieve them.";
+                            };
+                        };
+                    };
+                };
+            };
+            readonly threadItem: {
+                readonly type: "object";
+                readonly required: ["uri", "depth", "value"];
+                readonly properties: {
+                    readonly uri: {
+                        readonly type: "string";
+                        readonly format: "at-uri";
+                    };
+                    readonly depth: {
+                        readonly type: "integer";
+                        readonly description: "The nesting level of this item in the thread. Depth 0 means the anchor item. Items above have negative depths, items below have positive depths.";
+                    };
+                    readonly value: {
+                        readonly type: "union";
+                        readonly refs: ["lex:app.bsky.unspecced.getPostThreadV2#threadItemPost", "lex:app.bsky.unspecced.getPostThreadV2#threadItemNoUnauthenticated", "lex:app.bsky.unspecced.getPostThreadV2#threadItemNotFound", "lex:app.bsky.unspecced.getPostThreadV2#threadItemBlocked"];
+                    };
+                };
+            };
+            readonly threadItemPost: {
+                readonly type: "object";
+                readonly required: ["post", "moreParents", "moreReplies", "opThread"];
+                readonly properties: {
+                    readonly post: {
+                        readonly type: "ref";
+                        readonly ref: "lex:app.bsky.feed.defs#postView";
+                    };
+                    readonly moreParents: {
+                        readonly type: "boolean";
+                        readonly description: "This post has more parents that were not present in the response. This is just a boolean, without the number of parents.";
+                    };
+                    readonly moreReplies: {
+                        readonly type: "integer";
+                        readonly description: "This post has more replies that were not present in the response. This is a numeric value, which is best-effort and might not be accurate.";
+                    };
+                    readonly opThread: {
+                        readonly type: "boolean";
+                        readonly description: "This post is part of a contiguous thread by the OP from the thread root. Many different OP threads can happen in the same thread.";
+                    };
+                };
+            };
+            readonly threadItemNoUnauthenticated: {
+                readonly type: "object";
+                readonly properties: {};
+            };
+            readonly threadItemNotFound: {
+                readonly type: "object";
+                readonly properties: {};
+            };
+            readonly threadItemBlocked: {
+                readonly type: "object";
+                readonly required: ["author"];
+                readonly properties: {
+                    readonly author: {
+                        readonly type: "ref";
+                        readonly ref: "lex:app.bsky.feed.defs#blockedAuthor";
                     };
                 };
             };
@@ -9403,6 +9991,93 @@ export declare const schemaDict: {
                                 readonly items: {
                                     readonly type: "string";
                                     readonly format: "at-uri";
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+    readonly AppBskyUnspeccedGetSuggestedUsers: {
+        readonly lexicon: 1;
+        readonly id: "app.bsky.unspecced.getSuggestedUsers";
+        readonly defs: {
+            readonly main: {
+                readonly type: "query";
+                readonly description: "Get a list of suggested users";
+                readonly parameters: {
+                    readonly type: "params";
+                    readonly properties: {
+                        readonly category: {
+                            readonly type: "string";
+                            readonly description: "Category of users to get suggestions for.";
+                        };
+                        readonly limit: {
+                            readonly type: "integer";
+                            readonly minimum: 1;
+                            readonly maximum: 50;
+                            readonly default: 25;
+                        };
+                    };
+                };
+                readonly output: {
+                    readonly encoding: "application/json";
+                    readonly schema: {
+                        readonly type: "object";
+                        readonly required: ["actors"];
+                        readonly properties: {
+                            readonly actors: {
+                                readonly type: "array";
+                                readonly items: {
+                                    readonly type: "ref";
+                                    readonly ref: "lex:app.bsky.actor.defs#profileView";
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+    readonly AppBskyUnspeccedGetSuggestedUsersSkeleton: {
+        readonly lexicon: 1;
+        readonly id: "app.bsky.unspecced.getSuggestedUsersSkeleton";
+        readonly defs: {
+            readonly main: {
+                readonly type: "query";
+                readonly description: "Get a skeleton of suggested users. Intended to be called and hydrated by app.bsky.unspecced.getSuggestedUsers";
+                readonly parameters: {
+                    readonly type: "params";
+                    readonly properties: {
+                        readonly viewer: {
+                            readonly type: "string";
+                            readonly format: "did";
+                            readonly description: "DID of the account making the request (not included for public/unauthenticated queries).";
+                        };
+                        readonly category: {
+                            readonly type: "string";
+                            readonly description: "Category of users to get suggestions for.";
+                        };
+                        readonly limit: {
+                            readonly type: "integer";
+                            readonly minimum: 1;
+                            readonly maximum: 50;
+                            readonly default: 25;
+                        };
+                    };
+                };
+                readonly output: {
+                    readonly encoding: "application/json";
+                    readonly schema: {
+                        readonly type: "object";
+                        readonly required: ["dids"];
+                        readonly properties: {
+                            readonly dids: {
+                                readonly type: "array";
+                                readonly items: {
+                                    readonly type: "string";
+                                    readonly format: "did";
                                 };
                             };
                         };
@@ -10076,7 +10751,11 @@ export declare const schemaDict: {
                     };
                     readonly chatDisabled: {
                         readonly type: "boolean";
-                        readonly description: "Set to true when the actor cannot actively participate in converations";
+                        readonly description: "Set to true when the actor cannot actively participate in conversations";
+                    };
+                    readonly verification: {
+                        readonly type: "ref";
+                        readonly ref: "lex:app.bsky.actor.defs#verificationState";
                     };
                 };
             };
@@ -10165,7 +10844,7 @@ export declare const schemaDict: {
                             readonly value: {
                                 readonly type: "string";
                                 readonly minLength: 1;
-                                readonly maxLength: 32;
+                                readonly maxLength: 64;
                                 readonly minGraphemes: 1;
                                 readonly maxGraphemes: 1;
                             };
@@ -10909,7 +11588,7 @@ export declare const schemaDict: {
                             readonly value: {
                                 readonly type: "string";
                                 readonly minLength: 1;
-                                readonly maxLength: 32;
+                                readonly maxLength: 64;
                                 readonly minGraphemes: 1;
                                 readonly maxGraphemes: 1;
                             };
@@ -11468,6 +12147,124 @@ export declare const schemaDict: {
             };
         };
     };
+    readonly ToolsOzoneHostingGetAccountHistory: {
+        readonly lexicon: 1;
+        readonly id: "tools.ozone.hosting.getAccountHistory";
+        readonly defs: {
+            readonly main: {
+                readonly type: "query";
+                readonly description: "Get account history, e.g. log of updated email addresses or other identity information.";
+                readonly parameters: {
+                    readonly type: "params";
+                    readonly required: ["did"];
+                    readonly properties: {
+                        readonly did: {
+                            readonly type: "string";
+                            readonly format: "did";
+                        };
+                        readonly events: {
+                            readonly type: "array";
+                            readonly items: {
+                                readonly type: "string";
+                                readonly knownValues: ["accountCreated", "emailUpdated", "emailConfirmed", "passwordUpdated", "handleUpdated"];
+                            };
+                        };
+                        readonly cursor: {
+                            readonly type: "string";
+                        };
+                        readonly limit: {
+                            readonly type: "integer";
+                            readonly minimum: 1;
+                            readonly maximum: 100;
+                            readonly default: 50;
+                        };
+                    };
+                };
+                readonly output: {
+                    readonly encoding: "application/json";
+                    readonly schema: {
+                        readonly type: "object";
+                        readonly required: ["events"];
+                        readonly properties: {
+                            readonly cursor: {
+                                readonly type: "string";
+                            };
+                            readonly events: {
+                                readonly type: "array";
+                                readonly items: {
+                                    readonly type: "ref";
+                                    readonly ref: "lex:tools.ozone.hosting.getAccountHistory#event";
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+            readonly event: {
+                readonly type: "object";
+                readonly required: ["details", "createdBy", "createdAt"];
+                readonly properties: {
+                    readonly details: {
+                        readonly type: "union";
+                        readonly refs: ["lex:tools.ozone.hosting.getAccountHistory#accountCreated", "lex:tools.ozone.hosting.getAccountHistory#emailUpdated", "lex:tools.ozone.hosting.getAccountHistory#emailConfirmed", "lex:tools.ozone.hosting.getAccountHistory#passwordUpdated", "lex:tools.ozone.hosting.getAccountHistory#handleUpdated"];
+                    };
+                    readonly createdBy: {
+                        readonly type: "string";
+                    };
+                    readonly createdAt: {
+                        readonly type: "string";
+                        readonly format: "datetime";
+                    };
+                };
+            };
+            readonly accountCreated: {
+                readonly type: "object";
+                readonly required: [];
+                readonly properties: {
+                    readonly email: {
+                        readonly type: "string";
+                    };
+                    readonly handle: {
+                        readonly type: "string";
+                        readonly format: "handle";
+                    };
+                };
+            };
+            readonly emailUpdated: {
+                readonly type: "object";
+                readonly required: ["email"];
+                readonly properties: {
+                    readonly email: {
+                        readonly type: "string";
+                    };
+                };
+            };
+            readonly emailConfirmed: {
+                readonly type: "object";
+                readonly required: ["email"];
+                readonly properties: {
+                    readonly email: {
+                        readonly type: "string";
+                    };
+                };
+            };
+            readonly passwordUpdated: {
+                readonly type: "object";
+                readonly required: [];
+                readonly properties: {};
+            };
+            readonly handleUpdated: {
+                readonly type: "object";
+                readonly required: ["handle"];
+                readonly properties: {
+                    readonly handle: {
+                        readonly type: "string";
+                        readonly format: "handle";
+                    };
+                };
+            };
+        };
+    };
     readonly ToolsOzoneModerationDefs: {
         readonly lexicon: 1;
         readonly id: "tools.ozone.moderation.defs";
@@ -11550,7 +12347,7 @@ export declare const schemaDict: {
                     };
                     readonly subject: {
                         readonly type: "union";
-                        readonly refs: ["lex:com.atproto.admin.defs#repoRef", "lex:com.atproto.repo.strongRef"];
+                        readonly refs: ["lex:com.atproto.admin.defs#repoRef", "lex:com.atproto.repo.strongRef", "lex:chat.bsky.convo.defs#messageRef"];
                     };
                     readonly hosting: {
                         readonly type: "union";
@@ -13179,6 +13976,11 @@ export declare const schemaDict: {
                                 readonly type: "ref";
                                 readonly ref: "lex:tools.ozone.server.getConfig#viewerConfig";
                             };
+                            readonly verifierDid: {
+                                readonly type: "string";
+                                readonly format: "did";
+                                readonly description: "The did of the verifier used for verification.";
+                            };
                         };
                     };
                 };
@@ -13197,7 +13999,7 @@ export declare const schemaDict: {
                 readonly properties: {
                     readonly role: {
                         readonly type: "string";
-                        readonly knownValues: ["tools.ozone.team.defs#roleAdmin", "tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage"];
+                        readonly knownValues: ["tools.ozone.team.defs#roleAdmin", "tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage", "tools.ozone.team.defs#roleVerifier"];
                     };
                 };
             };
@@ -13522,7 +14324,7 @@ export declare const schemaDict: {
                     };
                     readonly managerRole: {
                         readonly type: "string";
-                        readonly knownValues: ["tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage", "tools.ozone.team.defs#roleAdmin"];
+                        readonly knownValues: ["tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage", "tools.ozone.team.defs#roleAdmin", "tools.ozone.team.defs#roleVerifier"];
                     };
                     readonly scope: {
                         readonly type: "string";
@@ -13670,7 +14472,7 @@ export declare const schemaDict: {
                             };
                             readonly managerRole: {
                                 readonly type: "string";
-                                readonly knownValues: ["tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage", "tools.ozone.team.defs#roleAdmin"];
+                                readonly knownValues: ["tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage", "tools.ozone.team.defs#roleVerifier", "tools.ozone.team.defs#roleAdmin"];
                             };
                         };
                     };
@@ -13882,7 +14684,7 @@ export declare const schemaDict: {
                             };
                             readonly role: {
                                 readonly type: "string";
-                                readonly knownValues: ["tools.ozone.team.defs#roleAdmin", "tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage"];
+                                readonly knownValues: ["tools.ozone.team.defs#roleAdmin", "tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleVerifier", "tools.ozone.team.defs#roleTriage"];
                             };
                         };
                     };
@@ -13933,7 +14735,7 @@ export declare const schemaDict: {
                     };
                     readonly role: {
                         readonly type: "string";
-                        readonly knownValues: ["lex:tools.ozone.team.defs#roleAdmin", "lex:tools.ozone.team.defs#roleModerator", "lex:tools.ozone.team.defs#roleTriage"];
+                        readonly knownValues: ["lex:tools.ozone.team.defs#roleAdmin", "lex:tools.ozone.team.defs#roleModerator", "lex:tools.ozone.team.defs#roleTriage", "lex:tools.ozone.team.defs#roleVerifier"];
                     };
                 };
             };
@@ -13948,6 +14750,10 @@ export declare const schemaDict: {
             readonly roleTriage: {
                 readonly type: "token";
                 readonly description: "Triage role. Mostly intended for monitoring and escalating issues.";
+            };
+            readonly roleVerifier: {
+                readonly type: "token";
+                readonly description: "Verifier role. Only allowed to issue verifications.";
             };
         };
     };
@@ -14058,7 +14864,7 @@ export declare const schemaDict: {
                             };
                             readonly role: {
                                 readonly type: "string";
-                                readonly knownValues: ["tools.ozone.team.defs#roleAdmin", "tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage"];
+                                readonly knownValues: ["tools.ozone.team.defs#roleAdmin", "tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleVerifier", "tools.ozone.team.defs#roleTriage"];
                             };
                         };
                     };
@@ -14074,6 +14880,328 @@ export declare const schemaDict: {
                     readonly name: "MemberNotFound";
                     readonly description: "The member being updated does not exist in the team";
                 }];
+            };
+        };
+    };
+    readonly ToolsOzoneVerificationDefs: {
+        readonly lexicon: 1;
+        readonly id: "tools.ozone.verification.defs";
+        readonly defs: {
+            readonly verificationView: {
+                readonly type: "object";
+                readonly description: "Verification data for the associated subject.";
+                readonly required: ["issuer", "uri", "subject", "handle", "displayName", "createdAt"];
+                readonly properties: {
+                    readonly issuer: {
+                        readonly type: "string";
+                        readonly description: "The user who issued this verification.";
+                        readonly format: "did";
+                    };
+                    readonly uri: {
+                        readonly type: "string";
+                        readonly description: "The AT-URI of the verification record.";
+                        readonly format: "at-uri";
+                    };
+                    readonly subject: {
+                        readonly type: "string";
+                        readonly format: "did";
+                        readonly description: "The subject of the verification.";
+                    };
+                    readonly handle: {
+                        readonly type: "string";
+                        readonly description: "Handle of the subject the verification applies to at the moment of verifying, which might not be the same at the time of viewing. The verification is only valid if the current handle matches the one at the time of verifying.";
+                        readonly format: "handle";
+                    };
+                    readonly displayName: {
+                        readonly type: "string";
+                        readonly description: "Display name of the subject the verification applies to at the moment of verifying, which might not be the same at the time of viewing. The verification is only valid if the current displayName matches the one at the time of verifying.";
+                    };
+                    readonly createdAt: {
+                        readonly type: "string";
+                        readonly description: "Timestamp when the verification was created.";
+                        readonly format: "datetime";
+                    };
+                    readonly revokeReason: {
+                        readonly type: "string";
+                        readonly description: "Describes the reason for revocation, also indicating that the verification is no longer valid.";
+                    };
+                    readonly revokedAt: {
+                        readonly type: "string";
+                        readonly description: "Timestamp when the verification was revoked.";
+                        readonly format: "datetime";
+                    };
+                    readonly revokedBy: {
+                        readonly type: "string";
+                        readonly description: "The user who revoked this verification.";
+                        readonly format: "did";
+                    };
+                    readonly subjectProfile: {
+                        readonly type: "union";
+                        readonly refs: [];
+                    };
+                    readonly issuerProfile: {
+                        readonly type: "union";
+                        readonly refs: [];
+                    };
+                    readonly subjectRepo: {
+                        readonly type: "union";
+                        readonly refs: ["lex:tools.ozone.moderation.defs#repoViewDetail", "lex:tools.ozone.moderation.defs#repoViewNotFound"];
+                    };
+                    readonly issuerRepo: {
+                        readonly type: "union";
+                        readonly refs: ["lex:tools.ozone.moderation.defs#repoViewDetail", "lex:tools.ozone.moderation.defs#repoViewNotFound"];
+                    };
+                };
+            };
+        };
+    };
+    readonly ToolsOzoneVerificationGrantVerifications: {
+        readonly lexicon: 1;
+        readonly id: "tools.ozone.verification.grantVerifications";
+        readonly defs: {
+            readonly main: {
+                readonly type: "procedure";
+                readonly description: "Grant verifications to multiple subjects. Allows batch processing of up to 100 verifications at once.";
+                readonly input: {
+                    readonly encoding: "application/json";
+                    readonly schema: {
+                        readonly type: "object";
+                        readonly required: ["verifications"];
+                        readonly properties: {
+                            readonly verifications: {
+                                readonly type: "array";
+                                readonly description: "Array of verification requests to process";
+                                readonly maxLength: 100;
+                                readonly items: {
+                                    readonly type: "ref";
+                                    readonly ref: "lex:tools.ozone.verification.grantVerifications#verificationInput";
+                                };
+                            };
+                        };
+                    };
+                };
+                readonly output: {
+                    readonly encoding: "application/json";
+                    readonly schema: {
+                        readonly type: "object";
+                        readonly required: ["verifications", "failedVerifications"];
+                        readonly properties: {
+                            readonly verifications: {
+                                readonly type: "array";
+                                readonly items: {
+                                    readonly type: "ref";
+                                    readonly ref: "lex:tools.ozone.verification.defs#verificationView";
+                                };
+                            };
+                            readonly failedVerifications: {
+                                readonly type: "array";
+                                readonly items: {
+                                    readonly type: "ref";
+                                    readonly ref: "lex:tools.ozone.verification.grantVerifications#grantError";
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+            readonly verificationInput: {
+                readonly type: "object";
+                readonly required: ["subject", "handle", "displayName"];
+                readonly properties: {
+                    readonly subject: {
+                        readonly type: "string";
+                        readonly description: "The did of the subject being verified";
+                        readonly format: "did";
+                    };
+                    readonly handle: {
+                        readonly type: "string";
+                        readonly description: "Handle of the subject the verification applies to at the moment of verifying.";
+                        readonly format: "handle";
+                    };
+                    readonly displayName: {
+                        readonly type: "string";
+                        readonly description: "Display name of the subject the verification applies to at the moment of verifying.";
+                    };
+                    readonly createdAt: {
+                        readonly type: "string";
+                        readonly format: "datetime";
+                        readonly description: "Timestamp for verification record. Defaults to current time when not specified.";
+                    };
+                };
+            };
+            readonly grantError: {
+                readonly type: "object";
+                readonly description: "Error object for failed verifications.";
+                readonly required: ["error", "subject"];
+                readonly properties: {
+                    readonly error: {
+                        readonly type: "string";
+                        readonly description: "Error message describing the reason for failure.";
+                    };
+                    readonly subject: {
+                        readonly type: "string";
+                        readonly description: "The did of the subject being verified";
+                        readonly format: "did";
+                    };
+                };
+            };
+        };
+    };
+    readonly ToolsOzoneVerificationListVerifications: {
+        readonly lexicon: 1;
+        readonly id: "tools.ozone.verification.listVerifications";
+        readonly defs: {
+            readonly main: {
+                readonly type: "query";
+                readonly description: "List verifications";
+                readonly parameters: {
+                    readonly type: "params";
+                    readonly properties: {
+                        readonly cursor: {
+                            readonly type: "string";
+                            readonly description: "Pagination cursor";
+                        };
+                        readonly limit: {
+                            readonly type: "integer";
+                            readonly description: "Maximum number of results to return";
+                            readonly minimum: 1;
+                            readonly maximum: 100;
+                            readonly default: 50;
+                        };
+                        readonly createdAfter: {
+                            readonly type: "string";
+                            readonly format: "datetime";
+                            readonly description: "Filter to verifications created after this timestamp";
+                        };
+                        readonly createdBefore: {
+                            readonly type: "string";
+                            readonly format: "datetime";
+                            readonly description: "Filter to verifications created before this timestamp";
+                        };
+                        readonly issuers: {
+                            readonly type: "array";
+                            readonly maxLength: 100;
+                            readonly description: "Filter to verifications from specific issuers";
+                            readonly items: {
+                                readonly type: "string";
+                                readonly format: "did";
+                            };
+                        };
+                        readonly subjects: {
+                            readonly type: "array";
+                            readonly description: "Filter to specific verified DIDs";
+                            readonly maxLength: 100;
+                            readonly items: {
+                                readonly type: "string";
+                                readonly format: "did";
+                            };
+                        };
+                        readonly sortDirection: {
+                            readonly type: "string";
+                            readonly description: "Sort direction for creation date";
+                            readonly enum: ["asc", "desc"];
+                            readonly default: "desc";
+                        };
+                        readonly isRevoked: {
+                            readonly type: "boolean";
+                            readonly description: "Filter to verifications that are revoked or not. By default, includes both.";
+                        };
+                    };
+                };
+                readonly output: {
+                    readonly encoding: "application/json";
+                    readonly schema: {
+                        readonly type: "object";
+                        readonly required: ["verifications"];
+                        readonly properties: {
+                            readonly cursor: {
+                                readonly type: "string";
+                            };
+                            readonly verifications: {
+                                readonly type: "array";
+                                readonly items: {
+                                    readonly type: "ref";
+                                    readonly ref: "lex:tools.ozone.verification.defs#verificationView";
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+    readonly ToolsOzoneVerificationRevokeVerifications: {
+        readonly lexicon: 1;
+        readonly id: "tools.ozone.verification.revokeVerifications";
+        readonly defs: {
+            readonly main: {
+                readonly type: "procedure";
+                readonly description: "Revoke previously granted verifications in batches of up to 100.";
+                readonly input: {
+                    readonly encoding: "application/json";
+                    readonly schema: {
+                        readonly type: "object";
+                        readonly required: ["uris"];
+                        readonly properties: {
+                            readonly uris: {
+                                readonly type: "array";
+                                readonly description: "Array of verification record uris to revoke";
+                                readonly maxLength: 100;
+                                readonly items: {
+                                    readonly type: "string";
+                                    readonly description: "The AT-URI of the verification record to revoke.";
+                                    readonly format: "at-uri";
+                                };
+                            };
+                            readonly revokeReason: {
+                                readonly type: "string";
+                                readonly description: "Reason for revoking the verification. This is optional and can be omitted if not needed.";
+                                readonly maxLength: 1000;
+                            };
+                        };
+                    };
+                };
+                readonly output: {
+                    readonly encoding: "application/json";
+                    readonly schema: {
+                        readonly type: "object";
+                        readonly required: ["revokedVerifications", "failedRevocations"];
+                        readonly properties: {
+                            readonly revokedVerifications: {
+                                readonly type: "array";
+                                readonly description: "List of verification uris successfully revoked";
+                                readonly items: {
+                                    readonly type: "string";
+                                    readonly format: "at-uri";
+                                };
+                            };
+                            readonly failedRevocations: {
+                                readonly type: "array";
+                                readonly description: "List of verification uris that couldn't be revoked, including failure reasons";
+                                readonly items: {
+                                    readonly type: "ref";
+                                    readonly ref: "lex:tools.ozone.verification.revokeVerifications#revokeError";
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+            readonly revokeError: {
+                readonly type: "object";
+                readonly description: "Error object for failed revocations";
+                readonly required: ["uri", "error"];
+                readonly properties: {
+                    readonly uri: {
+                        readonly type: "string";
+                        readonly description: "The AT-URI of the verification record that failed to revoke.";
+                        readonly format: "at-uri";
+                    };
+                    readonly error: {
+                        readonly type: "string";
+                        readonly description: "Description of the error that occurred during revocation.";
+                    };
+                };
             };
         };
     };
@@ -17192,6 +18320,15 @@ export declare const schemas: ({
     };
 } | {
     readonly lexicon: 1;
+    readonly id: "com.atproto.sync.defs";
+    readonly defs: {
+        readonly hostStatus: {
+            readonly type: "string";
+            readonly knownValues: ["active", "idle", "offline", "throttled", "banned"];
+        };
+    };
+} | {
+    readonly lexicon: 1;
     readonly id: "com.atproto.sync.getBlob";
     readonly defs: {
         readonly main: {
@@ -17326,6 +18463,52 @@ export declare const schemas: ({
             };
             readonly errors: [{
                 readonly name: "HeadNotFound";
+            }];
+        };
+    };
+} | {
+    readonly lexicon: 1;
+    readonly id: "com.atproto.sync.getHostStatus";
+    readonly defs: {
+        readonly main: {
+            readonly type: "query";
+            readonly description: "Returns information about a specified upstream host, as consumed by the server. Implemented by relays.";
+            readonly parameters: {
+                readonly type: "params";
+                readonly required: ["hostname"];
+                readonly properties: {
+                    readonly hostname: {
+                        readonly type: "string";
+                        readonly description: "Hostname of the host (eg, PDS or relay) being queried.";
+                    };
+                };
+            };
+            readonly output: {
+                readonly encoding: "application/json";
+                readonly schema: {
+                    readonly type: "object";
+                    readonly required: ["hostname"];
+                    readonly properties: {
+                        readonly hostname: {
+                            readonly type: "string";
+                        };
+                        readonly seq: {
+                            readonly type: "integer";
+                            readonly description: "Recent repo stream event sequence number. May be delayed from actual stream processing (eg, persisted cursor not in-memory cursor).";
+                        };
+                        readonly accountCount: {
+                            readonly type: "integer";
+                            readonly description: "Number of accounts on the server which are associated with the upstream host. Note that the upstream may actually have more accounts.";
+                        };
+                        readonly status: {
+                            readonly type: "ref";
+                            readonly ref: "lex:com.atproto.sync.defs#hostStatus";
+                        };
+                    };
+                };
+            };
+            readonly errors: [{
+                readonly name: "HostNotFound";
             }];
         };
     };
@@ -17568,6 +18751,70 @@ export declare const schemas: ({
     };
 } | {
     readonly lexicon: 1;
+    readonly id: "com.atproto.sync.listHosts";
+    readonly defs: {
+        readonly main: {
+            readonly type: "query";
+            readonly description: "Enumerates upstream hosts (eg, PDS or relay instances) that this service consumes from. Implemented by relays.";
+            readonly parameters: {
+                readonly type: "params";
+                readonly properties: {
+                    readonly limit: {
+                        readonly type: "integer";
+                        readonly minimum: 1;
+                        readonly maximum: 1000;
+                        readonly default: 200;
+                    };
+                    readonly cursor: {
+                        readonly type: "string";
+                    };
+                };
+            };
+            readonly output: {
+                readonly encoding: "application/json";
+                readonly schema: {
+                    readonly type: "object";
+                    readonly required: ["hosts"];
+                    readonly properties: {
+                        readonly cursor: {
+                            readonly type: "string";
+                        };
+                        readonly hosts: {
+                            readonly type: "array";
+                            readonly items: {
+                                readonly type: "ref";
+                                readonly ref: "lex:com.atproto.sync.listHosts#host";
+                            };
+                            readonly description: "Sort order is not formally specified. Recommended order is by time host was first seen by the server, with oldest first.";
+                        };
+                    };
+                };
+            };
+        };
+        readonly host: {
+            readonly type: "object";
+            readonly required: ["hostname"];
+            readonly properties: {
+                readonly hostname: {
+                    readonly type: "string";
+                    readonly description: "hostname of server; not a URL (no scheme)";
+                };
+                readonly seq: {
+                    readonly type: "integer";
+                    readonly description: "Recent repo stream event sequence number. May be delayed from actual stream processing (eg, persisted cursor not in-memory cursor).";
+                };
+                readonly accountCount: {
+                    readonly type: "integer";
+                };
+                readonly status: {
+                    readonly type: "ref";
+                    readonly ref: "lex:com.atproto.sync.defs#hostStatus";
+                };
+            };
+        };
+    };
+} | {
+    readonly lexicon: 1;
     readonly id: "com.atproto.sync.listRepos";
     readonly defs: {
         readonly main: {
@@ -17735,6 +18982,9 @@ export declare const schemas: ({
                     };
                 };
             };
+            readonly errors: [{
+                readonly name: "HostBanned";
+            }];
         };
     };
 } | {
@@ -18111,6 +19361,14 @@ export declare const schemas: ({
                     readonly type: "string";
                     readonly format: "datetime";
                 };
+                readonly verification: {
+                    readonly type: "ref";
+                    readonly ref: "lex:app.bsky.actor.defs#verificationState";
+                };
+                readonly status: {
+                    readonly type: "ref";
+                    readonly ref: "lex:app.bsky.actor.defs#statusView";
+                };
             };
         };
         readonly profileView: {
@@ -18161,6 +19419,14 @@ export declare const schemas: ({
                         readonly type: "ref";
                         readonly ref: "lex:com.atproto.label.defs#label";
                     };
+                };
+                readonly verification: {
+                    readonly type: "ref";
+                    readonly ref: "lex:app.bsky.actor.defs#verificationState";
+                };
+                readonly status: {
+                    readonly type: "ref";
+                    readonly ref: "lex:app.bsky.actor.defs#statusView";
                 };
             };
         };
@@ -18233,6 +19499,14 @@ export declare const schemas: ({
                 readonly pinnedPost: {
                     readonly type: "ref";
                     readonly ref: "lex:com.atproto.repo.strongRef";
+                };
+                readonly verification: {
+                    readonly type: "ref";
+                    readonly ref: "lex:app.bsky.actor.defs#verificationState";
+                };
+                readonly status: {
+                    readonly type: "ref";
+                    readonly ref: "lex:app.bsky.actor.defs#statusView";
                 };
             };
         };
@@ -18322,11 +19596,62 @@ export declare const schemas: ({
                 };
             };
         };
+        readonly verificationState: {
+            readonly type: "object";
+            readonly description: "Represents the verification information about the user this object is attached to.";
+            readonly required: ["verifications", "verifiedStatus", "trustedVerifierStatus"];
+            readonly properties: {
+                readonly verifications: {
+                    readonly type: "array";
+                    readonly description: "All verifications issued by trusted verifiers on behalf of this user. Verifications by untrusted verifiers are not included.";
+                    readonly items: {
+                        readonly type: "ref";
+                        readonly ref: "lex:app.bsky.actor.defs#verificationView";
+                    };
+                };
+                readonly verifiedStatus: {
+                    readonly type: "string";
+                    readonly description: "The user's status as a verified account.";
+                    readonly knownValues: ["valid", "invalid", "none"];
+                };
+                readonly trustedVerifierStatus: {
+                    readonly type: "string";
+                    readonly description: "The user's status as a trusted verifier.";
+                    readonly knownValues: ["valid", "invalid", "none"];
+                };
+            };
+        };
+        readonly verificationView: {
+            readonly type: "object";
+            readonly description: "An individual verification for an associated subject.";
+            readonly required: ["issuer", "uri", "isValid", "createdAt"];
+            readonly properties: {
+                readonly issuer: {
+                    readonly type: "string";
+                    readonly description: "The user who issued this verification.";
+                    readonly format: "did";
+                };
+                readonly uri: {
+                    readonly type: "string";
+                    readonly description: "The AT-URI of the verification record.";
+                    readonly format: "at-uri";
+                };
+                readonly isValid: {
+                    readonly type: "boolean";
+                    readonly description: "True if the verification passes validation, otherwise false.";
+                };
+                readonly createdAt: {
+                    readonly type: "string";
+                    readonly description: "Timestamp when the verification was created.";
+                    readonly format: "datetime";
+                };
+            };
+        };
         readonly preferences: {
             readonly type: "array";
             readonly items: {
                 readonly type: "union";
-                readonly refs: ["lex:app.bsky.actor.defs#adultContentPref", "lex:app.bsky.actor.defs#contentLabelPref", "lex:app.bsky.actor.defs#savedFeedsPref", "lex:app.bsky.actor.defs#savedFeedsPrefV2", "lex:app.bsky.actor.defs#personalDetailsPref", "lex:app.bsky.actor.defs#feedViewPref", "lex:app.bsky.actor.defs#threadViewPref", "lex:app.bsky.actor.defs#interestsPref", "lex:app.bsky.actor.defs#mutedWordsPref", "lex:app.bsky.actor.defs#hiddenPostsPref", "lex:app.bsky.actor.defs#bskyAppStatePref", "lex:app.bsky.actor.defs#labelersPref", "lex:app.bsky.actor.defs#postInteractionSettingsPref"];
+                readonly refs: ["lex:app.bsky.actor.defs#adultContentPref", "lex:app.bsky.actor.defs#contentLabelPref", "lex:app.bsky.actor.defs#savedFeedsPref", "lex:app.bsky.actor.defs#savedFeedsPrefV2", "lex:app.bsky.actor.defs#personalDetailsPref", "lex:app.bsky.actor.defs#feedViewPref", "lex:app.bsky.actor.defs#threadViewPref", "lex:app.bsky.actor.defs#interestsPref", "lex:app.bsky.actor.defs#mutedWordsPref", "lex:app.bsky.actor.defs#hiddenPostsPref", "lex:app.bsky.actor.defs#bskyAppStatePref", "lex:app.bsky.actor.defs#labelersPref", "lex:app.bsky.actor.defs#postInteractionSettingsPref", "lex:app.bsky.actor.defs#verificationPrefs"];
             };
         };
         readonly adultContentPref: {
@@ -18640,6 +19965,18 @@ export declare const schemas: ({
                 };
             };
         };
+        readonly verificationPrefs: {
+            readonly type: "object";
+            readonly description: "Preferences for how verified accounts appear in the app.";
+            readonly required: [];
+            readonly properties: {
+                readonly hideBadges: {
+                    readonly description: "Hide the blue check badges for verified accounts and trusted verifiers.";
+                    readonly type: "boolean";
+                    readonly default: false;
+                };
+            };
+        };
         readonly postInteractionSettingsPref: {
             readonly type: "object";
             readonly description: "Default post interaction settings for the account. These values should be applied as default values when creating new posts. These refs should mirror the threadgate and postgate records exactly.";
@@ -18662,6 +19999,34 @@ export declare const schemas: ({
                         readonly type: "union";
                         readonly refs: ["lex:app.bsky.feed.postgate#disableRule"];
                     };
+                };
+            };
+        };
+        readonly statusView: {
+            readonly type: "object";
+            readonly required: ["status", "record"];
+            readonly properties: {
+                readonly status: {
+                    readonly type: "string";
+                    readonly description: "The status for the account.";
+                    readonly knownValues: ["app.bsky.actor.status#live"];
+                };
+                readonly record: {
+                    readonly type: "unknown";
+                };
+                readonly embed: {
+                    readonly type: "union";
+                    readonly description: "An optional embed associated with the status.";
+                    readonly refs: ["lex:app.bsky.embed.external#view"];
+                };
+                readonly expiresAt: {
+                    readonly type: "string";
+                    readonly description: "The date when this status will expire. The application might choose to no longer return the status after expiration.";
+                    readonly format: "datetime";
+                };
+                readonly isActive: {
+                    readonly type: "boolean";
+                    readonly description: "True if the status is not expired, false if it is expired. Only present if expiration was set.";
                 };
             };
         };
@@ -18973,6 +20338,45 @@ export declare const schemas: ({
                     };
                 };
             };
+        };
+    };
+} | {
+    readonly lexicon: 1;
+    readonly id: "app.bsky.actor.status";
+    readonly defs: {
+        readonly main: {
+            readonly type: "record";
+            readonly description: "A declaration of a Bluesky account status.";
+            readonly key: "literal:self";
+            readonly record: {
+                readonly type: "object";
+                readonly required: ["status", "createdAt"];
+                readonly properties: {
+                    readonly status: {
+                        readonly type: "string";
+                        readonly description: "The status for the account.";
+                        readonly knownValues: ["app.bsky.actor.status#live"];
+                    };
+                    readonly embed: {
+                        readonly type: "union";
+                        readonly description: "An optional embed associated with the status.";
+                        readonly refs: ["lex:app.bsky.embed.external"];
+                    };
+                    readonly durationMinutes: {
+                        readonly type: "integer";
+                        readonly description: "The duration of the status in minutes. Applications can choose to impose minimum and maximum limits.";
+                        readonly minimum: 1;
+                    };
+                    readonly createdAt: {
+                        readonly type: "string";
+                        readonly format: "datetime";
+                    };
+                };
+            };
+        };
+        readonly live: {
+            readonly type: "token";
+            readonly description: "Advertises an account as currently offering live content.";
         };
     };
 } | {
@@ -19492,6 +20896,11 @@ export declare const schemas: ({
                     readonly description: "Context provided by feed generator that may be passed back alongside interactions.";
                     readonly maxLength: 2000;
                 };
+                readonly reqId: {
+                    readonly type: "string";
+                    readonly description: "Unique identifier per request that may be passed back alongside interactions.";
+                    readonly maxLength: 100;
+                };
             };
         };
         readonly replyRef: {
@@ -19520,6 +20929,14 @@ export declare const schemas: ({
                 readonly by: {
                     readonly type: "ref";
                     readonly ref: "lex:app.bsky.actor.defs#profileViewBasic";
+                };
+                readonly uri: {
+                    readonly type: "string";
+                    readonly format: "at-uri";
+                };
+                readonly cid: {
+                    readonly type: "string";
+                    readonly format: "cid";
                 };
                 readonly indexedAt: {
                     readonly type: "string";
@@ -19749,6 +21166,11 @@ export declare const schemas: ({
                     readonly type: "string";
                     readonly description: "Context on a feed item that was originally supplied by the feed generator on getFeedSkeleton.";
                     readonly maxLength: 2000;
+                };
+                readonly reqId: {
+                    readonly type: "string";
+                    readonly description: "Unique identifier per request that may be passed back alongside interactions.";
+                    readonly maxLength: 100;
                 };
             };
         };
@@ -20255,6 +21677,11 @@ export declare const schemas: ({
                                 readonly ref: "lex:app.bsky.feed.defs#skeletonFeedPost";
                             };
                         };
+                        readonly reqId: {
+                            readonly type: "string";
+                            readonly description: "Unique identifier per request that may be passed back alongside interactions.";
+                            readonly maxLength: 100;
+                        };
                     };
                 };
             };
@@ -20717,6 +22144,10 @@ export declare const schemas: ({
                         readonly type: "string";
                         readonly format: "datetime";
                     };
+                    readonly via: {
+                        readonly type: "ref";
+                        readonly ref: "lex:com.atproto.repo.strongRef";
+                    };
                 };
             };
         };
@@ -20911,6 +22342,10 @@ export declare const schemas: ({
                         readonly type: "string";
                         readonly format: "datetime";
                     };
+                    readonly via: {
+                        readonly type: "ref";
+                        readonly ref: "lex:com.atproto.repo.strongRef";
+                    };
                 };
             };
         };
@@ -20921,7 +22356,7 @@ export declare const schemas: ({
     readonly defs: {
         readonly main: {
             readonly type: "query";
-            readonly description: "Find posts matching search criteria, returning views of those posts.";
+            readonly description: "Find posts matching search criteria, returning views of those posts. Note that this API endpoint may require authentication (eg, not public) for some service providers and implementations.";
             readonly parameters: {
                 readonly type: "params";
                 readonly required: ["q"];
@@ -22449,6 +23884,41 @@ export declare const schemas: ({
     };
 } | {
     readonly lexicon: 1;
+    readonly id: "app.bsky.graph.verification";
+    readonly defs: {
+        readonly main: {
+            readonly type: "record";
+            readonly description: "Record declaring a verification relationship between two accounts. Verifications are only considered valid by an app if issued by an account the app considers trusted.";
+            readonly key: "tid";
+            readonly record: {
+                readonly type: "object";
+                readonly required: ["subject", "handle", "displayName", "createdAt"];
+                readonly properties: {
+                    readonly subject: {
+                        readonly description: "DID of the subject the verification applies to.";
+                        readonly type: "string";
+                        readonly format: "did";
+                    };
+                    readonly handle: {
+                        readonly description: "Handle of the subject the verification applies to at the moment of verifying, which might not be the same at the time of viewing. The verification is only valid if the current handle matches the one at the time of verifying.";
+                        readonly type: "string";
+                        readonly format: "handle";
+                    };
+                    readonly displayName: {
+                        readonly description: "Display name of the subject the verification applies to at the moment of verifying, which might not be the same at the time of viewing. The verification is only valid if the current displayName matches the one at the time of verifying.";
+                        readonly type: "string";
+                    };
+                    readonly createdAt: {
+                        readonly description: "Date of when the verification was created.";
+                        readonly type: "string";
+                        readonly format: "datetime";
+                    };
+                };
+            };
+        };
+    };
+} | {
+    readonly lexicon: 1;
     readonly id: "app.bsky.labeler.defs";
     readonly defs: {
         readonly labelerView: {
@@ -22681,6 +24151,15 @@ export declare const schemas: ({
     };
 } | {
     readonly lexicon: 1;
+    readonly id: "app.bsky.notification.defs";
+    readonly defs: {
+        readonly recordDeleted: {
+            readonly type: "object";
+            readonly properties: {};
+        };
+    };
+} | {
+    readonly lexicon: 1;
     readonly id: "app.bsky.notification.getUnreadCount";
     readonly defs: {
         readonly main: {
@@ -22793,8 +24272,8 @@ export declare const schemas: ({
                 };
                 readonly reason: {
                     readonly type: "string";
-                    readonly description: "Expected values are 'like', 'repost', 'follow', 'mention', 'reply', 'quote', and 'starterpack-joined'.";
-                    readonly knownValues: ["like", "repost", "follow", "mention", "reply", "quote", "starterpack-joined"];
+                    readonly description: "The reason why this notification was delivered - e.g. your post was liked, or you received a new follower.";
+                    readonly knownValues: ["like", "repost", "follow", "mention", "reply", "quote", "starterpack-joined", "verified", "unverified", "like-via-repost", "repost-via-repost"];
                 };
                 readonly reasonSubject: {
                     readonly type: "string";
@@ -23108,6 +24587,29 @@ export declare const schemas: ({
                         readonly checkEmailConfirmed: {
                             readonly type: "boolean";
                         };
+                        readonly liveNow: {
+                            readonly type: "array";
+                            readonly items: {
+                                readonly type: "ref";
+                                readonly ref: "lex:app.bsky.unspecced.getConfig#liveNowConfig";
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        readonly liveNowConfig: {
+            readonly type: "object";
+            readonly required: ["did", "domains"];
+            readonly properties: {
+                readonly did: {
+                    readonly type: "string";
+                    readonly format: "did";
+                };
+                readonly domains: {
+                    readonly type: "array";
+                    readonly items: {
+                        readonly type: "string";
                     };
                 };
             };
@@ -23154,6 +24656,212 @@ export declare const schemas: ({
                             };
                         };
                     };
+                };
+            };
+        };
+    };
+} | {
+    readonly lexicon: 1;
+    readonly id: "app.bsky.unspecced.getPostThreadHiddenV2";
+    readonly defs: {
+        readonly main: {
+            readonly type: "query";
+            readonly description: "(NOTE: this endpoint is under development and WILL change without notice. Don't use it until it is moved out of `unspecced` or your application WILL break) Get the hidden posts in a thread. It is based in an anchor post at any depth of the tree, and returns hidden replies (recursive replies, with branching to their replies) below the anchor. It does not include ancestors nor the anchor. This should be called after exhausting `app.bsky.unspecced.getPostThreadV2`. Does not require auth, but additional metadata and filtering will be applied for authed requests.";
+            readonly parameters: {
+                readonly type: "params";
+                readonly required: ["anchor"];
+                readonly properties: {
+                    readonly anchor: {
+                        readonly type: "string";
+                        readonly format: "at-uri";
+                        readonly description: "Reference (AT-URI) to post record. This is the anchor post.";
+                    };
+                };
+            };
+            readonly output: {
+                readonly encoding: "application/json";
+                readonly schema: {
+                    readonly type: "object";
+                    readonly required: ["thread"];
+                    readonly properties: {
+                        readonly thread: {
+                            readonly type: "array";
+                            readonly description: "A flat list of thread hidden items. The depth of each item is indicated by the depth property inside the item.";
+                            readonly items: {
+                                readonly type: "ref";
+                                readonly ref: "lex:app.bsky.unspecced.getPostThreadHiddenV2#threadHiddenItem";
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        readonly threadHiddenItem: {
+            readonly type: "object";
+            readonly required: ["uri", "depth", "value"];
+            readonly properties: {
+                readonly uri: {
+                    readonly type: "string";
+                    readonly format: "at-uri";
+                };
+                readonly depth: {
+                    readonly type: "integer";
+                    readonly description: "The nesting level of this item in the thread. Depth 0 means the anchor item. Items above have negative depths, items below have positive depths.";
+                };
+                readonly value: {
+                    readonly type: "union";
+                    readonly refs: ["lex:app.bsky.unspecced.getPostThreadHiddenV2#threadHiddenItemPost"];
+                };
+            };
+        };
+        readonly threadHiddenItemPost: {
+            readonly type: "object";
+            readonly required: ["post", "hiddenByThreadgate", "mutedByViewer"];
+            readonly properties: {
+                readonly post: {
+                    readonly type: "ref";
+                    readonly ref: "lex:app.bsky.feed.defs#postView";
+                };
+                readonly hiddenByThreadgate: {
+                    readonly type: "boolean";
+                    readonly description: "The threadgate created by the author indicates this post as a reply to be hidden for everyone consuming the thread.";
+                };
+                readonly mutedByViewer: {
+                    readonly type: "boolean";
+                    readonly description: "This is by an account muted by the viewer requesting it.";
+                };
+            };
+        };
+    };
+} | {
+    readonly lexicon: 1;
+    readonly id: "app.bsky.unspecced.getPostThreadV2";
+    readonly defs: {
+        readonly main: {
+            readonly type: "query";
+            readonly description: "(NOTE: this endpoint is under development and WILL change without notice. Don't use it until it is moved out of `unspecced` or your application WILL break) Get posts in a thread. It is based in an anchor post at any depth of the tree, and returns posts above it (recursively resolving the parent, without further branching to their replies) and below it (recursive replies, with branching to their replies). Does not require auth, but additional metadata and filtering will be applied for authed requests.";
+            readonly parameters: {
+                readonly type: "params";
+                readonly required: ["anchor"];
+                readonly properties: {
+                    readonly anchor: {
+                        readonly type: "string";
+                        readonly format: "at-uri";
+                        readonly description: "Reference (AT-URI) to post record. This is the anchor post, and the thread will be built around it. It can be any post in the tree, not necessarily a root post.";
+                    };
+                    readonly above: {
+                        readonly type: "boolean";
+                        readonly description: "Whether to include parents above the anchor.";
+                        readonly default: true;
+                    };
+                    readonly below: {
+                        readonly type: "integer";
+                        readonly description: "How many levels of replies to include below the anchor.";
+                        readonly default: 6;
+                        readonly minimum: 0;
+                        readonly maximum: 20;
+                    };
+                    readonly branchingFactor: {
+                        readonly type: "integer";
+                        readonly description: "Maximum of replies to include at each level of the thread, except for the direct replies to the anchor, which are (NOTE: currently, during unspecced phase) all returned (NOTE: later they might be paginated).";
+                        readonly default: 10;
+                        readonly minimum: 0;
+                        readonly maximum: 100;
+                    };
+                    readonly prioritizeFollowedUsers: {
+                        readonly type: "boolean";
+                        readonly description: "Whether to prioritize posts from followed users. It only has effect when the user is authenticated.";
+                        readonly default: false;
+                    };
+                    readonly sort: {
+                        readonly type: "string";
+                        readonly description: "Sorting for the thread replies.";
+                        readonly knownValues: ["newest", "oldest", "top"];
+                        readonly default: "oldest";
+                    };
+                };
+            };
+            readonly output: {
+                readonly encoding: "application/json";
+                readonly schema: {
+                    readonly type: "object";
+                    readonly required: ["thread", "hasHiddenReplies"];
+                    readonly properties: {
+                        readonly thread: {
+                            readonly type: "array";
+                            readonly description: "A flat list of thread items. The depth of each item is indicated by the depth property inside the item.";
+                            readonly items: {
+                                readonly type: "ref";
+                                readonly ref: "lex:app.bsky.unspecced.getPostThreadV2#threadItem";
+                            };
+                        };
+                        readonly threadgate: {
+                            readonly type: "ref";
+                            readonly ref: "lex:app.bsky.feed.defs#threadgateView";
+                        };
+                        readonly hasHiddenReplies: {
+                            readonly type: "boolean";
+                            readonly description: "Whether this thread has hidden replies. If true, a call can be made to the `getPostThreadHiddenV2` endpoint to retrieve them.";
+                        };
+                    };
+                };
+            };
+        };
+        readonly threadItem: {
+            readonly type: "object";
+            readonly required: ["uri", "depth", "value"];
+            readonly properties: {
+                readonly uri: {
+                    readonly type: "string";
+                    readonly format: "at-uri";
+                };
+                readonly depth: {
+                    readonly type: "integer";
+                    readonly description: "The nesting level of this item in the thread. Depth 0 means the anchor item. Items above have negative depths, items below have positive depths.";
+                };
+                readonly value: {
+                    readonly type: "union";
+                    readonly refs: ["lex:app.bsky.unspecced.getPostThreadV2#threadItemPost", "lex:app.bsky.unspecced.getPostThreadV2#threadItemNoUnauthenticated", "lex:app.bsky.unspecced.getPostThreadV2#threadItemNotFound", "lex:app.bsky.unspecced.getPostThreadV2#threadItemBlocked"];
+                };
+            };
+        };
+        readonly threadItemPost: {
+            readonly type: "object";
+            readonly required: ["post", "moreParents", "moreReplies", "opThread"];
+            readonly properties: {
+                readonly post: {
+                    readonly type: "ref";
+                    readonly ref: "lex:app.bsky.feed.defs#postView";
+                };
+                readonly moreParents: {
+                    readonly type: "boolean";
+                    readonly description: "This post has more parents that were not present in the response. This is just a boolean, without the number of parents.";
+                };
+                readonly moreReplies: {
+                    readonly type: "integer";
+                    readonly description: "This post has more replies that were not present in the response. This is a numeric value, which is best-effort and might not be accurate.";
+                };
+                readonly opThread: {
+                    readonly type: "boolean";
+                    readonly description: "This post is part of a contiguous thread by the OP from the thread root. Many different OP threads can happen in the same thread.";
+                };
+            };
+        };
+        readonly threadItemNoUnauthenticated: {
+            readonly type: "object";
+            readonly properties: {};
+        };
+        readonly threadItemNotFound: {
+            readonly type: "object";
+            readonly properties: {};
+        };
+        readonly threadItemBlocked: {
+            readonly type: "object";
+            readonly required: ["author"];
+            readonly properties: {
+                readonly author: {
+                    readonly type: "ref";
+                    readonly ref: "lex:app.bsky.feed.defs#blockedAuthor";
                 };
             };
         };
@@ -23305,6 +25013,91 @@ export declare const schemas: ({
                             readonly items: {
                                 readonly type: "string";
                                 readonly format: "at-uri";
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+} | {
+    readonly lexicon: 1;
+    readonly id: "app.bsky.unspecced.getSuggestedUsers";
+    readonly defs: {
+        readonly main: {
+            readonly type: "query";
+            readonly description: "Get a list of suggested users";
+            readonly parameters: {
+                readonly type: "params";
+                readonly properties: {
+                    readonly category: {
+                        readonly type: "string";
+                        readonly description: "Category of users to get suggestions for.";
+                    };
+                    readonly limit: {
+                        readonly type: "integer";
+                        readonly minimum: 1;
+                        readonly maximum: 50;
+                        readonly default: 25;
+                    };
+                };
+            };
+            readonly output: {
+                readonly encoding: "application/json";
+                readonly schema: {
+                    readonly type: "object";
+                    readonly required: ["actors"];
+                    readonly properties: {
+                        readonly actors: {
+                            readonly type: "array";
+                            readonly items: {
+                                readonly type: "ref";
+                                readonly ref: "lex:app.bsky.actor.defs#profileView";
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+} | {
+    readonly lexicon: 1;
+    readonly id: "app.bsky.unspecced.getSuggestedUsersSkeleton";
+    readonly defs: {
+        readonly main: {
+            readonly type: "query";
+            readonly description: "Get a skeleton of suggested users. Intended to be called and hydrated by app.bsky.unspecced.getSuggestedUsers";
+            readonly parameters: {
+                readonly type: "params";
+                readonly properties: {
+                    readonly viewer: {
+                        readonly type: "string";
+                        readonly format: "did";
+                        readonly description: "DID of the account making the request (not included for public/unauthenticated queries).";
+                    };
+                    readonly category: {
+                        readonly type: "string";
+                        readonly description: "Category of users to get suggestions for.";
+                    };
+                    readonly limit: {
+                        readonly type: "integer";
+                        readonly minimum: 1;
+                        readonly maximum: 50;
+                        readonly default: 25;
+                    };
+                };
+            };
+            readonly output: {
+                readonly encoding: "application/json";
+                readonly schema: {
+                    readonly type: "object";
+                    readonly required: ["dids"];
+                    readonly properties: {
+                        readonly dids: {
+                            readonly type: "array";
+                            readonly items: {
+                                readonly type: "string";
+                                readonly format: "did";
                             };
                         };
                     };
@@ -23964,7 +25757,11 @@ export declare const schemas: ({
                 };
                 readonly chatDisabled: {
                     readonly type: "boolean";
-                    readonly description: "Set to true when the actor cannot actively participate in converations";
+                    readonly description: "Set to true when the actor cannot actively participate in conversations";
+                };
+                readonly verification: {
+                    readonly type: "ref";
+                    readonly ref: "lex:app.bsky.actor.defs#verificationState";
                 };
             };
         };
@@ -24049,7 +25846,7 @@ export declare const schemas: ({
                         readonly value: {
                             readonly type: "string";
                             readonly minLength: 1;
-                            readonly maxLength: 32;
+                            readonly maxLength: 64;
                             readonly minGraphemes: 1;
                             readonly maxGraphemes: 1;
                         };
@@ -24782,7 +26579,7 @@ export declare const schemas: ({
                         readonly value: {
                             readonly type: "string";
                             readonly minLength: 1;
-                            readonly maxLength: 32;
+                            readonly maxLength: 64;
                             readonly minGraphemes: 1;
                             readonly maxGraphemes: 1;
                         };
@@ -25329,6 +27126,123 @@ export declare const schemas: ({
     };
 } | {
     readonly lexicon: 1;
+    readonly id: "tools.ozone.hosting.getAccountHistory";
+    readonly defs: {
+        readonly main: {
+            readonly type: "query";
+            readonly description: "Get account history, e.g. log of updated email addresses or other identity information.";
+            readonly parameters: {
+                readonly type: "params";
+                readonly required: ["did"];
+                readonly properties: {
+                    readonly did: {
+                        readonly type: "string";
+                        readonly format: "did";
+                    };
+                    readonly events: {
+                        readonly type: "array";
+                        readonly items: {
+                            readonly type: "string";
+                            readonly knownValues: ["accountCreated", "emailUpdated", "emailConfirmed", "passwordUpdated", "handleUpdated"];
+                        };
+                    };
+                    readonly cursor: {
+                        readonly type: "string";
+                    };
+                    readonly limit: {
+                        readonly type: "integer";
+                        readonly minimum: 1;
+                        readonly maximum: 100;
+                        readonly default: 50;
+                    };
+                };
+            };
+            readonly output: {
+                readonly encoding: "application/json";
+                readonly schema: {
+                    readonly type: "object";
+                    readonly required: ["events"];
+                    readonly properties: {
+                        readonly cursor: {
+                            readonly type: "string";
+                        };
+                        readonly events: {
+                            readonly type: "array";
+                            readonly items: {
+                                readonly type: "ref";
+                                readonly ref: "lex:tools.ozone.hosting.getAccountHistory#event";
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        readonly event: {
+            readonly type: "object";
+            readonly required: ["details", "createdBy", "createdAt"];
+            readonly properties: {
+                readonly details: {
+                    readonly type: "union";
+                    readonly refs: ["lex:tools.ozone.hosting.getAccountHistory#accountCreated", "lex:tools.ozone.hosting.getAccountHistory#emailUpdated", "lex:tools.ozone.hosting.getAccountHistory#emailConfirmed", "lex:tools.ozone.hosting.getAccountHistory#passwordUpdated", "lex:tools.ozone.hosting.getAccountHistory#handleUpdated"];
+                };
+                readonly createdBy: {
+                    readonly type: "string";
+                };
+                readonly createdAt: {
+                    readonly type: "string";
+                    readonly format: "datetime";
+                };
+            };
+        };
+        readonly accountCreated: {
+            readonly type: "object";
+            readonly required: [];
+            readonly properties: {
+                readonly email: {
+                    readonly type: "string";
+                };
+                readonly handle: {
+                    readonly type: "string";
+                    readonly format: "handle";
+                };
+            };
+        };
+        readonly emailUpdated: {
+            readonly type: "object";
+            readonly required: ["email"];
+            readonly properties: {
+                readonly email: {
+                    readonly type: "string";
+                };
+            };
+        };
+        readonly emailConfirmed: {
+            readonly type: "object";
+            readonly required: ["email"];
+            readonly properties: {
+                readonly email: {
+                    readonly type: "string";
+                };
+            };
+        };
+        readonly passwordUpdated: {
+            readonly type: "object";
+            readonly required: [];
+            readonly properties: {};
+        };
+        readonly handleUpdated: {
+            readonly type: "object";
+            readonly required: ["handle"];
+            readonly properties: {
+                readonly handle: {
+                    readonly type: "string";
+                    readonly format: "handle";
+                };
+            };
+        };
+    };
+} | {
+    readonly lexicon: 1;
     readonly id: "tools.ozone.moderation.defs";
     readonly defs: {
         readonly modEventView: {
@@ -25409,7 +27323,7 @@ export declare const schemas: ({
                 };
                 readonly subject: {
                     readonly type: "union";
-                    readonly refs: ["lex:com.atproto.admin.defs#repoRef", "lex:com.atproto.repo.strongRef"];
+                    readonly refs: ["lex:com.atproto.admin.defs#repoRef", "lex:com.atproto.repo.strongRef", "lex:chat.bsky.convo.defs#messageRef"];
                 };
                 readonly hosting: {
                     readonly type: "union";
@@ -27026,6 +28940,11 @@ export declare const schemas: ({
                             readonly type: "ref";
                             readonly ref: "lex:tools.ozone.server.getConfig#viewerConfig";
                         };
+                        readonly verifierDid: {
+                            readonly type: "string";
+                            readonly format: "did";
+                            readonly description: "The did of the verifier used for verification.";
+                        };
                     };
                 };
             };
@@ -27044,7 +28963,7 @@ export declare const schemas: ({
             readonly properties: {
                 readonly role: {
                     readonly type: "string";
-                    readonly knownValues: ["tools.ozone.team.defs#roleAdmin", "tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage"];
+                    readonly knownValues: ["tools.ozone.team.defs#roleAdmin", "tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage", "tools.ozone.team.defs#roleVerifier"];
                 };
             };
         };
@@ -27361,7 +29280,7 @@ export declare const schemas: ({
                 };
                 readonly managerRole: {
                     readonly type: "string";
-                    readonly knownValues: ["tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage", "tools.ozone.team.defs#roleAdmin"];
+                    readonly knownValues: ["tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage", "tools.ozone.team.defs#roleAdmin", "tools.ozone.team.defs#roleVerifier"];
                 };
                 readonly scope: {
                     readonly type: "string";
@@ -27506,7 +29425,7 @@ export declare const schemas: ({
                         };
                         readonly managerRole: {
                             readonly type: "string";
-                            readonly knownValues: ["tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage", "tools.ozone.team.defs#roleAdmin"];
+                            readonly knownValues: ["tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage", "tools.ozone.team.defs#roleVerifier", "tools.ozone.team.defs#roleAdmin"];
                         };
                     };
                 };
@@ -27713,7 +29632,7 @@ export declare const schemas: ({
                         };
                         readonly role: {
                             readonly type: "string";
-                            readonly knownValues: ["tools.ozone.team.defs#roleAdmin", "tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage"];
+                            readonly knownValues: ["tools.ozone.team.defs#roleAdmin", "tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleVerifier", "tools.ozone.team.defs#roleTriage"];
                         };
                     };
                 };
@@ -27763,7 +29682,7 @@ export declare const schemas: ({
                 };
                 readonly role: {
                     readonly type: "string";
-                    readonly knownValues: ["lex:tools.ozone.team.defs#roleAdmin", "lex:tools.ozone.team.defs#roleModerator", "lex:tools.ozone.team.defs#roleTriage"];
+                    readonly knownValues: ["lex:tools.ozone.team.defs#roleAdmin", "lex:tools.ozone.team.defs#roleModerator", "lex:tools.ozone.team.defs#roleTriage", "lex:tools.ozone.team.defs#roleVerifier"];
                 };
             };
         };
@@ -27778,6 +29697,10 @@ export declare const schemas: ({
         readonly roleTriage: {
             readonly type: "token";
             readonly description: "Triage role. Mostly intended for monitoring and escalating issues.";
+        };
+        readonly roleVerifier: {
+            readonly type: "token";
+            readonly description: "Verifier role. Only allowed to issue verifications.";
         };
     };
 } | {
@@ -27885,7 +29808,7 @@ export declare const schemas: ({
                         };
                         readonly role: {
                             readonly type: "string";
-                            readonly knownValues: ["tools.ozone.team.defs#roleAdmin", "tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleTriage"];
+                            readonly knownValues: ["tools.ozone.team.defs#roleAdmin", "tools.ozone.team.defs#roleModerator", "tools.ozone.team.defs#roleVerifier", "tools.ozone.team.defs#roleTriage"];
                         };
                     };
                 };
@@ -27901,6 +29824,324 @@ export declare const schemas: ({
                 readonly name: "MemberNotFound";
                 readonly description: "The member being updated does not exist in the team";
             }];
+        };
+    };
+} | {
+    readonly lexicon: 1;
+    readonly id: "tools.ozone.verification.defs";
+    readonly defs: {
+        readonly verificationView: {
+            readonly type: "object";
+            readonly description: "Verification data for the associated subject.";
+            readonly required: ["issuer", "uri", "subject", "handle", "displayName", "createdAt"];
+            readonly properties: {
+                readonly issuer: {
+                    readonly type: "string";
+                    readonly description: "The user who issued this verification.";
+                    readonly format: "did";
+                };
+                readonly uri: {
+                    readonly type: "string";
+                    readonly description: "The AT-URI of the verification record.";
+                    readonly format: "at-uri";
+                };
+                readonly subject: {
+                    readonly type: "string";
+                    readonly format: "did";
+                    readonly description: "The subject of the verification.";
+                };
+                readonly handle: {
+                    readonly type: "string";
+                    readonly description: "Handle of the subject the verification applies to at the moment of verifying, which might not be the same at the time of viewing. The verification is only valid if the current handle matches the one at the time of verifying.";
+                    readonly format: "handle";
+                };
+                readonly displayName: {
+                    readonly type: "string";
+                    readonly description: "Display name of the subject the verification applies to at the moment of verifying, which might not be the same at the time of viewing. The verification is only valid if the current displayName matches the one at the time of verifying.";
+                };
+                readonly createdAt: {
+                    readonly type: "string";
+                    readonly description: "Timestamp when the verification was created.";
+                    readonly format: "datetime";
+                };
+                readonly revokeReason: {
+                    readonly type: "string";
+                    readonly description: "Describes the reason for revocation, also indicating that the verification is no longer valid.";
+                };
+                readonly revokedAt: {
+                    readonly type: "string";
+                    readonly description: "Timestamp when the verification was revoked.";
+                    readonly format: "datetime";
+                };
+                readonly revokedBy: {
+                    readonly type: "string";
+                    readonly description: "The user who revoked this verification.";
+                    readonly format: "did";
+                };
+                readonly subjectProfile: {
+                    readonly type: "union";
+                    readonly refs: [];
+                };
+                readonly issuerProfile: {
+                    readonly type: "union";
+                    readonly refs: [];
+                };
+                readonly subjectRepo: {
+                    readonly type: "union";
+                    readonly refs: ["lex:tools.ozone.moderation.defs#repoViewDetail", "lex:tools.ozone.moderation.defs#repoViewNotFound"];
+                };
+                readonly issuerRepo: {
+                    readonly type: "union";
+                    readonly refs: ["lex:tools.ozone.moderation.defs#repoViewDetail", "lex:tools.ozone.moderation.defs#repoViewNotFound"];
+                };
+            };
+        };
+    };
+} | {
+    readonly lexicon: 1;
+    readonly id: "tools.ozone.verification.grantVerifications";
+    readonly defs: {
+        readonly main: {
+            readonly type: "procedure";
+            readonly description: "Grant verifications to multiple subjects. Allows batch processing of up to 100 verifications at once.";
+            readonly input: {
+                readonly encoding: "application/json";
+                readonly schema: {
+                    readonly type: "object";
+                    readonly required: ["verifications"];
+                    readonly properties: {
+                        readonly verifications: {
+                            readonly type: "array";
+                            readonly description: "Array of verification requests to process";
+                            readonly maxLength: 100;
+                            readonly items: {
+                                readonly type: "ref";
+                                readonly ref: "lex:tools.ozone.verification.grantVerifications#verificationInput";
+                            };
+                        };
+                    };
+                };
+            };
+            readonly output: {
+                readonly encoding: "application/json";
+                readonly schema: {
+                    readonly type: "object";
+                    readonly required: ["verifications", "failedVerifications"];
+                    readonly properties: {
+                        readonly verifications: {
+                            readonly type: "array";
+                            readonly items: {
+                                readonly type: "ref";
+                                readonly ref: "lex:tools.ozone.verification.defs#verificationView";
+                            };
+                        };
+                        readonly failedVerifications: {
+                            readonly type: "array";
+                            readonly items: {
+                                readonly type: "ref";
+                                readonly ref: "lex:tools.ozone.verification.grantVerifications#grantError";
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        readonly verificationInput: {
+            readonly type: "object";
+            readonly required: ["subject", "handle", "displayName"];
+            readonly properties: {
+                readonly subject: {
+                    readonly type: "string";
+                    readonly description: "The did of the subject being verified";
+                    readonly format: "did";
+                };
+                readonly handle: {
+                    readonly type: "string";
+                    readonly description: "Handle of the subject the verification applies to at the moment of verifying.";
+                    readonly format: "handle";
+                };
+                readonly displayName: {
+                    readonly type: "string";
+                    readonly description: "Display name of the subject the verification applies to at the moment of verifying.";
+                };
+                readonly createdAt: {
+                    readonly type: "string";
+                    readonly format: "datetime";
+                    readonly description: "Timestamp for verification record. Defaults to current time when not specified.";
+                };
+            };
+        };
+        readonly grantError: {
+            readonly type: "object";
+            readonly description: "Error object for failed verifications.";
+            readonly required: ["error", "subject"];
+            readonly properties: {
+                readonly error: {
+                    readonly type: "string";
+                    readonly description: "Error message describing the reason for failure.";
+                };
+                readonly subject: {
+                    readonly type: "string";
+                    readonly description: "The did of the subject being verified";
+                    readonly format: "did";
+                };
+            };
+        };
+    };
+} | {
+    readonly lexicon: 1;
+    readonly id: "tools.ozone.verification.listVerifications";
+    readonly defs: {
+        readonly main: {
+            readonly type: "query";
+            readonly description: "List verifications";
+            readonly parameters: {
+                readonly type: "params";
+                readonly properties: {
+                    readonly cursor: {
+                        readonly type: "string";
+                        readonly description: "Pagination cursor";
+                    };
+                    readonly limit: {
+                        readonly type: "integer";
+                        readonly description: "Maximum number of results to return";
+                        readonly minimum: 1;
+                        readonly maximum: 100;
+                        readonly default: 50;
+                    };
+                    readonly createdAfter: {
+                        readonly type: "string";
+                        readonly format: "datetime";
+                        readonly description: "Filter to verifications created after this timestamp";
+                    };
+                    readonly createdBefore: {
+                        readonly type: "string";
+                        readonly format: "datetime";
+                        readonly description: "Filter to verifications created before this timestamp";
+                    };
+                    readonly issuers: {
+                        readonly type: "array";
+                        readonly maxLength: 100;
+                        readonly description: "Filter to verifications from specific issuers";
+                        readonly items: {
+                            readonly type: "string";
+                            readonly format: "did";
+                        };
+                    };
+                    readonly subjects: {
+                        readonly type: "array";
+                        readonly description: "Filter to specific verified DIDs";
+                        readonly maxLength: 100;
+                        readonly items: {
+                            readonly type: "string";
+                            readonly format: "did";
+                        };
+                    };
+                    readonly sortDirection: {
+                        readonly type: "string";
+                        readonly description: "Sort direction for creation date";
+                        readonly enum: ["asc", "desc"];
+                        readonly default: "desc";
+                    };
+                    readonly isRevoked: {
+                        readonly type: "boolean";
+                        readonly description: "Filter to verifications that are revoked or not. By default, includes both.";
+                    };
+                };
+            };
+            readonly output: {
+                readonly encoding: "application/json";
+                readonly schema: {
+                    readonly type: "object";
+                    readonly required: ["verifications"];
+                    readonly properties: {
+                        readonly cursor: {
+                            readonly type: "string";
+                        };
+                        readonly verifications: {
+                            readonly type: "array";
+                            readonly items: {
+                                readonly type: "ref";
+                                readonly ref: "lex:tools.ozone.verification.defs#verificationView";
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+} | {
+    readonly lexicon: 1;
+    readonly id: "tools.ozone.verification.revokeVerifications";
+    readonly defs: {
+        readonly main: {
+            readonly type: "procedure";
+            readonly description: "Revoke previously granted verifications in batches of up to 100.";
+            readonly input: {
+                readonly encoding: "application/json";
+                readonly schema: {
+                    readonly type: "object";
+                    readonly required: ["uris"];
+                    readonly properties: {
+                        readonly uris: {
+                            readonly type: "array";
+                            readonly description: "Array of verification record uris to revoke";
+                            readonly maxLength: 100;
+                            readonly items: {
+                                readonly type: "string";
+                                readonly description: "The AT-URI of the verification record to revoke.";
+                                readonly format: "at-uri";
+                            };
+                        };
+                        readonly revokeReason: {
+                            readonly type: "string";
+                            readonly description: "Reason for revoking the verification. This is optional and can be omitted if not needed.";
+                            readonly maxLength: 1000;
+                        };
+                    };
+                };
+            };
+            readonly output: {
+                readonly encoding: "application/json";
+                readonly schema: {
+                    readonly type: "object";
+                    readonly required: ["revokedVerifications", "failedRevocations"];
+                    readonly properties: {
+                        readonly revokedVerifications: {
+                            readonly type: "array";
+                            readonly description: "List of verification uris successfully revoked";
+                            readonly items: {
+                                readonly type: "string";
+                                readonly format: "at-uri";
+                            };
+                        };
+                        readonly failedRevocations: {
+                            readonly type: "array";
+                            readonly description: "List of verification uris that couldn't be revoked, including failure reasons";
+                            readonly items: {
+                                readonly type: "ref";
+                                readonly ref: "lex:tools.ozone.verification.revokeVerifications#revokeError";
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        readonly revokeError: {
+            readonly type: "object";
+            readonly description: "Error object for failed revocations";
+            readonly required: ["uri", "error"];
+            readonly properties: {
+                readonly uri: {
+                    readonly type: "string";
+                    readonly description: "The AT-URI of the verification record that failed to revoke.";
+                    readonly format: "at-uri";
+                };
+                readonly error: {
+                    readonly type: "string";
+                    readonly description: "Description of the error that occurred during revocation.";
+                };
+            };
         };
     };
 })[];
@@ -27984,15 +30225,18 @@ export declare const ids: {
     readonly ComAtprotoServerResetPassword: "com.atproto.server.resetPassword";
     readonly ComAtprotoServerRevokeAppPassword: "com.atproto.server.revokeAppPassword";
     readonly ComAtprotoServerUpdateEmail: "com.atproto.server.updateEmail";
+    readonly ComAtprotoSyncDefs: "com.atproto.sync.defs";
     readonly ComAtprotoSyncGetBlob: "com.atproto.sync.getBlob";
     readonly ComAtprotoSyncGetBlocks: "com.atproto.sync.getBlocks";
     readonly ComAtprotoSyncGetCheckout: "com.atproto.sync.getCheckout";
     readonly ComAtprotoSyncGetHead: "com.atproto.sync.getHead";
+    readonly ComAtprotoSyncGetHostStatus: "com.atproto.sync.getHostStatus";
     readonly ComAtprotoSyncGetLatestCommit: "com.atproto.sync.getLatestCommit";
     readonly ComAtprotoSyncGetRecord: "com.atproto.sync.getRecord";
     readonly ComAtprotoSyncGetRepo: "com.atproto.sync.getRepo";
     readonly ComAtprotoSyncGetRepoStatus: "com.atproto.sync.getRepoStatus";
     readonly ComAtprotoSyncListBlobs: "com.atproto.sync.listBlobs";
+    readonly ComAtprotoSyncListHosts: "com.atproto.sync.listHosts";
     readonly ComAtprotoSyncListRepos: "com.atproto.sync.listRepos";
     readonly ComAtprotoSyncListReposByCollection: "com.atproto.sync.listReposByCollection";
     readonly ComAtprotoSyncNotifyOfUpdate: "com.atproto.sync.notifyOfUpdate";
@@ -28011,6 +30255,7 @@ export declare const ids: {
     readonly AppBskyActorPutPreferences: "app.bsky.actor.putPreferences";
     readonly AppBskyActorSearchActors: "app.bsky.actor.searchActors";
     readonly AppBskyActorSearchActorsTypeahead: "app.bsky.actor.searchActorsTypeahead";
+    readonly AppBskyActorStatus: "app.bsky.actor.status";
     readonly AppBskyEmbedDefs: "app.bsky.embed.defs";
     readonly AppBskyEmbedExternal: "app.bsky.embed.external";
     readonly AppBskyEmbedImages: "app.bsky.embed.images";
@@ -28070,9 +30315,11 @@ export declare const ids: {
     readonly AppBskyGraphUnmuteActor: "app.bsky.graph.unmuteActor";
     readonly AppBskyGraphUnmuteActorList: "app.bsky.graph.unmuteActorList";
     readonly AppBskyGraphUnmuteThread: "app.bsky.graph.unmuteThread";
+    readonly AppBskyGraphVerification: "app.bsky.graph.verification";
     readonly AppBskyLabelerDefs: "app.bsky.labeler.defs";
     readonly AppBskyLabelerGetServices: "app.bsky.labeler.getServices";
     readonly AppBskyLabelerService: "app.bsky.labeler.service";
+    readonly AppBskyNotificationDefs: "app.bsky.notification.defs";
     readonly AppBskyNotificationGetUnreadCount: "app.bsky.notification.getUnreadCount";
     readonly AppBskyNotificationListNotifications: "app.bsky.notification.listNotifications";
     readonly AppBskyNotificationPutPreferences: "app.bsky.notification.putPreferences";
@@ -28082,10 +30329,14 @@ export declare const ids: {
     readonly AppBskyUnspeccedDefs: "app.bsky.unspecced.defs";
     readonly AppBskyUnspeccedGetConfig: "app.bsky.unspecced.getConfig";
     readonly AppBskyUnspeccedGetPopularFeedGenerators: "app.bsky.unspecced.getPopularFeedGenerators";
+    readonly AppBskyUnspeccedGetPostThreadHiddenV2: "app.bsky.unspecced.getPostThreadHiddenV2";
+    readonly AppBskyUnspeccedGetPostThreadV2: "app.bsky.unspecced.getPostThreadV2";
     readonly AppBskyUnspeccedGetSuggestedFeeds: "app.bsky.unspecced.getSuggestedFeeds";
     readonly AppBskyUnspeccedGetSuggestedFeedsSkeleton: "app.bsky.unspecced.getSuggestedFeedsSkeleton";
     readonly AppBskyUnspeccedGetSuggestedStarterPacks: "app.bsky.unspecced.getSuggestedStarterPacks";
     readonly AppBskyUnspeccedGetSuggestedStarterPacksSkeleton: "app.bsky.unspecced.getSuggestedStarterPacksSkeleton";
+    readonly AppBskyUnspeccedGetSuggestedUsers: "app.bsky.unspecced.getSuggestedUsers";
+    readonly AppBskyUnspeccedGetSuggestedUsersSkeleton: "app.bsky.unspecced.getSuggestedUsersSkeleton";
     readonly AppBskyUnspeccedGetSuggestionsSkeleton: "app.bsky.unspecced.getSuggestionsSkeleton";
     readonly AppBskyUnspeccedGetTaggedSuggestions: "app.bsky.unspecced.getTaggedSuggestions";
     readonly AppBskyUnspeccedGetTrendingTopics: "app.bsky.unspecced.getTrendingTopics";
@@ -28128,6 +30379,7 @@ export declare const ids: {
     readonly ToolsOzoneCommunicationDeleteTemplate: "tools.ozone.communication.deleteTemplate";
     readonly ToolsOzoneCommunicationListTemplates: "tools.ozone.communication.listTemplates";
     readonly ToolsOzoneCommunicationUpdateTemplate: "tools.ozone.communication.updateTemplate";
+    readonly ToolsOzoneHostingGetAccountHistory: "tools.ozone.hosting.getAccountHistory";
     readonly ToolsOzoneModerationDefs: "tools.ozone.moderation.defs";
     readonly ToolsOzoneModerationEmitEvent: "tools.ozone.moderation.emitEvent";
     readonly ToolsOzoneModerationGetEvent: "tools.ozone.moderation.getEvent";
@@ -28161,5 +30413,9 @@ export declare const ids: {
     readonly ToolsOzoneTeamDeleteMember: "tools.ozone.team.deleteMember";
     readonly ToolsOzoneTeamListMembers: "tools.ozone.team.listMembers";
     readonly ToolsOzoneTeamUpdateMember: "tools.ozone.team.updateMember";
+    readonly ToolsOzoneVerificationDefs: "tools.ozone.verification.defs";
+    readonly ToolsOzoneVerificationGrantVerifications: "tools.ozone.verification.grantVerifications";
+    readonly ToolsOzoneVerificationListVerifications: "tools.ozone.verification.listVerifications";
+    readonly ToolsOzoneVerificationRevokeVerifications: "tools.ozone.verification.revokeVerifications";
 };
 //# sourceMappingURL=lexicons.d.ts.map

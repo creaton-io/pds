@@ -15,13 +15,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -385,13 +395,17 @@ class AppContext {
                 safeFetch,
                 metadata: {
                     protected_resources: [new URL(cfg.oauth.issuer).origin],
-                    scopes_supported: ['transition:generic', 'transition:chat.bsky'],
+                    scopes_supported: [
+                        'transition:email',
+                        'transition:generic',
+                        'transition:chat.bsky',
+                    ],
                 },
                 // If the PDS is both an authorization server & resource server (no
                 // entryway), there is no need to use JWTs as access tokens. Instead,
                 // the PDS can use tokenId as access tokens. This allows the PDS to
                 // always use up-to-date token data from the token store.
-                accessTokenType: oauth_provider_1.AccessTokenType.id,
+                accessTokenMode: oauth_provider_1.AccessTokenMode.light,
             })
             : undefined;
         const oauthVerifier = oauthProvider ?? // OAuthProvider extends OAuthVerifier

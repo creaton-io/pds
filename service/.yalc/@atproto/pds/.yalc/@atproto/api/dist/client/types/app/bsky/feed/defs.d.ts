@@ -62,6 +62,8 @@ export interface FeedViewPost {
     };
     /** Context provided by feed generator that may be passed back alongside interactions. */
     feedContext?: string;
+    /** Unique identifier per request that may be passed back alongside interactions. */
+    reqId?: string;
 }
 export declare function isFeedViewPost<V>(v: V): v is import("../../../../util").$TypedObject<V, "app.bsky.feed.defs", "feedViewPost">;
 export declare function validateFeedViewPost<V>(v: V): ValidationResult<FeedViewPost & V>;
@@ -80,6 +82,8 @@ export declare function validateReplyRef<V>(v: V): ValidationResult<ReplyRef & V
 export interface ReasonRepost {
     $type?: 'app.bsky.feed.defs#reasonRepost';
     by: AppBskyActorDefs.ProfileViewBasic;
+    uri?: string;
+    cid?: string;
     indexedAt: string;
 }
 export declare function isReasonRepost<V>(v: V): v is import("../../../../util").$TypedObject<V, "app.bsky.feed.defs", "reasonRepost">;
@@ -188,6 +192,8 @@ export interface Interaction {
     event?: 'app.bsky.feed.defs#requestLess' | 'app.bsky.feed.defs#requestMore' | 'app.bsky.feed.defs#clickthroughItem' | 'app.bsky.feed.defs#clickthroughAuthor' | 'app.bsky.feed.defs#clickthroughReposter' | 'app.bsky.feed.defs#clickthroughEmbed' | 'app.bsky.feed.defs#interactionSeen' | 'app.bsky.feed.defs#interactionLike' | 'app.bsky.feed.defs#interactionRepost' | 'app.bsky.feed.defs#interactionReply' | 'app.bsky.feed.defs#interactionQuote' | 'app.bsky.feed.defs#interactionShare' | (string & {});
     /** Context on a feed item that was originally supplied by the feed generator on getFeedSkeleton. */
     feedContext?: string;
+    /** Unique identifier per request that may be passed back alongside interactions. */
+    reqId?: string;
 }
 export declare function isInteraction<V>(v: V): v is import("../../../../util").$TypedObject<V, "app.bsky.feed.defs", "interaction">;
 export declare function validateInteraction<V>(v: V): ValidationResult<Interaction & V>;

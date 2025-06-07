@@ -9,7 +9,7 @@ export interface QueryParams {
 export interface InputSchema {
     did: string;
     disabled?: boolean;
-    role?: 'tools.ozone.team.defs#roleAdmin' | 'tools.ozone.team.defs#roleModerator' | 'tools.ozone.team.defs#roleTriage' | (string & {});
+    role?: 'tools.ozone.team.defs#roleAdmin' | 'tools.ozone.team.defs#roleModerator' | 'tools.ozone.team.defs#roleVerifier' | 'tools.ozone.team.defs#roleTriage' | (string & {});
 }
 export type OutputSchema = ToolsOzoneTeamDefs.Member;
 export interface HandlerInput {

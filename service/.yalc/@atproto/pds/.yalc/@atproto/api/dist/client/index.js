@@ -15,21 +15,31 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ComAtprotoServerCreateInviteCode = exports.ComAtprotoServerCreateAppPassword = exports.ComAtprotoServerCreateAccount = exports.ComAtprotoServerConfirmEmail = exports.ComAtprotoServerCheckAccountStatus = exports.ComAtprotoServerActivateAccount = exports.ComAtprotoRepoUploadBlob = exports.ComAtprotoRepoStrongRef = exports.ComAtprotoRepoPutRecord = exports.ComAtprotoRepoListRecords = exports.ComAtprotoRepoListMissingBlobs = exports.ComAtprotoRepoImportRepo = exports.ComAtprotoRepoGetRecord = exports.ComAtprotoRepoDescribeRepo = exports.ComAtprotoRepoDeleteRecord = exports.ComAtprotoRepoDefs = exports.ComAtprotoRepoCreateRecord = exports.ComAtprotoRepoApplyWrites = exports.ComAtprotoModerationDefs = exports.ComAtprotoModerationCreateReport = exports.ComAtprotoLexiconSchema = exports.ComAtprotoLabelSubscribeLabels = exports.ComAtprotoLabelQueryLabels = exports.ComAtprotoLabelDefs = exports.ComAtprotoIdentityUpdateHandle = exports.ComAtprotoIdentitySubmitPlcOperation = exports.ComAtprotoIdentitySignPlcOperation = exports.ComAtprotoIdentityResolveIdentity = exports.ComAtprotoIdentityResolveHandle = exports.ComAtprotoIdentityResolveDid = exports.ComAtprotoIdentityRequestPlcOperationSignature = exports.ComAtprotoIdentityRefreshIdentity = exports.ComAtprotoIdentityGetRecommendedDidCredentials = exports.ComAtprotoIdentityDefs = exports.ComAtprotoAdminUpdateSubjectStatus = exports.ComAtprotoAdminUpdateAccountSigningKey = exports.ComAtprotoAdminUpdateAccountPassword = exports.ComAtprotoAdminUpdateAccountHandle = exports.ComAtprotoAdminUpdateAccountEmail = exports.ComAtprotoAdminSendEmail = exports.ComAtprotoAdminSearchAccounts = exports.ComAtprotoAdminGetSubjectStatus = exports.ComAtprotoAdminGetInviteCodes = exports.ComAtprotoAdminGetAccountInfos = exports.ComAtprotoAdminGetAccountInfo = exports.ComAtprotoAdminEnableAccountInvites = exports.ComAtprotoAdminDisableInviteCodes = exports.ComAtprotoAdminDisableAccountInvites = exports.ComAtprotoAdminDeleteAccount = exports.ComAtprotoAdminDefs = void 0;
-exports.AppBskyEmbedDefs = exports.AppBskyActorSearchActorsTypeahead = exports.AppBskyActorSearchActors = exports.AppBskyActorPutPreferences = exports.AppBskyActorProfile = exports.AppBskyActorGetSuggestions = exports.AppBskyActorGetProfiles = exports.AppBskyActorGetProfile = exports.AppBskyActorGetPreferences = exports.AppBskyActorDefs = exports.ComAtprotoTempRequestPhoneVerification = exports.ComAtprotoTempFetchLabels = exports.ComAtprotoTempCheckSignupQueue = exports.ComAtprotoTempAddReservedHandle = exports.ComAtprotoSyncSubscribeRepos = exports.ComAtprotoSyncRequestCrawl = exports.ComAtprotoSyncNotifyOfUpdate = exports.ComAtprotoSyncListReposByCollection = exports.ComAtprotoSyncListRepos = exports.ComAtprotoSyncListBlobs = exports.ComAtprotoSyncGetRepoStatus = exports.ComAtprotoSyncGetRepo = exports.ComAtprotoSyncGetRecord = exports.ComAtprotoSyncGetLatestCommit = exports.ComAtprotoSyncGetHead = exports.ComAtprotoSyncGetCheckout = exports.ComAtprotoSyncGetBlocks = exports.ComAtprotoSyncGetBlob = exports.ComAtprotoServerUpdateEmail = exports.ComAtprotoServerRevokeAppPassword = exports.ComAtprotoServerResetPassword = exports.ComAtprotoServerReserveSigningKey = exports.ComAtprotoServerRequestPasswordReset = exports.ComAtprotoServerRequestEmailUpdate = exports.ComAtprotoServerRequestEmailConfirmation = exports.ComAtprotoServerRequestAccountDelete = exports.ComAtprotoServerRefreshSession = exports.ComAtprotoServerListAppPasswords = exports.ComAtprotoServerGetSession = exports.ComAtprotoServerGetServiceAuth = exports.ComAtprotoServerGetAccountInviteCodes = exports.ComAtprotoServerDescribeServer = exports.ComAtprotoServerDeleteSession = exports.ComAtprotoServerDeleteAccount = exports.ComAtprotoServerDefs = exports.ComAtprotoServerDeactivateAccount = exports.ComAtprotoServerCreateSession = exports.ComAtprotoServerCreateSIWERegistration = exports.ComAtprotoServerCreateSIWELogin = exports.ComAtprotoServerCreateInviteCodes = void 0;
-exports.AppBskyGraphListitem = exports.AppBskyGraphListblock = exports.AppBskyGraphList = exports.AppBskyGraphGetSuggestedFollowsByActor = exports.AppBskyGraphGetStarterPacks = exports.AppBskyGraphGetStarterPack = exports.AppBskyGraphGetRelationships = exports.AppBskyGraphGetMutes = exports.AppBskyGraphGetLists = exports.AppBskyGraphGetListMutes = exports.AppBskyGraphGetListBlocks = exports.AppBskyGraphGetList = exports.AppBskyGraphGetKnownFollowers = exports.AppBskyGraphGetFollows = exports.AppBskyGraphGetFollowers = exports.AppBskyGraphGetBlocks = exports.AppBskyGraphGetActorStarterPacks = exports.AppBskyGraphFollow = exports.AppBskyGraphDefs = exports.AppBskyGraphBlock = exports.AppBskyFeedThreadgate = exports.AppBskyFeedSendInteractions = exports.AppBskyFeedSearchPosts = exports.AppBskyFeedRepost = exports.AppBskyFeedPostgate = exports.AppBskyFeedPost = exports.AppBskyFeedLike = exports.AppBskyFeedGetTimeline = exports.AppBskyFeedGetSuggestedFeeds = exports.AppBskyFeedGetRepostedBy = exports.AppBskyFeedGetQuotes = exports.AppBskyFeedGetPosts = exports.AppBskyFeedGetPostThread = exports.AppBskyFeedGetListFeed = exports.AppBskyFeedGetLikes = exports.AppBskyFeedGetFeedSkeleton = exports.AppBskyFeedGetFeedGenerators = exports.AppBskyFeedGetFeedGenerator = exports.AppBskyFeedGetFeed = exports.AppBskyFeedGetAuthorFeed = exports.AppBskyFeedGetActorLikes = exports.AppBskyFeedGetActorFeeds = exports.AppBskyFeedGenerator = exports.AppBskyFeedDescribeFeedGenerator = exports.AppBskyFeedDefs = exports.AppBskyEmbedVideo = exports.AppBskyEmbedRecordWithMedia = exports.AppBskyEmbedRecord = exports.AppBskyEmbedImages = exports.AppBskyEmbedExternal = void 0;
-exports.ChatBskyConvoLeaveConvo = exports.ChatBskyConvoGetMessages = exports.ChatBskyConvoGetLog = exports.ChatBskyConvoGetConvoForMembers = exports.ChatBskyConvoGetConvoAvailability = exports.ChatBskyConvoGetConvo = exports.ChatBskyConvoDeleteMessageForSelf = exports.ChatBskyConvoDefs = exports.ChatBskyConvoAddReaction = exports.ChatBskyConvoAcceptConvo = exports.ChatBskyActorExportAccountData = exports.ChatBskyActorDeleteAccount = exports.ChatBskyActorDefs = exports.ChatBskyActorDeclaration = exports.AppBskyVideoUploadVideo = exports.AppBskyVideoGetUploadLimits = exports.AppBskyVideoGetJobStatus = exports.AppBskyVideoDefs = exports.AppBskyUnspeccedSearchStarterPacksSkeleton = exports.AppBskyUnspeccedSearchPostsSkeleton = exports.AppBskyUnspeccedSearchActorsSkeleton = exports.AppBskyUnspeccedGetTrendsSkeleton = exports.AppBskyUnspeccedGetTrends = exports.AppBskyUnspeccedGetTrendingTopics = exports.AppBskyUnspeccedGetTaggedSuggestions = exports.AppBskyUnspeccedGetSuggestionsSkeleton = exports.AppBskyUnspeccedGetSuggestedStarterPacksSkeleton = exports.AppBskyUnspeccedGetSuggestedStarterPacks = exports.AppBskyUnspeccedGetSuggestedFeedsSkeleton = exports.AppBskyUnspeccedGetSuggestedFeeds = exports.AppBskyUnspeccedGetPopularFeedGenerators = exports.AppBskyUnspeccedGetConfig = exports.AppBskyUnspeccedDefs = exports.AppBskyRichtextFacet = exports.AppBskyNotificationUpdateSeen = exports.AppBskyNotificationRegisterPush = exports.AppBskyNotificationPutPreferences = exports.AppBskyNotificationListNotifications = exports.AppBskyNotificationGetUnreadCount = exports.AppBskyLabelerService = exports.AppBskyLabelerGetServices = exports.AppBskyLabelerDefs = exports.AppBskyGraphUnmuteThread = exports.AppBskyGraphUnmuteActorList = exports.AppBskyGraphUnmuteActor = exports.AppBskyGraphStarterpack = exports.AppBskyGraphSearchStarterPacks = exports.AppBskyGraphMuteThread = exports.AppBskyGraphMuteActorList = exports.AppBskyGraphMuteActor = void 0;
-exports.COM_ATPROTO_MODERATION = exports.ToolsOzoneTeamUpdateMember = exports.ToolsOzoneTeamListMembers = exports.ToolsOzoneTeamDeleteMember = exports.ToolsOzoneTeamDefs = exports.ToolsOzoneTeamAddMember = exports.ToolsOzoneSignatureSearchAccounts = exports.ToolsOzoneSignatureFindRelatedAccounts = exports.ToolsOzoneSignatureFindCorrelation = exports.ToolsOzoneSignatureDefs = exports.ToolsOzoneSettingUpsertOption = exports.ToolsOzoneSettingRemoveOptions = exports.ToolsOzoneSettingListOptions = exports.ToolsOzoneSettingDefs = exports.ToolsOzoneSetUpsertSet = exports.ToolsOzoneSetQuerySets = exports.ToolsOzoneSetGetValues = exports.ToolsOzoneSetDeleteValues = exports.ToolsOzoneSetDeleteSet = exports.ToolsOzoneSetDefs = exports.ToolsOzoneSetAddValues = exports.ToolsOzoneServerGetConfig = exports.ToolsOzoneModerationSearchRepos = exports.ToolsOzoneModerationQueryStatuses = exports.ToolsOzoneModerationQueryEvents = exports.ToolsOzoneModerationGetSubjects = exports.ToolsOzoneModerationGetRepos = exports.ToolsOzoneModerationGetReporterStats = exports.ToolsOzoneModerationGetRepo = exports.ToolsOzoneModerationGetRecords = exports.ToolsOzoneModerationGetRecord = exports.ToolsOzoneModerationGetEvent = exports.ToolsOzoneModerationEmitEvent = exports.ToolsOzoneModerationDefs = exports.ToolsOzoneCommunicationUpdateTemplate = exports.ToolsOzoneCommunicationListTemplates = exports.ToolsOzoneCommunicationDeleteTemplate = exports.ToolsOzoneCommunicationDefs = exports.ToolsOzoneCommunicationCreateTemplate = exports.ChatBskyModerationUpdateActorAccess = exports.ChatBskyModerationGetMessageContext = exports.ChatBskyModerationGetActorMetadata = exports.ChatBskyConvoUpdateRead = exports.ChatBskyConvoUpdateAllRead = exports.ChatBskyConvoUnmuteConvo = exports.ChatBskyConvoSendMessageBatch = exports.ChatBskyConvoSendMessage = exports.ChatBskyConvoRemoveReaction = exports.ChatBskyConvoMuteConvo = exports.ChatBskyConvoListConvos = void 0;
-exports.ToolsOzoneNS = exports.ToolsNS = exports.ChatBskyModerationNS = exports.ChatBskyConvoNS = exports.DeclarationRecord = exports.ChatBskyActorNS = exports.ChatBskyNS = exports.ChatNS = exports.AppBskyVideoNS = exports.AppBskyUnspeccedNS = exports.AppBskyRichtextNS = exports.AppBskyNotificationNS = exports.ServiceRecord = exports.AppBskyLabelerNS = exports.StarterpackRecord = exports.ListitemRecord = exports.ListblockRecord = exports.ListRecord = exports.FollowRecord = exports.BlockRecord = exports.AppBskyGraphNS = exports.ThreadgateRecord = exports.RepostRecord = exports.PostgateRecord = exports.PostRecord = exports.LikeRecord = exports.GeneratorRecord = exports.AppBskyFeedNS = exports.AppBskyEmbedNS = exports.ProfileRecord = exports.AppBskyActorNS = exports.AppBskyNS = exports.AppNS = exports.ComAtprotoTempNS = exports.ComAtprotoSyncNS = exports.ComAtprotoServerNS = exports.ComAtprotoRepoNS = exports.ComAtprotoModerationNS = exports.SchemaRecord = exports.ComAtprotoLexiconNS = exports.ComAtprotoLabelNS = exports.ComAtprotoIdentityNS = exports.ComAtprotoAdminNS = exports.ComAtprotoNS = exports.ComNS = exports.AtpBaseClient = exports.TOOLS_OZONE_TEAM = exports.TOOLS_OZONE_MODERATION = exports.APP_BSKY_GRAPH = exports.APP_BSKY_FEED = void 0;
-exports.ToolsOzoneTeamNS = exports.ToolsOzoneSignatureNS = exports.ToolsOzoneSettingNS = exports.ToolsOzoneSetNS = exports.ToolsOzoneServerNS = exports.ToolsOzoneModerationNS = exports.ToolsOzoneCommunicationNS = void 0;
+exports.AppBskyActorPutPreferences = exports.AppBskyActorProfile = exports.AppBskyActorGetSuggestions = exports.AppBskyActorGetProfiles = exports.AppBskyActorGetProfile = exports.AppBskyActorGetPreferences = exports.AppBskyActorDefs = exports.ComAtprotoTempRequestPhoneVerification = exports.ComAtprotoTempFetchLabels = exports.ComAtprotoTempCheckSignupQueue = exports.ComAtprotoTempAddReservedHandle = exports.ComAtprotoSyncSubscribeRepos = exports.ComAtprotoSyncRequestCrawl = exports.ComAtprotoSyncNotifyOfUpdate = exports.ComAtprotoSyncListReposByCollection = exports.ComAtprotoSyncListRepos = exports.ComAtprotoSyncListHosts = exports.ComAtprotoSyncListBlobs = exports.ComAtprotoSyncGetRepoStatus = exports.ComAtprotoSyncGetRepo = exports.ComAtprotoSyncGetRecord = exports.ComAtprotoSyncGetLatestCommit = exports.ComAtprotoSyncGetHostStatus = exports.ComAtprotoSyncGetHead = exports.ComAtprotoSyncGetCheckout = exports.ComAtprotoSyncGetBlocks = exports.ComAtprotoSyncGetBlob = exports.ComAtprotoSyncDefs = exports.ComAtprotoServerUpdateEmail = exports.ComAtprotoServerRevokeAppPassword = exports.ComAtprotoServerResetPassword = exports.ComAtprotoServerReserveSigningKey = exports.ComAtprotoServerRequestPasswordReset = exports.ComAtprotoServerRequestEmailUpdate = exports.ComAtprotoServerRequestEmailConfirmation = exports.ComAtprotoServerRequestAccountDelete = exports.ComAtprotoServerRefreshSession = exports.ComAtprotoServerListAppPasswords = exports.ComAtprotoServerGetSession = exports.ComAtprotoServerGetServiceAuth = exports.ComAtprotoServerGetAccountInviteCodes = exports.ComAtprotoServerDescribeServer = exports.ComAtprotoServerDeleteSession = exports.ComAtprotoServerDeleteAccount = exports.ComAtprotoServerDefs = exports.ComAtprotoServerDeactivateAccount = exports.ComAtprotoServerCreateSession = exports.ComAtprotoServerCreateSIWERegistration = exports.ComAtprotoServerCreateSIWELogin = exports.ComAtprotoServerCreateInviteCodes = void 0;
+exports.AppBskyGraphGetStarterPacks = exports.AppBskyGraphGetStarterPack = exports.AppBskyGraphGetRelationships = exports.AppBskyGraphGetMutes = exports.AppBskyGraphGetLists = exports.AppBskyGraphGetListMutes = exports.AppBskyGraphGetListBlocks = exports.AppBskyGraphGetList = exports.AppBskyGraphGetKnownFollowers = exports.AppBskyGraphGetFollows = exports.AppBskyGraphGetFollowers = exports.AppBskyGraphGetBlocks = exports.AppBskyGraphGetActorStarterPacks = exports.AppBskyGraphFollow = exports.AppBskyGraphDefs = exports.AppBskyGraphBlock = exports.AppBskyFeedThreadgate = exports.AppBskyFeedSendInteractions = exports.AppBskyFeedSearchPosts = exports.AppBskyFeedRepost = exports.AppBskyFeedPostgate = exports.AppBskyFeedPost = exports.AppBskyFeedLike = exports.AppBskyFeedGetTimeline = exports.AppBskyFeedGetSuggestedFeeds = exports.AppBskyFeedGetRepostedBy = exports.AppBskyFeedGetQuotes = exports.AppBskyFeedGetPosts = exports.AppBskyFeedGetPostThread = exports.AppBskyFeedGetListFeed = exports.AppBskyFeedGetLikes = exports.AppBskyFeedGetFeedSkeleton = exports.AppBskyFeedGetFeedGenerators = exports.AppBskyFeedGetFeedGenerator = exports.AppBskyFeedGetFeed = exports.AppBskyFeedGetAuthorFeed = exports.AppBskyFeedGetActorLikes = exports.AppBskyFeedGetActorFeeds = exports.AppBskyFeedGenerator = exports.AppBskyFeedDescribeFeedGenerator = exports.AppBskyFeedDefs = exports.AppBskyEmbedVideo = exports.AppBskyEmbedRecordWithMedia = exports.AppBskyEmbedRecord = exports.AppBskyEmbedImages = exports.AppBskyEmbedExternal = exports.AppBskyEmbedDefs = exports.AppBskyActorStatus = exports.AppBskyActorSearchActorsTypeahead = exports.AppBskyActorSearchActors = void 0;
+exports.ChatBskyActorExportAccountData = exports.ChatBskyActorDeleteAccount = exports.ChatBskyActorDefs = exports.ChatBskyActorDeclaration = exports.AppBskyVideoUploadVideo = exports.AppBskyVideoGetUploadLimits = exports.AppBskyVideoGetJobStatus = exports.AppBskyVideoDefs = exports.AppBskyUnspeccedSearchStarterPacksSkeleton = exports.AppBskyUnspeccedSearchPostsSkeleton = exports.AppBskyUnspeccedSearchActorsSkeleton = exports.AppBskyUnspeccedGetTrendsSkeleton = exports.AppBskyUnspeccedGetTrends = exports.AppBskyUnspeccedGetTrendingTopics = exports.AppBskyUnspeccedGetTaggedSuggestions = exports.AppBskyUnspeccedGetSuggestionsSkeleton = exports.AppBskyUnspeccedGetSuggestedUsersSkeleton = exports.AppBskyUnspeccedGetSuggestedUsers = exports.AppBskyUnspeccedGetSuggestedStarterPacksSkeleton = exports.AppBskyUnspeccedGetSuggestedStarterPacks = exports.AppBskyUnspeccedGetSuggestedFeedsSkeleton = exports.AppBskyUnspeccedGetSuggestedFeeds = exports.AppBskyUnspeccedGetPostThreadV2 = exports.AppBskyUnspeccedGetPostThreadHiddenV2 = exports.AppBskyUnspeccedGetPopularFeedGenerators = exports.AppBskyUnspeccedGetConfig = exports.AppBskyUnspeccedDefs = exports.AppBskyRichtextFacet = exports.AppBskyNotificationUpdateSeen = exports.AppBskyNotificationRegisterPush = exports.AppBskyNotificationPutPreferences = exports.AppBskyNotificationListNotifications = exports.AppBskyNotificationGetUnreadCount = exports.AppBskyNotificationDefs = exports.AppBskyLabelerService = exports.AppBskyLabelerGetServices = exports.AppBskyLabelerDefs = exports.AppBskyGraphVerification = exports.AppBskyGraphUnmuteThread = exports.AppBskyGraphUnmuteActorList = exports.AppBskyGraphUnmuteActor = exports.AppBskyGraphStarterpack = exports.AppBskyGraphSearchStarterPacks = exports.AppBskyGraphMuteThread = exports.AppBskyGraphMuteActorList = exports.AppBskyGraphMuteActor = exports.AppBskyGraphListitem = exports.AppBskyGraphListblock = exports.AppBskyGraphList = exports.AppBskyGraphGetSuggestedFollowsByActor = void 0;
+exports.ToolsOzoneSettingRemoveOptions = exports.ToolsOzoneSettingListOptions = exports.ToolsOzoneSettingDefs = exports.ToolsOzoneSetUpsertSet = exports.ToolsOzoneSetQuerySets = exports.ToolsOzoneSetGetValues = exports.ToolsOzoneSetDeleteValues = exports.ToolsOzoneSetDeleteSet = exports.ToolsOzoneSetDefs = exports.ToolsOzoneSetAddValues = exports.ToolsOzoneServerGetConfig = exports.ToolsOzoneModerationSearchRepos = exports.ToolsOzoneModerationQueryStatuses = exports.ToolsOzoneModerationQueryEvents = exports.ToolsOzoneModerationGetSubjects = exports.ToolsOzoneModerationGetRepos = exports.ToolsOzoneModerationGetReporterStats = exports.ToolsOzoneModerationGetRepo = exports.ToolsOzoneModerationGetRecords = exports.ToolsOzoneModerationGetRecord = exports.ToolsOzoneModerationGetEvent = exports.ToolsOzoneModerationEmitEvent = exports.ToolsOzoneModerationDefs = exports.ToolsOzoneHostingGetAccountHistory = exports.ToolsOzoneCommunicationUpdateTemplate = exports.ToolsOzoneCommunicationListTemplates = exports.ToolsOzoneCommunicationDeleteTemplate = exports.ToolsOzoneCommunicationDefs = exports.ToolsOzoneCommunicationCreateTemplate = exports.ChatBskyModerationUpdateActorAccess = exports.ChatBskyModerationGetMessageContext = exports.ChatBskyModerationGetActorMetadata = exports.ChatBskyConvoUpdateRead = exports.ChatBskyConvoUpdateAllRead = exports.ChatBskyConvoUnmuteConvo = exports.ChatBskyConvoSendMessageBatch = exports.ChatBskyConvoSendMessage = exports.ChatBskyConvoRemoveReaction = exports.ChatBskyConvoMuteConvo = exports.ChatBskyConvoListConvos = exports.ChatBskyConvoLeaveConvo = exports.ChatBskyConvoGetMessages = exports.ChatBskyConvoGetLog = exports.ChatBskyConvoGetConvoForMembers = exports.ChatBskyConvoGetConvoAvailability = exports.ChatBskyConvoGetConvo = exports.ChatBskyConvoDeleteMessageForSelf = exports.ChatBskyConvoDefs = exports.ChatBskyConvoAddReaction = exports.ChatBskyConvoAcceptConvo = void 0;
+exports.AppBskyGraphListRecord = exports.AppBskyGraphFollowRecord = exports.AppBskyGraphBlockRecord = exports.AppBskyGraphNS = exports.AppBskyFeedThreadgateRecord = exports.AppBskyFeedRepostRecord = exports.AppBskyFeedPostgateRecord = exports.AppBskyFeedPostRecord = exports.AppBskyFeedLikeRecord = exports.AppBskyFeedGeneratorRecord = exports.AppBskyFeedNS = exports.AppBskyEmbedNS = exports.AppBskyActorStatusRecord = exports.AppBskyActorProfileRecord = exports.AppBskyActorNS = exports.AppBskyNS = exports.AppNS = exports.ComAtprotoTempNS = exports.ComAtprotoSyncNS = exports.ComAtprotoServerNS = exports.ComAtprotoRepoNS = exports.ComAtprotoModerationNS = exports.ComAtprotoLexiconSchemaRecord = exports.ComAtprotoLexiconNS = exports.ComAtprotoLabelNS = exports.ComAtprotoIdentityNS = exports.ComAtprotoAdminNS = exports.ComAtprotoNS = exports.ComNS = exports.AtpBaseClient = exports.TOOLS_OZONE_TEAM = exports.TOOLS_OZONE_MODERATION = exports.APP_BSKY_GRAPH = exports.APP_BSKY_FEED = exports.APP_BSKY_ACTOR = exports.COM_ATPROTO_MODERATION = exports.ToolsOzoneVerificationRevokeVerifications = exports.ToolsOzoneVerificationListVerifications = exports.ToolsOzoneVerificationGrantVerifications = exports.ToolsOzoneVerificationDefs = exports.ToolsOzoneTeamUpdateMember = exports.ToolsOzoneTeamListMembers = exports.ToolsOzoneTeamDeleteMember = exports.ToolsOzoneTeamDefs = exports.ToolsOzoneTeamAddMember = exports.ToolsOzoneSignatureSearchAccounts = exports.ToolsOzoneSignatureFindRelatedAccounts = exports.ToolsOzoneSignatureFindCorrelation = exports.ToolsOzoneSignatureDefs = exports.ToolsOzoneSettingUpsertOption = void 0;
+exports.ToolsOzoneVerificationNS = exports.ToolsOzoneTeamNS = exports.ToolsOzoneSignatureNS = exports.ToolsOzoneSettingNS = exports.ToolsOzoneSetNS = exports.ToolsOzoneServerNS = exports.ToolsOzoneModerationNS = exports.ToolsOzoneHostingNS = exports.ToolsOzoneCommunicationNS = exports.ToolsOzoneNS = exports.ToolsNS = exports.ChatBskyModerationNS = exports.ChatBskyConvoNS = exports.ChatBskyActorDeclarationRecord = exports.ChatBskyActorNS = exports.ChatBskyNS = exports.ChatNS = exports.AppBskyVideoNS = exports.AppBskyUnspeccedNS = exports.AppBskyRichtextNS = exports.AppBskyNotificationNS = exports.AppBskyLabelerServiceRecord = exports.AppBskyLabelerNS = exports.AppBskyGraphVerificationRecord = exports.AppBskyGraphStarterpackRecord = exports.AppBskyGraphListitemRecord = exports.AppBskyGraphListblockRecord = void 0;
 /**
  * GENERATED CODE - DO NOT MODIFY
  */
@@ -58,11 +68,13 @@ const ComAtprotoServerUpdateEmail = __importStar(require("./types/com/atproto/se
 const ComAtprotoSyncGetBlob = __importStar(require("./types/com/atproto/sync/getBlob.js"));
 const ComAtprotoSyncGetBlocks = __importStar(require("./types/com/atproto/sync/getBlocks.js"));
 const ComAtprotoSyncGetHead = __importStar(require("./types/com/atproto/sync/getHead.js"));
+const ComAtprotoSyncGetHostStatus = __importStar(require("./types/com/atproto/sync/getHostStatus.js"));
 const ComAtprotoSyncGetLatestCommit = __importStar(require("./types/com/atproto/sync/getLatestCommit.js"));
 const ComAtprotoSyncGetRecord = __importStar(require("./types/com/atproto/sync/getRecord.js"));
 const ComAtprotoSyncGetRepo = __importStar(require("./types/com/atproto/sync/getRepo.js"));
 const ComAtprotoSyncGetRepoStatus = __importStar(require("./types/com/atproto/sync/getRepoStatus.js"));
 const ComAtprotoSyncListBlobs = __importStar(require("./types/com/atproto/sync/listBlobs.js"));
+const ComAtprotoSyncRequestCrawl = __importStar(require("./types/com/atproto/sync/requestCrawl.js"));
 const AppBskyFeedGetActorLikes = __importStar(require("./types/app/bsky/feed/getActorLikes.js"));
 const AppBskyFeedGetAuthorFeed = __importStar(require("./types/app/bsky/feed/getAuthorFeed.js"));
 const AppBskyFeedGetFeed = __importStar(require("./types/app/bsky/feed/getFeed.js"));
@@ -159,15 +171,18 @@ exports.ComAtprotoServerReserveSigningKey = __importStar(require("./types/com/at
 exports.ComAtprotoServerResetPassword = __importStar(require("./types/com/atproto/server/resetPassword.js"));
 exports.ComAtprotoServerRevokeAppPassword = __importStar(require("./types/com/atproto/server/revokeAppPassword.js"));
 exports.ComAtprotoServerUpdateEmail = __importStar(require("./types/com/atproto/server/updateEmail.js"));
+exports.ComAtprotoSyncDefs = __importStar(require("./types/com/atproto/sync/defs.js"));
 exports.ComAtprotoSyncGetBlob = __importStar(require("./types/com/atproto/sync/getBlob.js"));
 exports.ComAtprotoSyncGetBlocks = __importStar(require("./types/com/atproto/sync/getBlocks.js"));
 exports.ComAtprotoSyncGetCheckout = __importStar(require("./types/com/atproto/sync/getCheckout.js"));
 exports.ComAtprotoSyncGetHead = __importStar(require("./types/com/atproto/sync/getHead.js"));
+exports.ComAtprotoSyncGetHostStatus = __importStar(require("./types/com/atproto/sync/getHostStatus.js"));
 exports.ComAtprotoSyncGetLatestCommit = __importStar(require("./types/com/atproto/sync/getLatestCommit.js"));
 exports.ComAtprotoSyncGetRecord = __importStar(require("./types/com/atproto/sync/getRecord.js"));
 exports.ComAtprotoSyncGetRepo = __importStar(require("./types/com/atproto/sync/getRepo.js"));
 exports.ComAtprotoSyncGetRepoStatus = __importStar(require("./types/com/atproto/sync/getRepoStatus.js"));
 exports.ComAtprotoSyncListBlobs = __importStar(require("./types/com/atproto/sync/listBlobs.js"));
+exports.ComAtprotoSyncListHosts = __importStar(require("./types/com/atproto/sync/listHosts.js"));
 exports.ComAtprotoSyncListRepos = __importStar(require("./types/com/atproto/sync/listRepos.js"));
 exports.ComAtprotoSyncListReposByCollection = __importStar(require("./types/com/atproto/sync/listReposByCollection.js"));
 exports.ComAtprotoSyncNotifyOfUpdate = __importStar(require("./types/com/atproto/sync/notifyOfUpdate.js"));
@@ -186,6 +201,7 @@ exports.AppBskyActorProfile = __importStar(require("./types/app/bsky/actor/profi
 exports.AppBskyActorPutPreferences = __importStar(require("./types/app/bsky/actor/putPreferences.js"));
 exports.AppBskyActorSearchActors = __importStar(require("./types/app/bsky/actor/searchActors.js"));
 exports.AppBskyActorSearchActorsTypeahead = __importStar(require("./types/app/bsky/actor/searchActorsTypeahead.js"));
+exports.AppBskyActorStatus = __importStar(require("./types/app/bsky/actor/status.js"));
 exports.AppBskyEmbedDefs = __importStar(require("./types/app/bsky/embed/defs.js"));
 exports.AppBskyEmbedExternal = __importStar(require("./types/app/bsky/embed/external.js"));
 exports.AppBskyEmbedImages = __importStar(require("./types/app/bsky/embed/images.js"));
@@ -245,9 +261,11 @@ exports.AppBskyGraphStarterpack = __importStar(require("./types/app/bsky/graph/s
 exports.AppBskyGraphUnmuteActor = __importStar(require("./types/app/bsky/graph/unmuteActor.js"));
 exports.AppBskyGraphUnmuteActorList = __importStar(require("./types/app/bsky/graph/unmuteActorList.js"));
 exports.AppBskyGraphUnmuteThread = __importStar(require("./types/app/bsky/graph/unmuteThread.js"));
+exports.AppBskyGraphVerification = __importStar(require("./types/app/bsky/graph/verification.js"));
 exports.AppBskyLabelerDefs = __importStar(require("./types/app/bsky/labeler/defs.js"));
 exports.AppBskyLabelerGetServices = __importStar(require("./types/app/bsky/labeler/getServices.js"));
 exports.AppBskyLabelerService = __importStar(require("./types/app/bsky/labeler/service.js"));
+exports.AppBskyNotificationDefs = __importStar(require("./types/app/bsky/notification/defs.js"));
 exports.AppBskyNotificationGetUnreadCount = __importStar(require("./types/app/bsky/notification/getUnreadCount.js"));
 exports.AppBskyNotificationListNotifications = __importStar(require("./types/app/bsky/notification/listNotifications.js"));
 exports.AppBskyNotificationPutPreferences = __importStar(require("./types/app/bsky/notification/putPreferences.js"));
@@ -257,10 +275,14 @@ exports.AppBskyRichtextFacet = __importStar(require("./types/app/bsky/richtext/f
 exports.AppBskyUnspeccedDefs = __importStar(require("./types/app/bsky/unspecced/defs.js"));
 exports.AppBskyUnspeccedGetConfig = __importStar(require("./types/app/bsky/unspecced/getConfig.js"));
 exports.AppBskyUnspeccedGetPopularFeedGenerators = __importStar(require("./types/app/bsky/unspecced/getPopularFeedGenerators.js"));
+exports.AppBskyUnspeccedGetPostThreadHiddenV2 = __importStar(require("./types/app/bsky/unspecced/getPostThreadHiddenV2.js"));
+exports.AppBskyUnspeccedGetPostThreadV2 = __importStar(require("./types/app/bsky/unspecced/getPostThreadV2.js"));
 exports.AppBskyUnspeccedGetSuggestedFeeds = __importStar(require("./types/app/bsky/unspecced/getSuggestedFeeds.js"));
 exports.AppBskyUnspeccedGetSuggestedFeedsSkeleton = __importStar(require("./types/app/bsky/unspecced/getSuggestedFeedsSkeleton.js"));
 exports.AppBskyUnspeccedGetSuggestedStarterPacks = __importStar(require("./types/app/bsky/unspecced/getSuggestedStarterPacks.js"));
 exports.AppBskyUnspeccedGetSuggestedStarterPacksSkeleton = __importStar(require("./types/app/bsky/unspecced/getSuggestedStarterPacksSkeleton.js"));
+exports.AppBskyUnspeccedGetSuggestedUsers = __importStar(require("./types/app/bsky/unspecced/getSuggestedUsers.js"));
+exports.AppBskyUnspeccedGetSuggestedUsersSkeleton = __importStar(require("./types/app/bsky/unspecced/getSuggestedUsersSkeleton.js"));
 exports.AppBskyUnspeccedGetSuggestionsSkeleton = __importStar(require("./types/app/bsky/unspecced/getSuggestionsSkeleton.js"));
 exports.AppBskyUnspeccedGetTaggedSuggestions = __importStar(require("./types/app/bsky/unspecced/getTaggedSuggestions.js"));
 exports.AppBskyUnspeccedGetTrendingTopics = __importStar(require("./types/app/bsky/unspecced/getTrendingTopics.js"));
@@ -303,6 +325,7 @@ exports.ToolsOzoneCommunicationDefs = __importStar(require("./types/tools/ozone/
 exports.ToolsOzoneCommunicationDeleteTemplate = __importStar(require("./types/tools/ozone/communication/deleteTemplate.js"));
 exports.ToolsOzoneCommunicationListTemplates = __importStar(require("./types/tools/ozone/communication/listTemplates.js"));
 exports.ToolsOzoneCommunicationUpdateTemplate = __importStar(require("./types/tools/ozone/communication/updateTemplate.js"));
+exports.ToolsOzoneHostingGetAccountHistory = __importStar(require("./types/tools/ozone/hosting/getAccountHistory.js"));
 exports.ToolsOzoneModerationDefs = __importStar(require("./types/tools/ozone/moderation/defs.js"));
 exports.ToolsOzoneModerationEmitEvent = __importStar(require("./types/tools/ozone/moderation/emitEvent.js"));
 exports.ToolsOzoneModerationGetEvent = __importStar(require("./types/tools/ozone/moderation/getEvent.js"));
@@ -336,6 +359,10 @@ exports.ToolsOzoneTeamDefs = __importStar(require("./types/tools/ozone/team/defs
 exports.ToolsOzoneTeamDeleteMember = __importStar(require("./types/tools/ozone/team/deleteMember.js"));
 exports.ToolsOzoneTeamListMembers = __importStar(require("./types/tools/ozone/team/listMembers.js"));
 exports.ToolsOzoneTeamUpdateMember = __importStar(require("./types/tools/ozone/team/updateMember.js"));
+exports.ToolsOzoneVerificationDefs = __importStar(require("./types/tools/ozone/verification/defs.js"));
+exports.ToolsOzoneVerificationGrantVerifications = __importStar(require("./types/tools/ozone/verification/grantVerifications.js"));
+exports.ToolsOzoneVerificationListVerifications = __importStar(require("./types/tools/ozone/verification/listVerifications.js"));
+exports.ToolsOzoneVerificationRevokeVerifications = __importStar(require("./types/tools/ozone/verification/revokeVerifications.js"));
 exports.COM_ATPROTO_MODERATION = {
     DefsReasonSpam: 'com.atproto.moderation.defs#reasonSpam',
     DefsReasonViolation: 'com.atproto.moderation.defs#reasonViolation',
@@ -344,6 +371,9 @@ exports.COM_ATPROTO_MODERATION = {
     DefsReasonRude: 'com.atproto.moderation.defs#reasonRude',
     DefsReasonOther: 'com.atproto.moderation.defs#reasonOther',
     DefsReasonAppeal: 'com.atproto.moderation.defs#reasonAppeal',
+};
+exports.APP_BSKY_ACTOR = {
+    StatusLive: 'app.bsky.actor.status#live',
 };
 exports.APP_BSKY_FEED = {
     DefsRequestLess: 'app.bsky.feed.defs#requestLess',
@@ -376,6 +406,7 @@ exports.TOOLS_OZONE_TEAM = {
     DefsRoleAdmin: 'tools.ozone.team.defs#roleAdmin',
     DefsRoleModerator: 'tools.ozone.team.defs#roleModerator',
     DefsRoleTriage: 'tools.ozone.team.defs#roleTriage',
+    DefsRoleVerifier: 'tools.ozone.team.defs#roleVerifier',
 };
 class AtpBaseClient extends xrpc_1.XrpcClient {
     constructor(options) {
@@ -651,11 +682,11 @@ class ComAtprotoLexiconNS {
             value: void 0
         });
         this._client = client;
-        this.schema = new SchemaRecord(client);
+        this.schema = new ComAtprotoLexiconSchemaRecord(client);
     }
 }
 exports.ComAtprotoLexiconNS = ComAtprotoLexiconNS;
-class SchemaRecord {
+class ComAtprotoLexiconSchemaRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -688,7 +719,7 @@ class SchemaRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'com.atproto.lexicon.schema', ...params }, { headers });
     }
 }
-exports.SchemaRecord = SchemaRecord;
+exports.ComAtprotoLexiconSchemaRecord = ComAtprotoLexiconSchemaRecord;
 class ComAtprotoModerationNS {
     constructor(client) {
         Object.defineProperty(this, "_client", {
@@ -937,6 +968,13 @@ class ComAtprotoSyncNS {
             throw ComAtprotoSyncGetHead.toKnownErr(e);
         });
     }
+    getHostStatus(params, opts) {
+        return this._client
+            .call('com.atproto.sync.getHostStatus', params, undefined, opts)
+            .catch((e) => {
+            throw ComAtprotoSyncGetHostStatus.toKnownErr(e);
+        });
+    }
     getLatestCommit(params, opts) {
         return this._client
             .call('com.atproto.sync.getLatestCommit', params, undefined, opts)
@@ -972,6 +1010,9 @@ class ComAtprotoSyncNS {
             throw ComAtprotoSyncListBlobs.toKnownErr(e);
         });
     }
+    listHosts(params, opts) {
+        return this._client.call('com.atproto.sync.listHosts', params, undefined, opts);
+    }
     listRepos(params, opts) {
         return this._client.call('com.atproto.sync.listRepos', params, undefined, opts);
     }
@@ -982,7 +1023,11 @@ class ComAtprotoSyncNS {
         return this._client.call('com.atproto.sync.notifyOfUpdate', opts?.qp, data, opts);
     }
     requestCrawl(data, opts) {
-        return this._client.call('com.atproto.sync.requestCrawl', opts?.qp, data, opts);
+        return this._client
+            .call('com.atproto.sync.requestCrawl', opts?.qp, data, opts)
+            .catch((e) => {
+            throw ComAtprotoSyncRequestCrawl.toKnownErr(e);
+        });
     }
 }
 exports.ComAtprotoSyncNS = ComAtprotoSyncNS;
@@ -1118,8 +1163,15 @@ class AppBskyActorNS {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "status", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         this._client = client;
-        this.profile = new ProfileRecord(client);
+        this.profile = new AppBskyActorProfileRecord(client);
+        this.status = new AppBskyActorStatusRecord(client);
     }
     getPreferences(params, opts) {
         return this._client.call('app.bsky.actor.getPreferences', params, undefined, opts);
@@ -1144,7 +1196,7 @@ class AppBskyActorNS {
     }
 }
 exports.AppBskyActorNS = AppBskyActorNS;
-class ProfileRecord {
+class AppBskyActorProfileRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -1182,7 +1234,46 @@ class ProfileRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.actor.profile', ...params }, { headers });
     }
 }
-exports.ProfileRecord = ProfileRecord;
+exports.AppBskyActorProfileRecord = AppBskyActorProfileRecord;
+class AppBskyActorStatusRecord {
+    constructor(client) {
+        Object.defineProperty(this, "_client", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        this._client = client;
+    }
+    async list(params) {
+        const res = await this._client.call('com.atproto.repo.listRecords', {
+            collection: 'app.bsky.actor.status',
+            ...params,
+        });
+        return res.data;
+    }
+    async get(params) {
+        const res = await this._client.call('com.atproto.repo.getRecord', {
+            collection: 'app.bsky.actor.status',
+            ...params,
+        });
+        return res.data;
+    }
+    async create(params, record, headers) {
+        const collection = 'app.bsky.actor.status';
+        const res = await this._client.call('com.atproto.repo.createRecord', undefined, {
+            collection,
+            rkey: 'self',
+            ...params,
+            record: { ...record, $type: collection },
+        }, { encoding: 'application/json', headers });
+        return res.data;
+    }
+    async delete(params, headers) {
+        await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.actor.status', ...params }, { headers });
+    }
+}
+exports.AppBskyActorStatusRecord = AppBskyActorStatusRecord;
 class AppBskyEmbedNS {
     constructor(client) {
         Object.defineProperty(this, "_client", {
@@ -1240,12 +1331,12 @@ class AppBskyFeedNS {
             value: void 0
         });
         this._client = client;
-        this.generator = new GeneratorRecord(client);
-        this.like = new LikeRecord(client);
-        this.post = new PostRecord(client);
-        this.postgate = new PostgateRecord(client);
-        this.repost = new RepostRecord(client);
-        this.threadgate = new ThreadgateRecord(client);
+        this.generator = new AppBskyFeedGeneratorRecord(client);
+        this.like = new AppBskyFeedLikeRecord(client);
+        this.post = new AppBskyFeedPostRecord(client);
+        this.postgate = new AppBskyFeedPostgateRecord(client);
+        this.repost = new AppBskyFeedRepostRecord(client);
+        this.threadgate = new AppBskyFeedThreadgateRecord(client);
     }
     describeFeedGenerator(params, opts) {
         return this._client.call('app.bsky.feed.describeFeedGenerator', params, undefined, opts);
@@ -1331,7 +1422,7 @@ class AppBskyFeedNS {
     }
 }
 exports.AppBskyFeedNS = AppBskyFeedNS;
-class GeneratorRecord {
+class AppBskyFeedGeneratorRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -1364,8 +1455,8 @@ class GeneratorRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.feed.generator', ...params }, { headers });
     }
 }
-exports.GeneratorRecord = GeneratorRecord;
-class LikeRecord {
+exports.AppBskyFeedGeneratorRecord = AppBskyFeedGeneratorRecord;
+class AppBskyFeedLikeRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -1398,8 +1489,8 @@ class LikeRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.feed.like', ...params }, { headers });
     }
 }
-exports.LikeRecord = LikeRecord;
-class PostRecord {
+exports.AppBskyFeedLikeRecord = AppBskyFeedLikeRecord;
+class AppBskyFeedPostRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -1432,8 +1523,8 @@ class PostRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.feed.post', ...params }, { headers });
     }
 }
-exports.PostRecord = PostRecord;
-class PostgateRecord {
+exports.AppBskyFeedPostRecord = AppBskyFeedPostRecord;
+class AppBskyFeedPostgateRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -1466,8 +1557,8 @@ class PostgateRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.feed.postgate', ...params }, { headers });
     }
 }
-exports.PostgateRecord = PostgateRecord;
-class RepostRecord {
+exports.AppBskyFeedPostgateRecord = AppBskyFeedPostgateRecord;
+class AppBskyFeedRepostRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -1500,8 +1591,8 @@ class RepostRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.feed.repost', ...params }, { headers });
     }
 }
-exports.RepostRecord = RepostRecord;
-class ThreadgateRecord {
+exports.AppBskyFeedRepostRecord = AppBskyFeedRepostRecord;
+class AppBskyFeedThreadgateRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -1534,7 +1625,7 @@ class ThreadgateRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.feed.threadgate', ...params }, { headers });
     }
 }
-exports.ThreadgateRecord = ThreadgateRecord;
+exports.AppBskyFeedThreadgateRecord = AppBskyFeedThreadgateRecord;
 class AppBskyGraphNS {
     constructor(client) {
         Object.defineProperty(this, "_client", {
@@ -1579,13 +1670,20 @@ class AppBskyGraphNS {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "verification", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         this._client = client;
-        this.block = new BlockRecord(client);
-        this.follow = new FollowRecord(client);
-        this.list = new ListRecord(client);
-        this.listblock = new ListblockRecord(client);
-        this.listitem = new ListitemRecord(client);
-        this.starterpack = new StarterpackRecord(client);
+        this.block = new AppBskyGraphBlockRecord(client);
+        this.follow = new AppBskyGraphFollowRecord(client);
+        this.list = new AppBskyGraphListRecord(client);
+        this.listblock = new AppBskyGraphListblockRecord(client);
+        this.listitem = new AppBskyGraphListitemRecord(client);
+        this.starterpack = new AppBskyGraphStarterpackRecord(client);
+        this.verification = new AppBskyGraphVerificationRecord(client);
     }
     getActorStarterPacks(params, opts) {
         return this._client.call('app.bsky.graph.getActorStarterPacks', params, undefined, opts);
@@ -1656,7 +1754,7 @@ class AppBskyGraphNS {
     }
 }
 exports.AppBskyGraphNS = AppBskyGraphNS;
-class BlockRecord {
+class AppBskyGraphBlockRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -1689,8 +1787,8 @@ class BlockRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.graph.block', ...params }, { headers });
     }
 }
-exports.BlockRecord = BlockRecord;
-class FollowRecord {
+exports.AppBskyGraphBlockRecord = AppBskyGraphBlockRecord;
+class AppBskyGraphFollowRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -1723,8 +1821,8 @@ class FollowRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.graph.follow', ...params }, { headers });
     }
 }
-exports.FollowRecord = FollowRecord;
-class ListRecord {
+exports.AppBskyGraphFollowRecord = AppBskyGraphFollowRecord;
+class AppBskyGraphListRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -1757,8 +1855,8 @@ class ListRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.graph.list', ...params }, { headers });
     }
 }
-exports.ListRecord = ListRecord;
-class ListblockRecord {
+exports.AppBskyGraphListRecord = AppBskyGraphListRecord;
+class AppBskyGraphListblockRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -1791,8 +1889,8 @@ class ListblockRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.graph.listblock', ...params }, { headers });
     }
 }
-exports.ListblockRecord = ListblockRecord;
-class ListitemRecord {
+exports.AppBskyGraphListblockRecord = AppBskyGraphListblockRecord;
+class AppBskyGraphListitemRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -1825,8 +1923,8 @@ class ListitemRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.graph.listitem', ...params }, { headers });
     }
 }
-exports.ListitemRecord = ListitemRecord;
-class StarterpackRecord {
+exports.AppBskyGraphListitemRecord = AppBskyGraphListitemRecord;
+class AppBskyGraphStarterpackRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -1859,7 +1957,41 @@ class StarterpackRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.graph.starterpack', ...params }, { headers });
     }
 }
-exports.StarterpackRecord = StarterpackRecord;
+exports.AppBskyGraphStarterpackRecord = AppBskyGraphStarterpackRecord;
+class AppBskyGraphVerificationRecord {
+    constructor(client) {
+        Object.defineProperty(this, "_client", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        this._client = client;
+    }
+    async list(params) {
+        const res = await this._client.call('com.atproto.repo.listRecords', {
+            collection: 'app.bsky.graph.verification',
+            ...params,
+        });
+        return res.data;
+    }
+    async get(params) {
+        const res = await this._client.call('com.atproto.repo.getRecord', {
+            collection: 'app.bsky.graph.verification',
+            ...params,
+        });
+        return res.data;
+    }
+    async create(params, record, headers) {
+        const collection = 'app.bsky.graph.verification';
+        const res = await this._client.call('com.atproto.repo.createRecord', undefined, { collection, ...params, record: { ...record, $type: collection } }, { encoding: 'application/json', headers });
+        return res.data;
+    }
+    async delete(params, headers) {
+        await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.graph.verification', ...params }, { headers });
+    }
+}
+exports.AppBskyGraphVerificationRecord = AppBskyGraphVerificationRecord;
 class AppBskyLabelerNS {
     constructor(client) {
         Object.defineProperty(this, "_client", {
@@ -1875,14 +2007,14 @@ class AppBskyLabelerNS {
             value: void 0
         });
         this._client = client;
-        this.service = new ServiceRecord(client);
+        this.service = new AppBskyLabelerServiceRecord(client);
     }
     getServices(params, opts) {
         return this._client.call('app.bsky.labeler.getServices', params, undefined, opts);
     }
 }
 exports.AppBskyLabelerNS = AppBskyLabelerNS;
-class ServiceRecord {
+class AppBskyLabelerServiceRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -1920,7 +2052,7 @@ class ServiceRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'app.bsky.labeler.service', ...params }, { headers });
     }
 }
-exports.ServiceRecord = ServiceRecord;
+exports.AppBskyLabelerServiceRecord = AppBskyLabelerServiceRecord;
 class AppBskyNotificationNS {
     constructor(client) {
         Object.defineProperty(this, "_client", {
@@ -1976,6 +2108,12 @@ class AppBskyUnspeccedNS {
     getPopularFeedGenerators(params, opts) {
         return this._client.call('app.bsky.unspecced.getPopularFeedGenerators', params, undefined, opts);
     }
+    getPostThreadHiddenV2(params, opts) {
+        return this._client.call('app.bsky.unspecced.getPostThreadHiddenV2', params, undefined, opts);
+    }
+    getPostThreadV2(params, opts) {
+        return this._client.call('app.bsky.unspecced.getPostThreadV2', params, undefined, opts);
+    }
     getSuggestedFeeds(params, opts) {
         return this._client.call('app.bsky.unspecced.getSuggestedFeeds', params, undefined, opts);
     }
@@ -1987,6 +2125,12 @@ class AppBskyUnspeccedNS {
     }
     getSuggestedStarterPacksSkeleton(params, opts) {
         return this._client.call('app.bsky.unspecced.getSuggestedStarterPacksSkeleton', params, undefined, opts);
+    }
+    getSuggestedUsers(params, opts) {
+        return this._client.call('app.bsky.unspecced.getSuggestedUsers', params, undefined, opts);
+    }
+    getSuggestedUsersSkeleton(params, opts) {
+        return this._client.call('app.bsky.unspecced.getSuggestedUsersSkeleton', params, undefined, opts);
     }
     getSuggestionsSkeleton(params, opts) {
         return this._client.call('app.bsky.unspecced.getSuggestionsSkeleton', params, undefined, opts);
@@ -2114,7 +2258,7 @@ class ChatBskyActorNS {
             value: void 0
         });
         this._client = client;
-        this.declaration = new DeclarationRecord(client);
+        this.declaration = new ChatBskyActorDeclarationRecord(client);
     }
     deleteAccount(data, opts) {
         return this._client.call('chat.bsky.actor.deleteAccount', opts?.qp, data, opts);
@@ -2124,7 +2268,7 @@ class ChatBskyActorNS {
     }
 }
 exports.ChatBskyActorNS = ChatBskyActorNS;
-class DeclarationRecord {
+class ChatBskyActorDeclarationRecord {
     constructor(client) {
         Object.defineProperty(this, "_client", {
             enumerable: true,
@@ -2162,7 +2306,7 @@ class DeclarationRecord {
         await this._client.call('com.atproto.repo.deleteRecord', undefined, { collection: 'chat.bsky.actor.declaration', ...params }, { headers });
     }
 }
-exports.DeclarationRecord = DeclarationRecord;
+exports.ChatBskyActorDeclarationRecord = ChatBskyActorDeclarationRecord;
 class ChatBskyConvoNS {
     constructor(client) {
         Object.defineProperty(this, "_client", {
@@ -2288,6 +2432,12 @@ class ToolsOzoneNS {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "hosting", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         Object.defineProperty(this, "moderation", {
             enumerable: true,
             configurable: true,
@@ -2324,14 +2474,22 @@ class ToolsOzoneNS {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "verification", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         this._client = client;
         this.communication = new ToolsOzoneCommunicationNS(client);
+        this.hosting = new ToolsOzoneHostingNS(client);
         this.moderation = new ToolsOzoneModerationNS(client);
         this.server = new ToolsOzoneServerNS(client);
         this.set = new ToolsOzoneSetNS(client);
         this.setting = new ToolsOzoneSettingNS(client);
         this.signature = new ToolsOzoneSignatureNS(client);
         this.team = new ToolsOzoneTeamNS(client);
+        this.verification = new ToolsOzoneVerificationNS(client);
     }
 }
 exports.ToolsOzoneNS = ToolsOzoneNS;
@@ -2367,6 +2525,21 @@ class ToolsOzoneCommunicationNS {
     }
 }
 exports.ToolsOzoneCommunicationNS = ToolsOzoneCommunicationNS;
+class ToolsOzoneHostingNS {
+    constructor(client) {
+        Object.defineProperty(this, "_client", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        this._client = client;
+    }
+    getAccountHistory(params, opts) {
+        return this._client.call('tools.ozone.hosting.getAccountHistory', params, undefined, opts);
+    }
+}
+exports.ToolsOzoneHostingNS = ToolsOzoneHostingNS;
 class ToolsOzoneModerationNS {
     constructor(client) {
         Object.defineProperty(this, "_client", {
@@ -2559,4 +2732,25 @@ class ToolsOzoneTeamNS {
     }
 }
 exports.ToolsOzoneTeamNS = ToolsOzoneTeamNS;
+class ToolsOzoneVerificationNS {
+    constructor(client) {
+        Object.defineProperty(this, "_client", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        this._client = client;
+    }
+    grantVerifications(data, opts) {
+        return this._client.call('tools.ozone.verification.grantVerifications', opts?.qp, data, opts);
+    }
+    listVerifications(params, opts) {
+        return this._client.call('tools.ozone.verification.listVerifications', params, undefined, opts);
+    }
+    revokeVerifications(data, opts) {
+        return this._client.call('tools.ozone.verification.revokeVerifications', opts?.qp, data, opts);
+    }
+}
+exports.ToolsOzoneVerificationNS = ToolsOzoneVerificationNS;
 //# sourceMappingURL=index.js.map

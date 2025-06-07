@@ -44,7 +44,7 @@ export declare function validateModEventViewDetail<V>(v: V): ValidationResult<Mo
 export interface SubjectStatusView {
     $type?: 'tools.ozone.moderation.defs#subjectStatusView';
     id: number;
-    subject: $Typed<ComAtprotoAdminDefs.RepoRef> | $Typed<ComAtprotoRepoStrongRef.Main> | {
+    subject: $Typed<ComAtprotoAdminDefs.RepoRef> | $Typed<ComAtprotoRepoStrongRef.Main> | $Typed<ChatBskyConvoDefs.MessageRef> | {
         $type: string;
     };
     hosting?: $Typed<AccountHosting> | $Typed<RecordHosting> | {

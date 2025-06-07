@@ -1,17 +1,12 @@
 import { Selectable } from 'kysely';
-import { Code, NewTokenData, RefreshToken, TokenData, TokenId, TokenInfo } from '@atproto/oauth-provider';
+import { Code, NewTokenData, RefreshToken, TokenData, TokenId } from '@atproto/oauth-provider';
 import { AccountDb, Token } from '../db';
-import { ActorAccount } from './account';
-import { SelectableDeviceAccount } from './device-account';
-type LeftJoined<T> = {
-    [K in keyof T]: null | T[K];
-};
-export type ActorAccountToken = Selectable<ActorAccount> & Selectable<Omit<Token, 'id' | 'did'>> & LeftJoined<SelectableDeviceAccount>;
-export declare const toTokenInfo: (row: ActorAccountToken, audience: string) => TokenInfo;
+export declare function toTokenData(row: Selectable<Token>): TokenData;
 export declare const createQB: (db: AccountDb, tokenId: TokenId, data: TokenData, refreshToken?: RefreshToken) => import("kysely").InsertQueryBuilder<import("../db").DatabaseSchema, "token", import("kysely").InsertResult>;
 export declare const forRotateQB: (db: AccountDb, id: TokenId) => import("kysely/dist/cjs/parser/select-parser").QueryBuilderWithSelection<import("kysely/dist/cjs/parser/table-parser").From<import("../db").DatabaseSchema, "token">, "token", {}, "id" | "currentRefreshToken">;
 export declare const findByQB: (db: AccountDb, search: {
     id?: number;
+    did?: string;
     code?: Code;
     tokenId?: TokenId;
     currentRefreshToken?: RefreshToken;
@@ -29,9 +24,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -45,8 +41,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -61,9 +58,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -77,8 +75,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -93,9 +92,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>, import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>, import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -109,8 +109,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -125,9 +126,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -141,8 +143,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -157,9 +160,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>>, import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>>, import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -173,8 +177,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -189,9 +194,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -205,8 +211,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -221,9 +228,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>, import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>, import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -237,8 +245,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -253,9 +262,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -269,8 +279,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -285,9 +296,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>>>, import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>>>, import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -301,8 +313,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -317,9 +330,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -333,8 +347,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -349,9 +364,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>, import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>, import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -365,8 +381,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -381,9 +398,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -397,8 +415,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -413,9 +432,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>>, import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>>, import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -429,8 +449,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -445,9 +466,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -461,8 +483,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -477,9 +500,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>, import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>, import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -493,8 +517,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -509,9 +534,10 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
     actor: import("../db").Actor;
@@ -525,8 +551,9 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
     account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
     token: Token;
@@ -541,11 +568,555 @@ export declare const findByQB: (db: AccountDb, search: {
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").DeviceAccount>;
     used_refresh_token: import("../db").UsedRefreshToken;
-}, "token" | "account" | "actor" | "device_account", "device_account.authenticatedAt" | "device_account.remember" | "device_account.authorizedClients" | "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>>>>>;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>>>>, import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>, import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>>, import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>, import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>>>, import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>, import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>>, import("kysely/dist/cjs/util/type-utils").MergePartial<import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>, import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">, Partial<Omit<{}, never>> & Partial<Omit<Partial<Omit<{}, never>>, never>> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "account" | "actor", "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter"> & import("kysely").Selection<{
+    account: import("kysely/dist/cjs/util/type-utils").Nullable<import("../db").Account>;
+    token: Token;
+    actor: import("../db").Actor;
+    app_password: import("../db").AppPassword;
+    invite_code: import("../db").InviteCode;
+    invite_code_use: import("../db").InviteCodeUse;
+    refresh_token: import("../db").RefreshToken;
+    repo_root: import("../db").RepoRoot;
+    email_token: import("../db").EmailToken;
+    siwe_login: import("../db").SIWELogin;
+    siwe_registration: import("../db").SIWERegistration;
+    authorization_request: import("../db").AuthorizationRequest;
+    device: import("../db").Device;
+    used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
+}, "token" | "account" | "actor", "token.did" | "token.code" | "token.tokenId" | "token.createdAt" | "token.id" | "token.expiresAt" | "token.updatedAt" | "token.details" | "token.deviceId" | "token.clientId" | "token.clientAuth" | "token.parameters" | "token.currentRefreshToken">>>>>>>;
 export declare const removeByDidQB: (db: AccountDb, did: string) => import("kysely").DeleteQueryBuilder<import("kysely/dist/cjs/parser/table-parser").From<import("../db").DatabaseSchema, "token">, "token", import("kysely").DeleteResult>;
 export declare const rotateQB: (db: AccountDb, id: number, newTokenId: TokenId, newRefreshToken: RefreshToken, newData: NewTokenData) => import("kysely").UpdateQueryBuilder<import("kysely/dist/cjs/parser/table-parser").From<import("../db").DatabaseSchema, "token">, "token", "token", import("kysely").UpdateResult>;
 export declare const removeQB: (db: AccountDb, tokenId: TokenId) => import("kysely").DeleteQueryBuilder<import("kysely/dist/cjs/parser/table-parser").From<import("../db").DatabaseSchema, "token">, "token", import("kysely").DeleteResult>;
-export {};
 //# sourceMappingURL=token.d.ts.map

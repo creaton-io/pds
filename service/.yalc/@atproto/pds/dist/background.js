@@ -29,7 +29,7 @@ class BackgroundQueue {
         this.queue
             .add(() => task())
             .catch((err) => {
-            logger_1.dbLogger.error(err, 'background queue task failed');
+            logger_1.dbLogger.error({ err }, 'background queue task failed');
         });
     }
     async processAll() {

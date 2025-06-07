@@ -13,4 +13,5 @@ export declare const isValidPostInteractionSettingsPref: <T>(v: T) => v is T & A
 export declare const isValidSavedFeedsPref: <T>(v: T) => v is T & AppBskyActorDefs.SavedFeedsPref;
 export declare const isValidSavedFeedsPrefV2: <T>(v: T) => v is T & AppBskyActorDefs.SavedFeedsPrefV2;
 export declare const isValidThreadViewPref: <T>(v: T) => v is T & AppBskyActorDefs.ThreadViewPref;
+export declare const isValidVerificationPrefs: <T>(v: T) => v is T & AppBskyActorDefs.VerificationPrefs;
 //# sourceMappingURL=predicate.d.ts.map

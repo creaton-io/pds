@@ -107,12 +107,18 @@ export declare class Agent extends XrpcClient {
         cid: string;
     }>;
     deletePost(postUri: string): Promise<void>;
-    like(uri: string, cid: string): Promise<{
+    like(uri: string, cid: string, via?: {
+        uri: string;
+        cid: string;
+    }): Promise<{
         uri: string;
         cid: string;
     }>;
     deleteLike(likeUri: string): Promise<void>;
-    repost(uri: string, cid: string): Promise<{
+    repost(uri: string, cid: string, via?: {
+        uri: string;
+        cid: string;
+    }): Promise<{
         uri: string;
         cid: string;
     }>;
@@ -225,6 +231,7 @@ export declare class Agent extends XrpcClient {
      */
     bskyAppRemoveNuxs(ids: string[]): Promise<void>;
     setPostInteractionSettings(settings: AppBskyActorDefs.PostInteractionSettingsPref): Promise<void>;
+    setVerificationPrefs(settings: AppBskyActorDefs.VerificationPrefs): Promise<void>;
     /**
      * This function updates the preferences of a user and allows for a callback function to be executed
      * before the update.

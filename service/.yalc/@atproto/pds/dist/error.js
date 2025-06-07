@@ -5,7 +5,7 @@ const oauth_provider_1 = require("@atproto/oauth-provider");
 const xrpc_server_1 = require("@atproto/xrpc-server");
 const logger_1 = require("./logger");
 const handler = (err, _req, res, next) => {
-    logger_1.httpLogger.error(err, 'unexpected internal server error');
+    logger_1.httpLogger.error({ err }, 'unexpected internal server error');
     if (res.headersSent) {
         return next(err);
     }

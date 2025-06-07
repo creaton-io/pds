@@ -11,7 +11,7 @@ export interface Member {
     createdAt?: string;
     updatedAt?: string;
     lastUpdatedBy?: string;
-    role: 'lex:tools.ozone.team.defs#roleAdmin' | 'lex:tools.ozone.team.defs#roleModerator' | 'lex:tools.ozone.team.defs#roleTriage' | (string & {});
+    role: 'lex:tools.ozone.team.defs#roleAdmin' | 'lex:tools.ozone.team.defs#roleModerator' | 'lex:tools.ozone.team.defs#roleTriage' | 'lex:tools.ozone.team.defs#roleVerifier' | (string & {});
 }
 export declare function isMember<V>(v: V): v is import("../../../../util").$TypedObject<V, "tools.ozone.team.defs", "member">;
 export declare function validateMember<V>(v: V): ValidationResult<Member & V>;
@@ -21,4 +21,6 @@ export declare const ROLEADMIN = "tools.ozone.team.defs#roleAdmin";
 export declare const ROLEMODERATOR = "tools.ozone.team.defs#roleModerator";
 /** Triage role. Mostly intended for monitoring and escalating issues. */
 export declare const ROLETRIAGE = "tools.ozone.team.defs#roleTriage";
+/** Verifier role. Only allowed to issue verifications. */
+export declare const ROLEVERIFIER = "tools.ozone.team.defs#roleVerifier";
 //# sourceMappingURL=defs.d.ts.map

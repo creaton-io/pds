@@ -344,6 +344,7 @@ exports.PROTECTED_METHODS = new Set([
     lexicons_1.ids.ComAtprotoServerCreateAppPassword,
     lexicons_1.ids.ComAtprotoServerDeactivateAccount,
     lexicons_1.ids.ComAtprotoServerGetAccountInviteCodes,
+    lexicons_1.ids.ComAtprotoServerGetSession,
     lexicons_1.ids.ComAtprotoServerListAppPasswords,
     lexicons_1.ids.ComAtprotoServerRequestAccountDelete,
     lexicons_1.ids.ComAtprotoServerRequestEmailConfirmation,
@@ -368,6 +369,9 @@ const defaultService = (ctx, nsid) => {
         case lexicons_1.ids.ToolsOzoneModerationQueryEvents:
         case lexicons_1.ids.ToolsOzoneModerationQueryStatuses:
         case lexicons_1.ids.ToolsOzoneModerationSearchRepos:
+        case lexicons_1.ids.ToolsOzoneVerificationListVerifications:
+        case lexicons_1.ids.ToolsOzoneVerificationGrantVerifications:
+        case lexicons_1.ids.ToolsOzoneVerificationRevokeVerifications:
             return ctx.cfg.modService;
         case lexicons_1.ids.ComAtprotoModerationCreateReport:
             return ctx.cfg.reportService;

@@ -13,7 +13,7 @@ export interface InputSchema {
         [_ in string]: unknown;
     };
     description?: string;
-    managerRole?: 'tools.ozone.team.defs#roleModerator' | 'tools.ozone.team.defs#roleTriage' | 'tools.ozone.team.defs#roleAdmin' | (string & {});
+    managerRole?: 'tools.ozone.team.defs#roleModerator' | 'tools.ozone.team.defs#roleTriage' | 'tools.ozone.team.defs#roleVerifier' | 'tools.ozone.team.defs#roleAdmin' | (string & {});
 }
 export interface OutputSchema {
     option: ToolsOzoneSettingDefs.Option;

@@ -13,6 +13,8 @@ export type InputSchema = undefined;
 export interface OutputSchema {
     cursor?: string;
     feed: AppBskyFeedDefs.SkeletonFeedPost[];
+    /** Unique identifier per request that may be passed back alongside interactions. */
+    reqId?: string;
 }
 export interface CallOptions {
     signal?: AbortSignal;

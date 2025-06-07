@@ -33,8 +33,9 @@ export declare const selectAccountQB: (db: AccountDb, flags?: AvailabilityFlags)
     siwe_registration: import("../db").SIWERegistration;
     authorization_request: import("../db").AuthorizationRequest;
     device: import("../db").Device;
-    device_account: import("../db").DeviceAccount;
     used_refresh_token: import("../db").UsedRefreshToken;
+    account_device: import("../db").AccountDevice;
+    authorized_client: import("../db/schema/authorized-client").AuthorizedClient;
 }, "account" | "actor", import("kysely/dist/cjs/util/type-utils").MergePartial<Partial<Omit<{}, never>>, Partial<Omit<{}, never>>>, "account.email" | "account.invitesDisabled" | "account.emailConfirmedAt" | "account.ethAddress" | "actor.did" | "actor.handle" | "actor.createdAt" | "actor.takedownRef" | "actor.deactivatedAt" | "actor.deleteAfter">;
 export declare const getAccount: (db: AccountDb, handleOrDid: string, flags?: AvailabilityFlags) => Promise<ActorAccount | null>;
 export declare const getAccountByEthAddress: (db: AccountDb, ethAddress: string, flags?: AvailabilityFlags) => Promise<ActorAccount | null>;

@@ -71,11 +71,13 @@ import * as ComAtprotoSyncGetBlob from './types/com/atproto/sync/getBlob.js';
 import * as ComAtprotoSyncGetBlocks from './types/com/atproto/sync/getBlocks.js';
 import * as ComAtprotoSyncGetCheckout from './types/com/atproto/sync/getCheckout.js';
 import * as ComAtprotoSyncGetHead from './types/com/atproto/sync/getHead.js';
+import * as ComAtprotoSyncGetHostStatus from './types/com/atproto/sync/getHostStatus.js';
 import * as ComAtprotoSyncGetLatestCommit from './types/com/atproto/sync/getLatestCommit.js';
 import * as ComAtprotoSyncGetRecord from './types/com/atproto/sync/getRecord.js';
 import * as ComAtprotoSyncGetRepo from './types/com/atproto/sync/getRepo.js';
 import * as ComAtprotoSyncGetRepoStatus from './types/com/atproto/sync/getRepoStatus.js';
 import * as ComAtprotoSyncListBlobs from './types/com/atproto/sync/listBlobs.js';
+import * as ComAtprotoSyncListHosts from './types/com/atproto/sync/listHosts.js';
 import * as ComAtprotoSyncListRepos from './types/com/atproto/sync/listRepos.js';
 import * as ComAtprotoSyncListReposByCollection from './types/com/atproto/sync/listReposByCollection.js';
 import * as ComAtprotoSyncNotifyOfUpdate from './types/com/atproto/sync/notifyOfUpdate.js';
@@ -92,6 +94,7 @@ import * as AppBskyActorProfile from './types/app/bsky/actor/profile.js';
 import * as AppBskyActorPutPreferences from './types/app/bsky/actor/putPreferences.js';
 import * as AppBskyActorSearchActors from './types/app/bsky/actor/searchActors.js';
 import * as AppBskyActorSearchActorsTypeahead from './types/app/bsky/actor/searchActorsTypeahead.js';
+import * as AppBskyActorStatus from './types/app/bsky/actor/status.js';
 import * as AppBskyFeedDescribeFeedGenerator from './types/app/bsky/feed/describeFeedGenerator.js';
 import * as AppBskyFeedGenerator from './types/app/bsky/feed/generator.js';
 import * as AppBskyFeedGetActorFeeds from './types/app/bsky/feed/getActorFeeds.js';
@@ -143,6 +146,7 @@ import * as AppBskyGraphStarterpack from './types/app/bsky/graph/starterpack.js'
 import * as AppBskyGraphUnmuteActor from './types/app/bsky/graph/unmuteActor.js';
 import * as AppBskyGraphUnmuteActorList from './types/app/bsky/graph/unmuteActorList.js';
 import * as AppBskyGraphUnmuteThread from './types/app/bsky/graph/unmuteThread.js';
+import * as AppBskyGraphVerification from './types/app/bsky/graph/verification.js';
 import * as AppBskyLabelerGetServices from './types/app/bsky/labeler/getServices.js';
 import * as AppBskyLabelerService from './types/app/bsky/labeler/service.js';
 import * as AppBskyNotificationGetUnreadCount from './types/app/bsky/notification/getUnreadCount.js';
@@ -152,10 +156,14 @@ import * as AppBskyNotificationRegisterPush from './types/app/bsky/notification/
 import * as AppBskyNotificationUpdateSeen from './types/app/bsky/notification/updateSeen.js';
 import * as AppBskyUnspeccedGetConfig from './types/app/bsky/unspecced/getConfig.js';
 import * as AppBskyUnspeccedGetPopularFeedGenerators from './types/app/bsky/unspecced/getPopularFeedGenerators.js';
+import * as AppBskyUnspeccedGetPostThreadHiddenV2 from './types/app/bsky/unspecced/getPostThreadHiddenV2.js';
+import * as AppBskyUnspeccedGetPostThreadV2 from './types/app/bsky/unspecced/getPostThreadV2.js';
 import * as AppBskyUnspeccedGetSuggestedFeeds from './types/app/bsky/unspecced/getSuggestedFeeds.js';
 import * as AppBskyUnspeccedGetSuggestedFeedsSkeleton from './types/app/bsky/unspecced/getSuggestedFeedsSkeleton.js';
 import * as AppBskyUnspeccedGetSuggestedStarterPacks from './types/app/bsky/unspecced/getSuggestedStarterPacks.js';
 import * as AppBskyUnspeccedGetSuggestedStarterPacksSkeleton from './types/app/bsky/unspecced/getSuggestedStarterPacksSkeleton.js';
+import * as AppBskyUnspeccedGetSuggestedUsers from './types/app/bsky/unspecced/getSuggestedUsers.js';
+import * as AppBskyUnspeccedGetSuggestedUsersSkeleton from './types/app/bsky/unspecced/getSuggestedUsersSkeleton.js';
 import * as AppBskyUnspeccedGetSuggestionsSkeleton from './types/app/bsky/unspecced/getSuggestionsSkeleton.js';
 import * as AppBskyUnspeccedGetTaggedSuggestions from './types/app/bsky/unspecced/getTaggedSuggestions.js';
 import * as AppBskyUnspeccedGetTrendingTopics from './types/app/bsky/unspecced/getTrendingTopics.js';
@@ -194,6 +202,7 @@ import * as ToolsOzoneCommunicationCreateTemplate from './types/tools/ozone/comm
 import * as ToolsOzoneCommunicationDeleteTemplate from './types/tools/ozone/communication/deleteTemplate.js';
 import * as ToolsOzoneCommunicationListTemplates from './types/tools/ozone/communication/listTemplates.js';
 import * as ToolsOzoneCommunicationUpdateTemplate from './types/tools/ozone/communication/updateTemplate.js';
+import * as ToolsOzoneHostingGetAccountHistory from './types/tools/ozone/hosting/getAccountHistory.js';
 import * as ToolsOzoneModerationEmitEvent from './types/tools/ozone/moderation/emitEvent.js';
 import * as ToolsOzoneModerationGetEvent from './types/tools/ozone/moderation/getEvent.js';
 import * as ToolsOzoneModerationGetRecord from './types/tools/ozone/moderation/getRecord.js';
@@ -222,6 +231,9 @@ import * as ToolsOzoneTeamAddMember from './types/tools/ozone/team/addMember.js'
 import * as ToolsOzoneTeamDeleteMember from './types/tools/ozone/team/deleteMember.js';
 import * as ToolsOzoneTeamListMembers from './types/tools/ozone/team/listMembers.js';
 import * as ToolsOzoneTeamUpdateMember from './types/tools/ozone/team/updateMember.js';
+import * as ToolsOzoneVerificationGrantVerifications from './types/tools/ozone/verification/grantVerifications.js';
+import * as ToolsOzoneVerificationListVerifications from './types/tools/ozone/verification/listVerifications.js';
+import * as ToolsOzoneVerificationRevokeVerifications from './types/tools/ozone/verification/revokeVerifications.js';
 export * as ComAtprotoAdminDefs from './types/com/atproto/admin/defs.js';
 export * as ComAtprotoAdminDeleteAccount from './types/com/atproto/admin/deleteAccount.js';
 export * as ComAtprotoAdminDisableAccountInvites from './types/com/atproto/admin/disableAccountInvites.js';
@@ -294,15 +306,18 @@ export * as ComAtprotoServerReserveSigningKey from './types/com/atproto/server/r
 export * as ComAtprotoServerResetPassword from './types/com/atproto/server/resetPassword.js';
 export * as ComAtprotoServerRevokeAppPassword from './types/com/atproto/server/revokeAppPassword.js';
 export * as ComAtprotoServerUpdateEmail from './types/com/atproto/server/updateEmail.js';
+export * as ComAtprotoSyncDefs from './types/com/atproto/sync/defs.js';
 export * as ComAtprotoSyncGetBlob from './types/com/atproto/sync/getBlob.js';
 export * as ComAtprotoSyncGetBlocks from './types/com/atproto/sync/getBlocks.js';
 export * as ComAtprotoSyncGetCheckout from './types/com/atproto/sync/getCheckout.js';
 export * as ComAtprotoSyncGetHead from './types/com/atproto/sync/getHead.js';
+export * as ComAtprotoSyncGetHostStatus from './types/com/atproto/sync/getHostStatus.js';
 export * as ComAtprotoSyncGetLatestCommit from './types/com/atproto/sync/getLatestCommit.js';
 export * as ComAtprotoSyncGetRecord from './types/com/atproto/sync/getRecord.js';
 export * as ComAtprotoSyncGetRepo from './types/com/atproto/sync/getRepo.js';
 export * as ComAtprotoSyncGetRepoStatus from './types/com/atproto/sync/getRepoStatus.js';
 export * as ComAtprotoSyncListBlobs from './types/com/atproto/sync/listBlobs.js';
+export * as ComAtprotoSyncListHosts from './types/com/atproto/sync/listHosts.js';
 export * as ComAtprotoSyncListRepos from './types/com/atproto/sync/listRepos.js';
 export * as ComAtprotoSyncListReposByCollection from './types/com/atproto/sync/listReposByCollection.js';
 export * as ComAtprotoSyncNotifyOfUpdate from './types/com/atproto/sync/notifyOfUpdate.js';
@@ -321,6 +336,7 @@ export * as AppBskyActorProfile from './types/app/bsky/actor/profile.js';
 export * as AppBskyActorPutPreferences from './types/app/bsky/actor/putPreferences.js';
 export * as AppBskyActorSearchActors from './types/app/bsky/actor/searchActors.js';
 export * as AppBskyActorSearchActorsTypeahead from './types/app/bsky/actor/searchActorsTypeahead.js';
+export * as AppBskyActorStatus from './types/app/bsky/actor/status.js';
 export * as AppBskyEmbedDefs from './types/app/bsky/embed/defs.js';
 export * as AppBskyEmbedExternal from './types/app/bsky/embed/external.js';
 export * as AppBskyEmbedImages from './types/app/bsky/embed/images.js';
@@ -380,9 +396,11 @@ export * as AppBskyGraphStarterpack from './types/app/bsky/graph/starterpack.js'
 export * as AppBskyGraphUnmuteActor from './types/app/bsky/graph/unmuteActor.js';
 export * as AppBskyGraphUnmuteActorList from './types/app/bsky/graph/unmuteActorList.js';
 export * as AppBskyGraphUnmuteThread from './types/app/bsky/graph/unmuteThread.js';
+export * as AppBskyGraphVerification from './types/app/bsky/graph/verification.js';
 export * as AppBskyLabelerDefs from './types/app/bsky/labeler/defs.js';
 export * as AppBskyLabelerGetServices from './types/app/bsky/labeler/getServices.js';
 export * as AppBskyLabelerService from './types/app/bsky/labeler/service.js';
+export * as AppBskyNotificationDefs from './types/app/bsky/notification/defs.js';
 export * as AppBskyNotificationGetUnreadCount from './types/app/bsky/notification/getUnreadCount.js';
 export * as AppBskyNotificationListNotifications from './types/app/bsky/notification/listNotifications.js';
 export * as AppBskyNotificationPutPreferences from './types/app/bsky/notification/putPreferences.js';
@@ -392,10 +410,14 @@ export * as AppBskyRichtextFacet from './types/app/bsky/richtext/facet.js';
 export * as AppBskyUnspeccedDefs from './types/app/bsky/unspecced/defs.js';
 export * as AppBskyUnspeccedGetConfig from './types/app/bsky/unspecced/getConfig.js';
 export * as AppBskyUnspeccedGetPopularFeedGenerators from './types/app/bsky/unspecced/getPopularFeedGenerators.js';
+export * as AppBskyUnspeccedGetPostThreadHiddenV2 from './types/app/bsky/unspecced/getPostThreadHiddenV2.js';
+export * as AppBskyUnspeccedGetPostThreadV2 from './types/app/bsky/unspecced/getPostThreadV2.js';
 export * as AppBskyUnspeccedGetSuggestedFeeds from './types/app/bsky/unspecced/getSuggestedFeeds.js';
 export * as AppBskyUnspeccedGetSuggestedFeedsSkeleton from './types/app/bsky/unspecced/getSuggestedFeedsSkeleton.js';
 export * as AppBskyUnspeccedGetSuggestedStarterPacks from './types/app/bsky/unspecced/getSuggestedStarterPacks.js';
 export * as AppBskyUnspeccedGetSuggestedStarterPacksSkeleton from './types/app/bsky/unspecced/getSuggestedStarterPacksSkeleton.js';
+export * as AppBskyUnspeccedGetSuggestedUsers from './types/app/bsky/unspecced/getSuggestedUsers.js';
+export * as AppBskyUnspeccedGetSuggestedUsersSkeleton from './types/app/bsky/unspecced/getSuggestedUsersSkeleton.js';
 export * as AppBskyUnspeccedGetSuggestionsSkeleton from './types/app/bsky/unspecced/getSuggestionsSkeleton.js';
 export * as AppBskyUnspeccedGetTaggedSuggestions from './types/app/bsky/unspecced/getTaggedSuggestions.js';
 export * as AppBskyUnspeccedGetTrendingTopics from './types/app/bsky/unspecced/getTrendingTopics.js';
@@ -438,6 +460,7 @@ export * as ToolsOzoneCommunicationDefs from './types/tools/ozone/communication/
 export * as ToolsOzoneCommunicationDeleteTemplate from './types/tools/ozone/communication/deleteTemplate.js';
 export * as ToolsOzoneCommunicationListTemplates from './types/tools/ozone/communication/listTemplates.js';
 export * as ToolsOzoneCommunicationUpdateTemplate from './types/tools/ozone/communication/updateTemplate.js';
+export * as ToolsOzoneHostingGetAccountHistory from './types/tools/ozone/hosting/getAccountHistory.js';
 export * as ToolsOzoneModerationDefs from './types/tools/ozone/moderation/defs.js';
 export * as ToolsOzoneModerationEmitEvent from './types/tools/ozone/moderation/emitEvent.js';
 export * as ToolsOzoneModerationGetEvent from './types/tools/ozone/moderation/getEvent.js';
@@ -471,6 +494,10 @@ export * as ToolsOzoneTeamDefs from './types/tools/ozone/team/defs.js';
 export * as ToolsOzoneTeamDeleteMember from './types/tools/ozone/team/deleteMember.js';
 export * as ToolsOzoneTeamListMembers from './types/tools/ozone/team/listMembers.js';
 export * as ToolsOzoneTeamUpdateMember from './types/tools/ozone/team/updateMember.js';
+export * as ToolsOzoneVerificationDefs from './types/tools/ozone/verification/defs.js';
+export * as ToolsOzoneVerificationGrantVerifications from './types/tools/ozone/verification/grantVerifications.js';
+export * as ToolsOzoneVerificationListVerifications from './types/tools/ozone/verification/listVerifications.js';
+export * as ToolsOzoneVerificationRevokeVerifications from './types/tools/ozone/verification/revokeVerifications.js';
 export declare const COM_ATPROTO_MODERATION: {
     DefsReasonSpam: string;
     DefsReasonViolation: string;
@@ -479,6 +506,9 @@ export declare const COM_ATPROTO_MODERATION: {
     DefsReasonRude: string;
     DefsReasonOther: string;
     DefsReasonAppeal: string;
+};
+export declare const APP_BSKY_ACTOR: {
+    StatusLive: string;
 };
 export declare const APP_BSKY_FEED: {
     DefsRequestLess: string;
@@ -511,6 +541,7 @@ export declare const TOOLS_OZONE_TEAM: {
     DefsRoleAdmin: string;
     DefsRoleModerator: string;
     DefsRoleTriage: string;
+    DefsRoleVerifier: string;
 };
 export declare class AtpBaseClient extends XrpcClient {
     com: ComNS;
@@ -578,10 +609,10 @@ export declare class ComAtprotoLabelNS {
 }
 export declare class ComAtprotoLexiconNS {
     _client: XrpcClient;
-    schema: SchemaRecord;
+    schema: ComAtprotoLexiconSchemaRecord;
     constructor(client: XrpcClient);
 }
-export declare class SchemaRecord {
+export declare class ComAtprotoLexiconSchemaRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -659,11 +690,13 @@ export declare class ComAtprotoSyncNS {
     getBlocks(params?: ComAtprotoSyncGetBlocks.QueryParams, opts?: ComAtprotoSyncGetBlocks.CallOptions): Promise<ComAtprotoSyncGetBlocks.Response>;
     getCheckout(params?: ComAtprotoSyncGetCheckout.QueryParams, opts?: ComAtprotoSyncGetCheckout.CallOptions): Promise<ComAtprotoSyncGetCheckout.Response>;
     getHead(params?: ComAtprotoSyncGetHead.QueryParams, opts?: ComAtprotoSyncGetHead.CallOptions): Promise<ComAtprotoSyncGetHead.Response>;
+    getHostStatus(params?: ComAtprotoSyncGetHostStatus.QueryParams, opts?: ComAtprotoSyncGetHostStatus.CallOptions): Promise<ComAtprotoSyncGetHostStatus.Response>;
     getLatestCommit(params?: ComAtprotoSyncGetLatestCommit.QueryParams, opts?: ComAtprotoSyncGetLatestCommit.CallOptions): Promise<ComAtprotoSyncGetLatestCommit.Response>;
     getRecord(params?: ComAtprotoSyncGetRecord.QueryParams, opts?: ComAtprotoSyncGetRecord.CallOptions): Promise<ComAtprotoSyncGetRecord.Response>;
     getRepo(params?: ComAtprotoSyncGetRepo.QueryParams, opts?: ComAtprotoSyncGetRepo.CallOptions): Promise<ComAtprotoSyncGetRepo.Response>;
     getRepoStatus(params?: ComAtprotoSyncGetRepoStatus.QueryParams, opts?: ComAtprotoSyncGetRepoStatus.CallOptions): Promise<ComAtprotoSyncGetRepoStatus.Response>;
     listBlobs(params?: ComAtprotoSyncListBlobs.QueryParams, opts?: ComAtprotoSyncListBlobs.CallOptions): Promise<ComAtprotoSyncListBlobs.Response>;
+    listHosts(params?: ComAtprotoSyncListHosts.QueryParams, opts?: ComAtprotoSyncListHosts.CallOptions): Promise<ComAtprotoSyncListHosts.Response>;
     listRepos(params?: ComAtprotoSyncListRepos.QueryParams, opts?: ComAtprotoSyncListRepos.CallOptions): Promise<ComAtprotoSyncListRepos.Response>;
     listReposByCollection(params?: ComAtprotoSyncListReposByCollection.QueryParams, opts?: ComAtprotoSyncListReposByCollection.CallOptions): Promise<ComAtprotoSyncListReposByCollection.Response>;
     notifyOfUpdate(data?: ComAtprotoSyncNotifyOfUpdate.InputSchema, opts?: ComAtprotoSyncNotifyOfUpdate.CallOptions): Promise<ComAtprotoSyncNotifyOfUpdate.Response>;
@@ -697,7 +730,8 @@ export declare class AppBskyNS {
 }
 export declare class AppBskyActorNS {
     _client: XrpcClient;
-    profile: ProfileRecord;
+    profile: AppBskyActorProfileRecord;
+    status: AppBskyActorStatusRecord;
     constructor(client: XrpcClient);
     getPreferences(params?: AppBskyActorGetPreferences.QueryParams, opts?: AppBskyActorGetPreferences.CallOptions): Promise<AppBskyActorGetPreferences.Response>;
     getProfile(params?: AppBskyActorGetProfile.QueryParams, opts?: AppBskyActorGetProfile.CallOptions): Promise<AppBskyActorGetProfile.Response>;
@@ -707,7 +741,7 @@ export declare class AppBskyActorNS {
     searchActors(params?: AppBskyActorSearchActors.QueryParams, opts?: AppBskyActorSearchActors.CallOptions): Promise<AppBskyActorSearchActors.Response>;
     searchActorsTypeahead(params?: AppBskyActorSearchActorsTypeahead.QueryParams, opts?: AppBskyActorSearchActorsTypeahead.CallOptions): Promise<AppBskyActorSearchActorsTypeahead.Response>;
 }
-export declare class ProfileRecord {
+export declare class AppBskyActorProfileRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -728,18 +762,39 @@ export declare class ProfileRecord {
     }>;
     delete(params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>, headers?: Record<string, string>): Promise<void>;
 }
+export declare class AppBskyActorStatusRecord {
+    _client: XrpcClient;
+    constructor(client: XrpcClient);
+    list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
+        cursor?: string;
+        records: {
+            uri: string;
+            value: AppBskyActorStatus.Record;
+        }[];
+    }>;
+    get(params: OmitKey<ComAtprotoRepoGetRecord.QueryParams, 'collection'>): Promise<{
+        uri: string;
+        cid: string;
+        value: AppBskyActorStatus.Record;
+    }>;
+    create(params: OmitKey<ComAtprotoRepoCreateRecord.InputSchema, 'collection' | 'record'>, record: Un$Typed<AppBskyActorStatus.Record>, headers?: Record<string, string>): Promise<{
+        uri: string;
+        cid: string;
+    }>;
+    delete(params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>, headers?: Record<string, string>): Promise<void>;
+}
 export declare class AppBskyEmbedNS {
     _client: XrpcClient;
     constructor(client: XrpcClient);
 }
 export declare class AppBskyFeedNS {
     _client: XrpcClient;
-    generator: GeneratorRecord;
-    like: LikeRecord;
-    post: PostRecord;
-    postgate: PostgateRecord;
-    repost: RepostRecord;
-    threadgate: ThreadgateRecord;
+    generator: AppBskyFeedGeneratorRecord;
+    like: AppBskyFeedLikeRecord;
+    post: AppBskyFeedPostRecord;
+    postgate: AppBskyFeedPostgateRecord;
+    repost: AppBskyFeedRepostRecord;
+    threadgate: AppBskyFeedThreadgateRecord;
     constructor(client: XrpcClient);
     describeFeedGenerator(params?: AppBskyFeedDescribeFeedGenerator.QueryParams, opts?: AppBskyFeedDescribeFeedGenerator.CallOptions): Promise<AppBskyFeedDescribeFeedGenerator.Response>;
     getActorFeeds(params?: AppBskyFeedGetActorFeeds.QueryParams, opts?: AppBskyFeedGetActorFeeds.CallOptions): Promise<AppBskyFeedGetActorFeeds.Response>;
@@ -760,7 +815,7 @@ export declare class AppBskyFeedNS {
     searchPosts(params?: AppBskyFeedSearchPosts.QueryParams, opts?: AppBskyFeedSearchPosts.CallOptions): Promise<AppBskyFeedSearchPosts.Response>;
     sendInteractions(data?: AppBskyFeedSendInteractions.InputSchema, opts?: AppBskyFeedSendInteractions.CallOptions): Promise<AppBskyFeedSendInteractions.Response>;
 }
-export declare class GeneratorRecord {
+export declare class AppBskyFeedGeneratorRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -781,7 +836,7 @@ export declare class GeneratorRecord {
     }>;
     delete(params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>, headers?: Record<string, string>): Promise<void>;
 }
-export declare class LikeRecord {
+export declare class AppBskyFeedLikeRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -802,7 +857,7 @@ export declare class LikeRecord {
     }>;
     delete(params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>, headers?: Record<string, string>): Promise<void>;
 }
-export declare class PostRecord {
+export declare class AppBskyFeedPostRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -823,7 +878,7 @@ export declare class PostRecord {
     }>;
     delete(params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>, headers?: Record<string, string>): Promise<void>;
 }
-export declare class PostgateRecord {
+export declare class AppBskyFeedPostgateRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -844,7 +899,7 @@ export declare class PostgateRecord {
     }>;
     delete(params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>, headers?: Record<string, string>): Promise<void>;
 }
-export declare class RepostRecord {
+export declare class AppBskyFeedRepostRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -865,7 +920,7 @@ export declare class RepostRecord {
     }>;
     delete(params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>, headers?: Record<string, string>): Promise<void>;
 }
-export declare class ThreadgateRecord {
+export declare class AppBskyFeedThreadgateRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -888,12 +943,13 @@ export declare class ThreadgateRecord {
 }
 export declare class AppBskyGraphNS {
     _client: XrpcClient;
-    block: BlockRecord;
-    follow: FollowRecord;
-    list: ListRecord;
-    listblock: ListblockRecord;
-    listitem: ListitemRecord;
-    starterpack: StarterpackRecord;
+    block: AppBskyGraphBlockRecord;
+    follow: AppBskyGraphFollowRecord;
+    list: AppBskyGraphListRecord;
+    listblock: AppBskyGraphListblockRecord;
+    listitem: AppBskyGraphListitemRecord;
+    starterpack: AppBskyGraphStarterpackRecord;
+    verification: AppBskyGraphVerificationRecord;
     constructor(client: XrpcClient);
     getActorStarterPacks(params?: AppBskyGraphGetActorStarterPacks.QueryParams, opts?: AppBskyGraphGetActorStarterPacks.CallOptions): Promise<AppBskyGraphGetActorStarterPacks.Response>;
     getBlocks(params?: AppBskyGraphGetBlocks.QueryParams, opts?: AppBskyGraphGetBlocks.CallOptions): Promise<AppBskyGraphGetBlocks.Response>;
@@ -917,7 +973,7 @@ export declare class AppBskyGraphNS {
     unmuteActorList(data?: AppBskyGraphUnmuteActorList.InputSchema, opts?: AppBskyGraphUnmuteActorList.CallOptions): Promise<AppBskyGraphUnmuteActorList.Response>;
     unmuteThread(data?: AppBskyGraphUnmuteThread.InputSchema, opts?: AppBskyGraphUnmuteThread.CallOptions): Promise<AppBskyGraphUnmuteThread.Response>;
 }
-export declare class BlockRecord {
+export declare class AppBskyGraphBlockRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -938,7 +994,7 @@ export declare class BlockRecord {
     }>;
     delete(params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>, headers?: Record<string, string>): Promise<void>;
 }
-export declare class FollowRecord {
+export declare class AppBskyGraphFollowRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -959,7 +1015,7 @@ export declare class FollowRecord {
     }>;
     delete(params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>, headers?: Record<string, string>): Promise<void>;
 }
-export declare class ListRecord {
+export declare class AppBskyGraphListRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -980,7 +1036,7 @@ export declare class ListRecord {
     }>;
     delete(params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>, headers?: Record<string, string>): Promise<void>;
 }
-export declare class ListblockRecord {
+export declare class AppBskyGraphListblockRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -1001,7 +1057,7 @@ export declare class ListblockRecord {
     }>;
     delete(params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>, headers?: Record<string, string>): Promise<void>;
 }
-export declare class ListitemRecord {
+export declare class AppBskyGraphListitemRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -1022,7 +1078,7 @@ export declare class ListitemRecord {
     }>;
     delete(params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>, headers?: Record<string, string>): Promise<void>;
 }
-export declare class StarterpackRecord {
+export declare class AppBskyGraphStarterpackRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -1043,13 +1099,34 @@ export declare class StarterpackRecord {
     }>;
     delete(params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>, headers?: Record<string, string>): Promise<void>;
 }
+export declare class AppBskyGraphVerificationRecord {
+    _client: XrpcClient;
+    constructor(client: XrpcClient);
+    list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
+        cursor?: string;
+        records: {
+            uri: string;
+            value: AppBskyGraphVerification.Record;
+        }[];
+    }>;
+    get(params: OmitKey<ComAtprotoRepoGetRecord.QueryParams, 'collection'>): Promise<{
+        uri: string;
+        cid: string;
+        value: AppBskyGraphVerification.Record;
+    }>;
+    create(params: OmitKey<ComAtprotoRepoCreateRecord.InputSchema, 'collection' | 'record'>, record: Un$Typed<AppBskyGraphVerification.Record>, headers?: Record<string, string>): Promise<{
+        uri: string;
+        cid: string;
+    }>;
+    delete(params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>, headers?: Record<string, string>): Promise<void>;
+}
 export declare class AppBskyLabelerNS {
     _client: XrpcClient;
-    service: ServiceRecord;
+    service: AppBskyLabelerServiceRecord;
     constructor(client: XrpcClient);
     getServices(params?: AppBskyLabelerGetServices.QueryParams, opts?: AppBskyLabelerGetServices.CallOptions): Promise<AppBskyLabelerGetServices.Response>;
 }
-export declare class ServiceRecord {
+export declare class AppBskyLabelerServiceRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -1088,10 +1165,14 @@ export declare class AppBskyUnspeccedNS {
     constructor(client: XrpcClient);
     getConfig(params?: AppBskyUnspeccedGetConfig.QueryParams, opts?: AppBskyUnspeccedGetConfig.CallOptions): Promise<AppBskyUnspeccedGetConfig.Response>;
     getPopularFeedGenerators(params?: AppBskyUnspeccedGetPopularFeedGenerators.QueryParams, opts?: AppBskyUnspeccedGetPopularFeedGenerators.CallOptions): Promise<AppBskyUnspeccedGetPopularFeedGenerators.Response>;
+    getPostThreadHiddenV2(params?: AppBskyUnspeccedGetPostThreadHiddenV2.QueryParams, opts?: AppBskyUnspeccedGetPostThreadHiddenV2.CallOptions): Promise<AppBskyUnspeccedGetPostThreadHiddenV2.Response>;
+    getPostThreadV2(params?: AppBskyUnspeccedGetPostThreadV2.QueryParams, opts?: AppBskyUnspeccedGetPostThreadV2.CallOptions): Promise<AppBskyUnspeccedGetPostThreadV2.Response>;
     getSuggestedFeeds(params?: AppBskyUnspeccedGetSuggestedFeeds.QueryParams, opts?: AppBskyUnspeccedGetSuggestedFeeds.CallOptions): Promise<AppBskyUnspeccedGetSuggestedFeeds.Response>;
     getSuggestedFeedsSkeleton(params?: AppBskyUnspeccedGetSuggestedFeedsSkeleton.QueryParams, opts?: AppBskyUnspeccedGetSuggestedFeedsSkeleton.CallOptions): Promise<AppBskyUnspeccedGetSuggestedFeedsSkeleton.Response>;
     getSuggestedStarterPacks(params?: AppBskyUnspeccedGetSuggestedStarterPacks.QueryParams, opts?: AppBskyUnspeccedGetSuggestedStarterPacks.CallOptions): Promise<AppBskyUnspeccedGetSuggestedStarterPacks.Response>;
     getSuggestedStarterPacksSkeleton(params?: AppBskyUnspeccedGetSuggestedStarterPacksSkeleton.QueryParams, opts?: AppBskyUnspeccedGetSuggestedStarterPacksSkeleton.CallOptions): Promise<AppBskyUnspeccedGetSuggestedStarterPacksSkeleton.Response>;
+    getSuggestedUsers(params?: AppBskyUnspeccedGetSuggestedUsers.QueryParams, opts?: AppBskyUnspeccedGetSuggestedUsers.CallOptions): Promise<AppBskyUnspeccedGetSuggestedUsers.Response>;
+    getSuggestedUsersSkeleton(params?: AppBskyUnspeccedGetSuggestedUsersSkeleton.QueryParams, opts?: AppBskyUnspeccedGetSuggestedUsersSkeleton.CallOptions): Promise<AppBskyUnspeccedGetSuggestedUsersSkeleton.Response>;
     getSuggestionsSkeleton(params?: AppBskyUnspeccedGetSuggestionsSkeleton.QueryParams, opts?: AppBskyUnspeccedGetSuggestionsSkeleton.CallOptions): Promise<AppBskyUnspeccedGetSuggestionsSkeleton.Response>;
     getTaggedSuggestions(params?: AppBskyUnspeccedGetTaggedSuggestions.QueryParams, opts?: AppBskyUnspeccedGetTaggedSuggestions.CallOptions): Promise<AppBskyUnspeccedGetTaggedSuggestions.Response>;
     getTrendingTopics(params?: AppBskyUnspeccedGetTrendingTopics.QueryParams, opts?: AppBskyUnspeccedGetTrendingTopics.CallOptions): Promise<AppBskyUnspeccedGetTrendingTopics.Response>;
@@ -1122,12 +1203,12 @@ export declare class ChatBskyNS {
 }
 export declare class ChatBskyActorNS {
     _client: XrpcClient;
-    declaration: DeclarationRecord;
+    declaration: ChatBskyActorDeclarationRecord;
     constructor(client: XrpcClient);
     deleteAccount(data?: ChatBskyActorDeleteAccount.InputSchema, opts?: ChatBskyActorDeleteAccount.CallOptions): Promise<ChatBskyActorDeleteAccount.Response>;
     exportAccountData(params?: ChatBskyActorExportAccountData.QueryParams, opts?: ChatBskyActorExportAccountData.CallOptions): Promise<ChatBskyActorExportAccountData.Response>;
 }
-export declare class DeclarationRecord {
+export declare class ChatBskyActorDeclarationRecord {
     _client: XrpcClient;
     constructor(client: XrpcClient);
     list(params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>): Promise<{
@@ -1184,12 +1265,14 @@ export declare class ToolsNS {
 export declare class ToolsOzoneNS {
     _client: XrpcClient;
     communication: ToolsOzoneCommunicationNS;
+    hosting: ToolsOzoneHostingNS;
     moderation: ToolsOzoneModerationNS;
     server: ToolsOzoneServerNS;
     set: ToolsOzoneSetNS;
     setting: ToolsOzoneSettingNS;
     signature: ToolsOzoneSignatureNS;
     team: ToolsOzoneTeamNS;
+    verification: ToolsOzoneVerificationNS;
     constructor(client: XrpcClient);
 }
 export declare class ToolsOzoneCommunicationNS {
@@ -1199,6 +1282,11 @@ export declare class ToolsOzoneCommunicationNS {
     deleteTemplate(data?: ToolsOzoneCommunicationDeleteTemplate.InputSchema, opts?: ToolsOzoneCommunicationDeleteTemplate.CallOptions): Promise<ToolsOzoneCommunicationDeleteTemplate.Response>;
     listTemplates(params?: ToolsOzoneCommunicationListTemplates.QueryParams, opts?: ToolsOzoneCommunicationListTemplates.CallOptions): Promise<ToolsOzoneCommunicationListTemplates.Response>;
     updateTemplate(data?: ToolsOzoneCommunicationUpdateTemplate.InputSchema, opts?: ToolsOzoneCommunicationUpdateTemplate.CallOptions): Promise<ToolsOzoneCommunicationUpdateTemplate.Response>;
+}
+export declare class ToolsOzoneHostingNS {
+    _client: XrpcClient;
+    constructor(client: XrpcClient);
+    getAccountHistory(params?: ToolsOzoneHostingGetAccountHistory.QueryParams, opts?: ToolsOzoneHostingGetAccountHistory.CallOptions): Promise<ToolsOzoneHostingGetAccountHistory.Response>;
 }
 export declare class ToolsOzoneModerationNS {
     _client: XrpcClient;
@@ -1251,5 +1339,12 @@ export declare class ToolsOzoneTeamNS {
     deleteMember(data?: ToolsOzoneTeamDeleteMember.InputSchema, opts?: ToolsOzoneTeamDeleteMember.CallOptions): Promise<ToolsOzoneTeamDeleteMember.Response>;
     listMembers(params?: ToolsOzoneTeamListMembers.QueryParams, opts?: ToolsOzoneTeamListMembers.CallOptions): Promise<ToolsOzoneTeamListMembers.Response>;
     updateMember(data?: ToolsOzoneTeamUpdateMember.InputSchema, opts?: ToolsOzoneTeamUpdateMember.CallOptions): Promise<ToolsOzoneTeamUpdateMember.Response>;
+}
+export declare class ToolsOzoneVerificationNS {
+    _client: XrpcClient;
+    constructor(client: XrpcClient);
+    grantVerifications(data?: ToolsOzoneVerificationGrantVerifications.InputSchema, opts?: ToolsOzoneVerificationGrantVerifications.CallOptions): Promise<ToolsOzoneVerificationGrantVerifications.Response>;
+    listVerifications(params?: ToolsOzoneVerificationListVerifications.QueryParams, opts?: ToolsOzoneVerificationListVerifications.CallOptions): Promise<ToolsOzoneVerificationListVerifications.Response>;
+    revokeVerifications(data?: ToolsOzoneVerificationRevokeVerifications.InputSchema, opts?: ToolsOzoneVerificationRevokeVerifications.CallOptions): Promise<ToolsOzoneVerificationRevokeVerifications.Response>;
 }
 //# sourceMappingURL=index.d.ts.map

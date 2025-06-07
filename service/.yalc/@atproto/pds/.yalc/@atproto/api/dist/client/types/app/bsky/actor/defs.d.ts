@@ -8,6 +8,7 @@ import type * as AppBskyGraphDefs from '../graph/defs.js';
 import type * as ComAtprotoRepoStrongRef from '../../../com/atproto/repo/strongRef.js';
 import type * as AppBskyFeedThreadgate from '../feed/threadgate.js';
 import type * as AppBskyFeedPostgate from '../feed/postgate.js';
+import type * as AppBskyEmbedExternal from '../embed/external.js';
 export interface ProfileViewBasic {
     $type?: 'app.bsky.actor.defs#profileViewBasic';
     did: string;
@@ -18,6 +19,8 @@ export interface ProfileViewBasic {
     viewer?: ViewerState;
     labels?: ComAtprotoLabelDefs.Label[];
     createdAt?: string;
+    verification?: VerificationState;
+    status?: StatusView;
 }
 export declare function isProfileViewBasic<V>(v: V): v is import("../../../../util").$TypedObject<V, "app.bsky.actor.defs", "profileViewBasic">;
 export declare function validateProfileViewBasic<V>(v: V): ValidationResult<ProfileViewBasic & V>;
@@ -33,6 +36,8 @@ export interface ProfileView {
     createdAt?: string;
     viewer?: ViewerState;
     labels?: ComAtprotoLabelDefs.Label[];
+    verification?: VerificationState;
+    status?: StatusView;
 }
 export declare function isProfileView<V>(v: V): v is import("../../../../util").$TypedObject<V, "app.bsky.actor.defs", "profileView">;
 export declare function validateProfileView<V>(v: V): ValidationResult<ProfileView & V>;
@@ -54,6 +59,8 @@ export interface ProfileViewDetailed {
     viewer?: ViewerState;
     labels?: ComAtprotoLabelDefs.Label[];
     pinnedPost?: ComAtprotoRepoStrongRef.Main;
+    verification?: VerificationState;
+    status?: StatusView;
 }
 export declare function isProfileViewDetailed<V>(v: V): v is import("../../../../util").$TypedObject<V, "app.bsky.actor.defs", "profileViewDetailed">;
 export declare function validateProfileViewDetailed<V>(v: V): ValidationResult<ProfileViewDetailed & V>;
@@ -95,7 +102,33 @@ export interface KnownFollowers {
 }
 export declare function isKnownFollowers<V>(v: V): v is import("../../../../util").$TypedObject<V, "app.bsky.actor.defs", "knownFollowers">;
 export declare function validateKnownFollowers<V>(v: V): ValidationResult<KnownFollowers & V>;
-export type Preferences = ($Typed<AdultContentPref> | $Typed<ContentLabelPref> | $Typed<SavedFeedsPref> | $Typed<SavedFeedsPrefV2> | $Typed<PersonalDetailsPref> | $Typed<FeedViewPref> | $Typed<ThreadViewPref> | $Typed<InterestsPref> | $Typed<MutedWordsPref> | $Typed<HiddenPostsPref> | $Typed<BskyAppStatePref> | $Typed<LabelersPref> | $Typed<PostInteractionSettingsPref> | {
+/** Represents the verification information about the user this object is attached to. */
+export interface VerificationState {
+    $type?: 'app.bsky.actor.defs#verificationState';
+    /** All verifications issued by trusted verifiers on behalf of this user. Verifications by untrusted verifiers are not included. */
+    verifications: VerificationView[];
+    /** The user's status as a verified account. */
+    verifiedStatus: 'valid' | 'invalid' | 'none' | (string & {});
+    /** The user's status as a trusted verifier. */
+    trustedVerifierStatus: 'valid' | 'invalid' | 'none' | (string & {});
+}
+export declare function isVerificationState<V>(v: V): v is import("../../../../util").$TypedObject<V, "app.bsky.actor.defs", "verificationState">;
+export declare function validateVerificationState<V>(v: V): ValidationResult<VerificationState & V>;
+/** An individual verification for an associated subject. */
+export interface VerificationView {
+    $type?: 'app.bsky.actor.defs#verificationView';
+    /** The user who issued this verification. */
+    issuer: string;
+    /** The AT-URI of the verification record. */
+    uri: string;
+    /** True if the verification passes validation, otherwise false. */
+    isValid: boolean;
+    /** Timestamp when the verification was created. */
+    createdAt: string;
+}
+export declare function isVerificationView<V>(v: V): v is import("../../../../util").$TypedObject<V, "app.bsky.actor.defs", "verificationView">;
+export declare function validateVerificationView<V>(v: V): ValidationResult<VerificationView & V>;
+export type Preferences = ($Typed<AdultContentPref> | $Typed<ContentLabelPref> | $Typed<SavedFeedsPref> | $Typed<SavedFeedsPrefV2> | $Typed<PersonalDetailsPref> | $Typed<FeedViewPref> | $Typed<ThreadViewPref> | $Typed<InterestsPref> | $Typed<MutedWordsPref> | $Typed<HiddenPostsPref> | $Typed<BskyAppStatePref> | $Typed<LabelersPref> | $Typed<PostInteractionSettingsPref> | $Typed<VerificationPrefs> | {
     $type: string;
 })[];
 export interface AdultContentPref {
@@ -248,6 +281,14 @@ export interface Nux {
 }
 export declare function isNux<V>(v: V): v is import("../../../../util").$TypedObject<V, "app.bsky.actor.defs", "nux">;
 export declare function validateNux<V>(v: V): ValidationResult<Nux & V>;
+/** Preferences for how verified accounts appear in the app. */
+export interface VerificationPrefs {
+    $type?: 'app.bsky.actor.defs#verificationPrefs';
+    /** Hide the blue check badges for verified accounts and trusted verifiers. */
+    hideBadges: boolean;
+}
+export declare function isVerificationPrefs<V>(v: V): v is import("../../../../util").$TypedObject<V, "app.bsky.actor.defs", "verificationPrefs">;
+export declare function validateVerificationPrefs<V>(v: V): ValidationResult<VerificationPrefs & V>;
 /** Default post interaction settings for the account. These values should be applied as default values when creating new posts. These refs should mirror the threadgate and postgate records exactly. */
 export interface PostInteractionSettingsPref {
     $type?: 'app.bsky.actor.defs#postInteractionSettingsPref';
@@ -262,4 +303,21 @@ export interface PostInteractionSettingsPref {
 }
 export declare function isPostInteractionSettingsPref<V>(v: V): v is import("../../../../util").$TypedObject<V, "app.bsky.actor.defs", "postInteractionSettingsPref">;
 export declare function validatePostInteractionSettingsPref<V>(v: V): ValidationResult<PostInteractionSettingsPref & V>;
+export interface StatusView {
+    $type?: 'app.bsky.actor.defs#statusView';
+    /** The status for the account. */
+    status: 'app.bsky.actor.status#live' | (string & {});
+    record: {
+        [_ in string]: unknown;
+    };
+    embed?: $Typed<AppBskyEmbedExternal.View> | {
+        $type: string;
+    };
+    /** The date when this status will expire. The application might choose to no longer return the status after expiration. */
+    expiresAt?: string;
+    /** True if the status is not expired, false if it is expired. Only present if expiration was set. */
+    isActive?: boolean;
+}
+export declare function isStatusView<V>(v: V): v is import("../../../../util").$TypedObject<V, "app.bsky.actor.defs", "statusView">;
+export declare function validateStatusView<V>(v: V): ValidationResult<StatusView & V>;
 //# sourceMappingURL=defs.d.ts.map
