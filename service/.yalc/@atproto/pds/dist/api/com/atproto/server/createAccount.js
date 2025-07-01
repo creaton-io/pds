@@ -34,7 +34,7 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
-const plc = __importStar(require("@did-plc/lib"));
+const plc = __importStar(require("@cproto/did-plc-lib"));
 const address_1 = require("@hapi/address");
 const disposable_email_domains_js_1 = require("disposable-email-domains-js");
 const common_1 = require("@atproto/common");
@@ -128,7 +128,7 @@ const validateInputsForEntrywayPds = async (ctx, input) => {
         throw new xrpc_server_1.InvalidRequestError('PLC DID does not include service rotation key', 'IncompatibleDidDoc');
     }
     try {
-        await plc.assureValidOp(plcOp);
+        await plc.assureValidCreationOp(did, plcOp);
         await plc.assureValidSig([plcRotationKey], plcOp);
     }
     catch (err) {
@@ -240,6 +240,7 @@ const formatDidAndPlcOp = async (ctx, handle, input, signingKey) => {
         signingKey: signingKey.did(),
         rotationKeys,
         handle,
+        ethAddress: input.ethAddress,
         pds: ctx.cfg.service.publicUrl,
         signer: ctx.plcRotationKey,
     });

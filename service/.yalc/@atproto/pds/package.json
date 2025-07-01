@@ -44,7 +44,7 @@
     "@atproto/syntax": "^0.4.0",
     "@atproto/xrpc": "^0.7.0",
     "@atproto/xrpc-server": "^0.7.18",
-    "@cproto/did-plc-lib": "^0.0.6",
+    "@cproto/did-plc-lib": "^0.0.8",
     "@did-plc/lib": "^0.0.4",
     "@hapi/address": "^5.1.1",
     "better-sqlite3": "^10.0.0",
@@ -75,5 +75,5 @@
     "viem": "^2.23.13",
     "zod": "^3.23.8"
   },
-  "yalcSig": "59ae2d7babf05a16a7b70c6e86414b44"
+  "yalcSig": "5db7cf199e753bcba4425be4d074f727"
 }

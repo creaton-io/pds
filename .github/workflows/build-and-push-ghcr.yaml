@@ -6,6 +6,7 @@ on:
       - pdsv2
     tags:
       - v*
+      - latest
 env:
   REGISTRY: ghcr.io
   USERNAME: ${{ github.actor }}
