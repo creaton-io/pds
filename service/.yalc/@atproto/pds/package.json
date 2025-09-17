@@ -1,6 +1,6 @@
 {
   "name": "@atproto/pds",
-  "version": "10.4.120",
+  "version": "10.4.121",
   "license": "MIT",
   "description": "Reference implementation of atproto Personal Data Server (PDS)",
   "keywords": [
@@ -75,5 +75,5 @@
     "viem": "^2.23.13",
     "zod": "^3.23.8"
   },
-  "yalcSig": "5db7cf199e753bcba4425be4d074f727"
+  "yalcSig": "2d5ea748347ea4e1dcb627e2e052a554"
 }

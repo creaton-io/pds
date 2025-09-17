@@ -92,10 +92,27 @@ const siweLogin = async (db, did) => {
             version: '1',
             statement: 'Log in to Creaton Account',
         });
-        await db.db
-            .insertInto('siwe_login')
-            .values({ did, createdAt, siweMessage })
-            .execute();
+        // Check if an entry already exists for this DID
+        const existing = await db.db
+            .selectFrom('siwe_login')
+            .where('did', '=', did)
+            .selectAll()
+            .executeTakeFirst();
+        if (existing) {
+            // Update the existing entry
+            await db.db
+                .updateTable('siwe_login')
+                .set({ siweMessage, createdAt })
+                .where('did', '=', did)
+                .execute();
+        }
+        else {
+            // Insert a new entry
+            await db.db
+                .insertInto('siwe_login')
+                .values({ did, createdAt, siweMessage })
+                .execute();
+        }
     }
     else {
         throw new xrpc_server_1.InvalidRequestError('could not find account');

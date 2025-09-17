@@ -2,8 +2,8 @@
   "version": "v1",
   "packages": {
     "@atproto/pds": {
-      "version": "10.4.120",
-      "signature": "5db7cf199e753bcba4425be4d074f727",
+      "version": "10.4.121",
+      "signature": "2d5ea748347ea4e1dcb627e2e052a554",
       "file": true,
       "replaced": "10.4.120"
     }
